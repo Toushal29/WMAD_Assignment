@@ -3,45 +3,62 @@
 ## Step 3: Set Up the Virtual Environment
 1. **Create the Virtual Environment**:
    - In the `WMAD_Assignment` directory:
-    > *python -m venv venv*
+   ```bash
+   python -m venv venv
+   ```
 
 2. **Activate the Virtual Environment**:
    - Activate it:
-    > *venv\Scripts\activate*
+   ```bash
+   venv\Scripts\activate
+   ```
    - Verify with `(venv)` in the terminal prompt.
 
 3. **Install Django**:
    - Install Django:
-    > *pip install django*
+   ```bash
+   pip install django
+   ```
 
 4. **Save Dependencies**:
    - Generate `requirements.txt`:
-    > *pip freeze > requirements.txt*
-
+   ```bash
+   pip freeze > requirements.txt
+   ```
 
 ## Step 4: Create the Django Project and App
 1. **Create the Django Project**:
    - Start the project:
-    > *django-admin startproject web_restaurant .*
+   ```bash
+   django-admin startproject web_restaurant .
+   ```
 
 2. **Create an App**:
    - Create the `restaurant` app:
-    > *python manage.py startapp restaurant*
+   ```bash
+   python manage.py startapp restaurant
+   ```
 
    - Add to `INSTALLED_APPS` in `web_restaurant/settings.py`:
+   ```python
     INSTALLED_APPS = [
         ...
         'restaurant',
     ]
+   ```
 
 3. **Apply Initial Migrations**:
    - Set up the SQLite database:
-    > *python manage.py migrate*
+   ```bash
+   python manage.py migrate
+   ```
 
 4. **Test the Project**:
    - Run the server:
-    > *python manage.py runserver*
-
+   ```bash
+   python manage.py runserver
+   ```
+   
    - Visit `http://127.0.0.1:8000/` to verify the Django welcome page.
    - Stop with `Ctrl + C`.
 
