@@ -58,25 +58,26 @@ A collaborative Django-based restaurant web application.
     ```bash
     python manage.py makemigrations
     ```
-    
+
     ```bash
     python manage.py migrate
     ```
 
 4. **Commit and Push**
-    > `git add .`
-    > `git commit -m "<Describe_your_changes>"`
-    > `git push origin feature/<your-featureName>`
+    > `git add .`<br>
+    > `git commit -m "<Describe_your_changes>"`<br>
+    > `git push origin feature/<your-featureName>`<br>
 
 5. **Create a pull request**
-    Go to `https://github.com/Toushal29/WMAD_Assignment.git`
-    Create a pull request from ***feature/your-featureName*** to development.
+    Go to `https://github.com/Toushal29/WMAD_Assignment.git`<br>
+    Create a pull request from ***feature/your-featureName*** to development.<br>
     Await review and merge.
 
 6. **Sync with Development:**
-    After merges, update your local branch:
-    > `git checkout development`
-    > `git pull origin development`
+    After merges, update your local branch:<bt>
+    > `git checkout development`<br>
+    > `git pull origin development`<br>
+    
     ```bash
     python manage.py migrate  # If new migrations were added
     ```
