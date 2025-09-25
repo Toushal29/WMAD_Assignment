@@ -48,7 +48,7 @@ A collaborative Django-based restaurant web application.
     ```bash
     pip install package-name
     ```
-    <br>
+
     ```bash
     pip freeze > requirements.txt
     ```
@@ -58,7 +58,7 @@ A collaborative Django-based restaurant web application.
     ```bash
     python manage.py makemigrations
     ```
-    <br>
+    
     ```bash
     python manage.py migrate
     ```
