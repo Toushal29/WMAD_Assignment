@@ -44,20 +44,24 @@ A collaborative Django-based restaurant web application.
     Edit files (e.g., restaurant/views.py, restaurant/models.py)
 
     ***If installing new packages:***
-        ```bash
-        pip install package-name
-        ```
-        ```bash
-        pip freeze > requirements.txt
-        ```
+    <br>
+    ```bash
+    pip install package-name
+    ```
+    <br>
+    ```bash
+    pip freeze > requirements.txt
+    ```
 
     ***If modifying model:***
-        ```bash
-        python manage.py makemigrations
-        ```
-        ```bash
-        python manage.py migrate
-        ```
+    <br>
+    ```bash
+    python manage.py makemigrations
+    ```
+    <br>
+    ```bash
+    python manage.py migrate
+    ```
 
 4. **Commit and Push**
     > `git add .`
