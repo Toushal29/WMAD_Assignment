@@ -1,0 +1,12 @@
+body {
+    background-color: #ffffff;
+}
+
+.restaurant_name {
+    color: red;
+}
+
+.navigation{
+    display: inline-flex;
+    text-decoration: none;
+}
