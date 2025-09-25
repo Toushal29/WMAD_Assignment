@@ -1,0 +1,14 @@
+## files that are not uploaded to github because there are too many and are mostly local
+## local files that are created in the machine when setting up the virtual environment
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.sqlite3
+*.log
+.vscode/
+.env
+*.tmp
+*.bak
+*.cache
+build/
