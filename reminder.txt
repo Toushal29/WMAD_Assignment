@@ -1,0 +1,6 @@
+`restaurant` is the app
+
+
+`web_restaurant` is the project name
+
+web_restaurant have settings.py
