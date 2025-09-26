@@ -1,5 +1,5 @@
 """
-WSGI config for web_restaurant project.
+WSGI config for WMAD_project project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'web_restaurant.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'WMAD_project.settings')
 
 application = get_wsgi_application()

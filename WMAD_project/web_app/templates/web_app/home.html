@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'web_app/css/style.css' %}">
+</head>
+<body>
+    <h1>Welcome, this is home.</h1>
+    <hr>
+    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veritatis esse minima necessitatibus, molestiae pariatur, expedita ad nobis, enim mollitia asperiores ipsum sapiente explicabo quidem aliquid voluptas at non beatae eius.</p>
+    <a href="{% url 'about' %}">About Us?</a>
+</body>
+</html>

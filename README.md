@@ -7,11 +7,13 @@ A collaborative Django-based restaurant web application.
    cd WebRestaurant
 
 2. **Create and Activate a Virtual Environment:**
+    > Create virtual environment name .venv
     ```bash
-    python -m venv venv
+    python -m venv .venv
     ```
+    > Activate the venv
     ```bash
-    venv\Scripts\activate
+    .\.venv\Scripts\activate
     ```
     # or source venv/bin/activate  # macOS/Linux
 

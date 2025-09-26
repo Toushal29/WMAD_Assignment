@@ -4,15 +4,15 @@
 1. **Create the Virtual Environment**:
    - In the `WMAD_Assignment` directory:
    ```bash
-   python -m venv venv
+   python -m venv .venv
    ```
 
 2. **Activate the Virtual Environment**:
    - Activate it:
    ```bash
-   venv\Scripts\activate
+   .\.venv\Scripts\activate 
    ```
-   - Verify with `(venv)` in the terminal prompt.
+   - Verify with `(.venv)` in the terminal prompt.
 
 3. **Install Django**:
    - Install Django:
@@ -30,20 +30,20 @@
 1. **Create the Django Project**:
    - Start the project:
    ```bash
-   django-admin startproject web_restaurant .
+   django-admin startproject WMAD_project
    ```
 
 2. **Create an App**:
-   - Create the `restaurant` app:
+   - Create the `restaurant_app` app:
    ```bash
-   python manage.py startapp restaurant
+   python manage.py startapp restaurant_app
    ```
 
-   - Add to `INSTALLED_APPS` in `web_restaurant/settings.py`:
+   - Add to `INSTALLED_APPS` in `WMAD_project/settings.py`:
    ```python
     INSTALLED_APPS = [
         ...
-        'restaurant',
+        'restaurant_app',
     ]
    ```
 
@@ -73,8 +73,8 @@
    - Choose `C:\Users\...\...\...<directoryName>` as the destination.
 
 3. **Copy Project Files**:
-   - Copy all project files (except `venv`) to the cloned repository folder.
-   - Ensure `manage.py`, `web_restaurant/`, `restaurant/`, `requirements.txt`, and `.gitignore` are included.
+   - Copy all project files (except `.venv`) to the cloned repository folder.
+   - Ensure `manage.py`, `WMAD_project/`, `restaurant_app/`, `requirements.txt`, and `.gitignore` are included.
 
 4. **Update `.gitignore`**:
    - Edit `.gitignore` to include:
@@ -90,6 +90,8 @@
      *.bak
      *.cache
      build/
+
+<hr>
 
 ## Step 6: Upload Initial Project to GitHub
 1. **Commit Files in VS Code**:
