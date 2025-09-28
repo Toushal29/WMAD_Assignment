@@ -6,11 +6,35 @@
     <title>Home</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'web_app/css/style.css' %}">
+    <style>
+        * {
+            text-decoration: none;
+            margin: 0px;
+            padding: 0px;
+        }
+        body{
+            background-image: url("{% static 'web_app/images/background_img.png' %}");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome, this is home.</h1>
-    <hr>
-    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veritatis esse minima necessitatibus, molestiae pariatur, expedita ad nobis, enim mollitia asperiores ipsum sapiente explicabo quidem aliquid voluptas at non beatae eius.</p>
-    <a href="{% url 'about' %}">About Us?</a>
+    <nav class="navbar">
+        <div class="logo"><a href="#">Saveur Moris</a></div>
+        <div class="mainNav">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Menu</a></li>
+                <li><a href="#">Order</a></li>
+                <li><a href="#">Reservation</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+        </div>
+        <div class="loginBtn">
+            <button type="button">Log In</button>
+        </div>
+    </nav>
 </body>
 </html>
