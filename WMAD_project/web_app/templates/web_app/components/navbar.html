@@ -1,65 +1,13 @@
 {% load static %}
-
-<style>
-    .navbar {
-        display: flex;
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-        align-items: center;
-        justify-content: space-between;
-        background-color: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(3px);
-        margin: 10px;
-        border-radius: 5px;
-        padding: 10px;
-        position: sticky;
-        top: 0;
-    }
-
-    .logo a {
-        color: white;
-        font-size: 25px;
-        font-weight: 600;
-        text-decoration: none;
-    }
-
-    li {
-        list-style: none;
-        display: inline-block;
-    }
-
-    .mainNav a {
-        color: white;
-        margin: 10px;
-        text-decoration: none;
-        transition: background-color 500ms, padding 500ms, border-radius 500ms;
-    }
-
-    .mainNav a:hover {
-        background-color: rgba(0, 0, 0, 0.5);
-        padding: 10px;
-        border-radius: 25px;
-    }
-
-    .loginBtn button {
-        background-color: transparent;
-        color: rgb(255, 255, 255);
-        padding: 10px;
-        border-radius: 25px;
-        transition: border-radius 500ms, box-shadow 500ms;
-        border: 1px solid transparent;
-        cursor: pointer;
-    }
-
-    .loginBtn button:hover {
-        border-radius: 25px;
-        box-shadow: 0 0 5px rgb(255, 255, 255);
-    }
-</style>
+<link rel="stylesheet" href="{% static 'web_app/css/navbar.css' %}">
 
 <header>
     <nav class="navbar">
         <div class="logo">
-            <a href="{% url 'home' %}">Saveur Moris</a>
+            <a href="{% url 'home' %}">
+                <img src="{% static 'web_app/images/logo.png' %}" alt="Saveur Moris Logo"
+                style="height: 40px; width: auto; margin: -10px; object-fit: contain; margin-left: 10px; display: block;">
+            </a>
         </div>
         <div class="mainNav">
             <ul>
@@ -67,8 +15,7 @@
                 <li><a href="{% url 'menu' %}">Menu</a></li>
                 <li><a href="{% url 'order' %}">Order</a></li>
                 <li><a href="{% url 'reservation' %}">Reservation</a></li>
-                <li><a href="{% url 'about' %}">About Us</a></li>
-                <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                <li><a href="{% url 'about_contact' %}">About & Contact</a></li>
             </ul>
         </div>
         <div class="loginBtn">

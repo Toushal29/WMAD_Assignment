@@ -1,6 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
 def home(request):
     return render(request, 'web_app/home.html')
 
@@ -13,8 +12,5 @@ def order(request):
 def reservation(request):
     return render(request, 'web_app/reservation.html')
 
-def about(request):
-    return render(request, 'web_app/about.html')
-
-def contact(request):
-    return render(request, 'web_app/contact.html')
+def about_contact(request):
+    return render(request, 'web_app/about_contact.html')
