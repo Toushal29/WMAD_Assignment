@@ -14,3 +14,9 @@ def reservation(request):
 
 def about_contact(request):
     return render(request, 'web_app/about_contact.html')
+
+def login(request):
+    return render(request, 'web_app/login.html')
+
+def signup(request):
+    return render(request, 'web_app/signup.html')
