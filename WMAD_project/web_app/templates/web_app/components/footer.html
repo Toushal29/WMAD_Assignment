@@ -9,6 +9,7 @@
         position: fixed;
         bottom: 0;
         width: 100%;
+        z-index: 1000; /* Ensures it stays on top of all other content */
     }
 
     #footer p {
@@ -42,6 +43,6 @@
     <p>&copy; 2025 Saveur Moris. All rights reserved.</p>
     <ul>
         <li><a href="{% url 'about_contact' %}">About & Contact</a></li>
-        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="{% url 'privacy_policy' %}">Privacy Policy</a></li>
     </ul>
 </footer>

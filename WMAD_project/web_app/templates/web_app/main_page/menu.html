@@ -1,5 +1,5 @@
-{% extends 'web_app/base.html' %}                   <!--gets the base-->
-{% block title %}Order{% endblock %}   <!--overwrite the title-->
+{% extends 'web_app/main_page/base.html' %}                   <!--gets the base-->
+{% block title %}Menu{% endblock %}   <!--overwrite the title-->
 {% block extra_css %}
 {% load static %}
     <style>
@@ -15,7 +15,7 @@
             background-position: center;
             min-height: 100vh;
             margin: 0;
-            overflow: auto;
+            overflow: hidden;
         }
         h1 {
             color: white;
@@ -26,5 +26,5 @@
 
 <!--this add the main contents to the web page.-->
 {% block content %}
-    <h1>Make an Order</h1>
+    <h1>Menus</h1>
 {% endblock %}
