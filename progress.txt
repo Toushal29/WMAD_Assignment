@@ -1,0 +1,24 @@
+25/09/25- setup git repo + project
+26/09/25- reset the repo
+28/09/25- start the project with the home page with navbar only
+04/10/25- made some changes to home page
+
+10/10/25-   1. Added a footer component
+            2. remove duplicate code (navbar) from pages and made it into its own components
+            3. made a base.html that have the same code and can be overwriten in other file. also include the components that can are preloaded ising {% include %}
+            4. made the rest of the pages, pages inherits from base.html and overwrite some lines
+
+14/10/25-   1. Redid some files (files were not in proper folder)
+            2. Merge Contact and About into same page
+            3. Made the About_Contact page
+            4. Mine Apollo
+
+15/10/25- Fix some bugs not loading the images properly + made some changes to files name mostly.
+
+16/10/25-   1. made some changes to some files
+            2. setup login and signup page-file, content to be coded later.
+
+18/10/25-   1. re-organised the files into their proper folder
+            2. setup the Privacy Policy page
+            3. finished coding the PP page
+            4. made some edits to some files (mostly related to style)
