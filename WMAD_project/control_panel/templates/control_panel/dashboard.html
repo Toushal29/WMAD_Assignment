@@ -10,25 +10,26 @@
         /* CSS Variables for Cleanliness */
         :root {
             --header-height: 80px;
-            --primary-color: #007bff;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
+            --success-color: #28a745; /* Green for Running/Online/Inactive */
+            --danger-color: #dc3545; /* Red for Stopped/Offline/Active (Maintenance) */
             --border-color: #ccc;
             --bg-color: #d9e3e6;
+            --text-color: #333;
         }
 
-        /* Essential Layout Reset - No main page scroll */
+        /* Essential Layout Reset */
         html, body {
             height: 100%;
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
             background-color: var(--bg-color);
-            overflow: hidden;
+            overflow: hidden; /* Prevent main page scroll */
             display: flex;
             flex-direction: column;
         }
 
+        /* Header Styling */
         .dashboard-header {
             display: flex;
             align-items: center;
@@ -42,12 +43,12 @@
         .logo {
             width: 60px;
             height: 60px;
-            border-radius: 5;
+            border-radius: 5px; /* Minor correction: using 'px' unit */
             margin-right: 50px;
         }
 
         h1 {
-            color: #333;
+            color: var(--text-color);
             font-size: 1.4em;
             margin: 0;
         }
@@ -59,7 +60,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            min-height: 0; /* Important for flex child */
+            min-height: 0;
         }
 
         /* Top Row (Status & Toggle) */
@@ -68,6 +69,7 @@
             gap: 20px;
         }
 
+        /* Status Container */
         .status-container {
             flex: 2; /* Status takes more space */
             background-color: white;
@@ -75,18 +77,9 @@
             border: 1px solid var(--border-color);
         }
 
-        .maintenance-form-container {
-            flex: 1; /* Form takes less space */
-            background-color: white;
-            padding: 15px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-        }
-
         .status-container h2 {
             font-size: 1.2em;
-            color: #333;
+            color: var(--text-color);
             margin-top: 0;
             margin-bottom: 10px;
         }
@@ -99,6 +92,17 @@
             border-bottom: 1px dotted #eee;
         }
 
+        /* Maintenance Form Container */
+        .maintenance-form-container {
+            flex: 1; /* Form takes less space */
+            background-color: white;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+
+        /* Status Tags */
         .status-tag {
             padding: 3px 6px;
             border-radius: 3px;
@@ -107,9 +111,16 @@
             text-transform: uppercase;
         }
 
-        /* Status Colors */
-        .running, .online, .inactive { background-color: var(--success-color); color: white; }
-        .stopped, .offline, .active { background-color: var(--danger-color); color: white; }
+        /* Status Tag Colors */
+        .running, .online, .inactive {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .stopped, .offline, .active {
+            background-color: var(--danger-color);
+            color: white;
+        }
 
         /* Button Styling */
         .toggle-button {
@@ -123,43 +134,26 @@
             width: 100%;
         }
 
-        .toggle-button:hover:not(:disabled) { opacity: 0.9; }
-        .toggle-button:disabled { opacity: 0.6; cursor: not-allowed; }
-        .activate { background-color: var(--danger-color); color: white; }
-        .deactivate { background-color: var(--success-color); color: white; }
-
-        /* Logs Section - Scrollable Only */
-        .logs-section {
-            flex-grow: 1;
-            background-color: #fff;
-            padding: 15px;
-            border: 1px solid var(--border-color);
-            overflow-y: auto; /* This is the only scrollable area */
-            font-family: monospace;
-            font-size: 0.75em;
-            color: #555;
-            min-height: 100px; /* Ensure logs area has a minimum size */
+        .toggle-button:hover:not(:disabled) {
+            opacity: 0.9;
         }
 
-        .logs-section h3 {
-            color: #333;
-            margin-top: 0;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #ddd;
-            font-size: 1em;
+        .toggle-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
-        .logs-section ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        /* Button Specific Colors */
+        /* If maintenance is inactive (ACTIVATE button shown) */
+        .activate {
+            background-color: var(--danger-color);
+            color: white;
         }
 
-        .logs-section li {
-            padding: 2px 0;
-            white-space: pre-wrap;
-            border-bottom: 1px dotted #f0f0f0;
+        /* If maintenance is active (DEACTIVATE button shown) */
+        .deactivate {
+            background-color: var(--success-color);
+            color: white;
         }
     </style>
 </head>
@@ -205,17 +199,6 @@
                 </form>
             </section>
         </div>
-
-        <section class="logs-section">
-            <h3>Server Logs (Unlimited Scroll)</h3>
-            <ul>
-                {% for log in logs %}
-                    <li>{{ log|escape }}</li>
-                {% empty %}
-                    <li>No recent logs available.</li>
-                {% endfor %}
-            </ul>
-        </section>
     </main>
     <script>
         $(document).ready(function() {
@@ -242,12 +225,6 @@
                     }
                 });
             });
-            
-            // Auto-scroll logs to bottom on load
-            const logContainer = $('.logs-section');
-            if(logContainer.length) {
-                logContainer.scrollTop(logContainer[0].scrollHeight);
-            }
         });
     </script>
 </body>
