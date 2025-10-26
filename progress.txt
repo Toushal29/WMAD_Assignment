@@ -22,3 +22,8 @@
             2. setup the Privacy Policy page
             3. finished coding the PP page
             4. made some edits to some files (mostly related to style)
+
+26/10/25-   1. configured and deployed the website on the internet. had to setup a .bat file that will start the server. person with my public ip address and port  can access it.
+            2. setup a control panel app
+            3. activate and deactivate the website for maintenance
+            4. add a .log to view logs in control panel dashboard

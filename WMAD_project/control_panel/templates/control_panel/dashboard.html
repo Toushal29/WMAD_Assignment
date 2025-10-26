@@ -1,0 +1,254 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Dashboard - Savuer Moris</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* CSS Variables for Cleanliness */
+        :root {
+            --header-height: 80px;
+            --primary-color: #007bff;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --border-color: #ccc;
+            --bg-color: #d9e3e6;
+        }
+
+        /* Essential Layout Reset - No main page scroll */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            height: var(--header-height);
+            box-sizing: border-box;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 5;
+            margin-right: 50px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 1.4em;
+            margin: 0;
+        }
+
+        /* Main Content Area */
+        .main-container {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-height: 0; /* Important for flex child */
+        }
+
+        /* Top Row (Status & Toggle) */
+        .status-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .status-container {
+            flex: 2; /* Status takes more space */
+            background-color: white;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .maintenance-form-container {
+            flex: 1; /* Form takes less space */
+            background-color: white;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .status-container h2 {
+            font-size: 1.2em;
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px dotted #eee;
+        }
+
+        .status-tag {
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Status Colors */
+        .running, .online, .inactive { background-color: var(--success-color); color: white; }
+        .stopped, .offline, .active { background-color: var(--danger-color); color: white; }
+
+        /* Button Styling */
+        .toggle-button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            width: 100%;
+        }
+
+        .toggle-button:hover:not(:disabled) { opacity: 0.9; }
+        .toggle-button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .activate { background-color: var(--danger-color); color: white; }
+        .deactivate { background-color: var(--success-color); color: white; }
+
+        /* Logs Section - Scrollable Only */
+        .logs-section {
+            flex-grow: 1;
+            background-color: #fff;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            overflow-y: auto; /* This is the only scrollable area */
+            font-family: monospace;
+            font-size: 0.75em;
+            color: #555;
+            min-height: 100px; /* Ensure logs area has a minimum size */
+        }
+
+        .logs-section h3 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+            font-size: 1em;
+        }
+
+        .logs-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .logs-section li {
+            padding: 2px 0;
+            white-space: pre-wrap;
+            border-bottom: 1px dotted #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <header class="dashboard-header">
+        <img src="{% static 'control_panel/images/logo.png' %}" alt="Savuer Moris Logo" class="logo">
+        <h1>Savuer Moris - Control Panel</h1>
+    </header>
+
+    <main class="main-container">
+        <div class="status-row">
+            <section class="status-container">
+                <h2>Website Status</h2>
+                
+                <div class="status-item">
+                    <strong>Server:</strong> 
+                    <span class="status-tag {% if server_running %}running{% else %}stopped{% endif %}">
+                        {% if server_running %}Running{% else %}Stopped{% endif %}
+                    </span>
+                </div>
+                
+                <div class="status-item">
+                    <strong>Website Online:</strong> 
+                    <span class="status-tag {% if maintenance_mode %}offline{% else %}online{% endif %}">
+                        {% if maintenance_mode %}Offline{% else %}Online{% endif %}
+                    </span>
+                </div>
+                
+                <div class="status-item">
+                    <strong>Maintenance Mode:</strong> 
+                    <span class="status-tag {% if maintenance_mode %}active{% else %}inactive{% endif %}">
+                        {% if maintenance_mode %}Active{% else %}Inactive{% endif %}
+                    </span>
+                </div>
+            </section>
+            
+            <section class="maintenance-form-container">
+                <form id="maintenance-form" method="post" style="width: 100%;">
+                    {% csrf_token %}
+                    <button type="submit" class="toggle-button {% if maintenance_mode %}deactivate{% else %}activate{% endif %}">
+                        {% if maintenance_mode %}DEACTIVATE MAINTENANCE MODE{% else %}ACTIVATE MAINTENANCE MODE{% endif %}
+                    </button>
+                </form>
+            </section>
+        </div>
+
+        <section class="logs-section">
+            <h3>Server Logs (Unlimited Scroll)</h3>
+            <ul>
+                {% for log in logs %}
+                    <li>{{ log|escape }}</li>
+                {% empty %}
+                    <li>No recent logs available.</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+    <script>
+        $(document).ready(function() {
+            $('#maintenance-form').on('submit', function(e) {
+                e.preventDefault();
+                
+                const button = $(this).find('button');
+                const originalText = button.text();
+                
+                button.text('Processing...');
+                button.prop('disabled', true);
+
+                $.ajax({
+                    type: 'POST',
+                    url: "{% url 'toggle_maintenance' %}",
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        window.location.href = "{% url 'dashboard' %}";
+                    },
+                    error: function() {
+                        alert('Error toggling maintenance mode.');
+                        button.text(originalText);
+                        button.prop('disabled', false);
+                    }
+                });
+            });
+            
+            // Auto-scroll logs to bottom on load
+            const logContainer = $('.logs-section');
+            if(logContainer.length) {
+                logContainer.scrollTop(logContainer[0].scrollHeight);
+            }
+        });
+    </script>
+</body>
+</html>
