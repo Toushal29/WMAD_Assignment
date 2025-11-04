@@ -12,4 +12,4 @@ __pycache__/
 *.bak
 *.cache
 build/
-progress.txt
+*progress.txt

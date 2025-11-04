@@ -1,1 +1,0 @@
-window.alert("You are being hacked. Seek help immediately.")

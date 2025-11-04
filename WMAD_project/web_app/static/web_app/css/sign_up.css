@@ -1,58 +1,62 @@
 .container {
     background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(6px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     width: 450px;
-    height: 450px;
+    height: 650px;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
     border-radius: 10px;
+    overflow-y: auto;
 }
 
 header {
     text-align:center;
-    margin-bottom:1rem;
+    margin-bottom:0.5rem;
 }
 
 header h1 {
-    margin: 10px 0px 60px 0px;
     font-size:2rem;
     color:#fff;
     text-shadow:0 1px 3px rgba(0,0,0,0.3);
+    margin-bottom: 2em;
 }
 
 .logo img {
-    margin-bottom: 40px;
+    transition: 500ms;
     border-radius: 10px;
     border-style: solid;
     border-color: white;
     border-width: 2px;
-    text-shadow:0 1px 3px rgba(0,0,0,0.3);
-    height:150px;
-    transition: 300ms;
+    height:100px;
+    margin-bottom:2em;
 }
 
 .logo img:hover {
-    transition: 300ms;
-    height:152px;
-    box-shadow: 0 0px 10px wheat;
+    transition: 500ms;
+    height:102px;
+    box-shadow: 0 0px 5px wheat;
 }
 
 .container h3 {
-    margin-top: 20px;
-    margin-bottom: 50px;
+    margin-top: 25px;
+    margin-bottom: 25px;
     color:#ffffff;
+    text-align:center;
+    font-size:1.3rem;
 }
 
 .input-group {
     position:relative;
     width:100%;
-    max-width:320px;
-    margin-bottom:2rem;
+    max-width:340px;
+    margin-bottom:0.85rem;
 }
+
 .input-group i {
     position:absolute;
     left:12px;
@@ -61,15 +65,17 @@ header h1 {
     color:#777;
     font-size:1.1rem;
 }
+
 .input-group input {
     width:100%;
-    padding:0.75rem 0.75rem 0.75rem 2.6rem;
+    padding:0.65rem 0.65rem 0.65rem 2.6rem;
     border:1px solid rgba(255,255,255,0.4);
     border-radius:6px;
     background:rgba(255,255,255,0.6);
-    font-size:1rem;
+    font-size:0.95rem;
     transition:border 0.2s;
 }
+
 .input-group input:focus {
     outline:none;
     border-color:#ff6b35;
@@ -83,22 +89,19 @@ header h1 {
     color:#555;
 }
 
-.input-group .toggle-pwd:hover {
-    color:#ff6b35;
-}
+.input-group .toggle-pwd:hover { color:#ff6b35; }
 
 .button {
-    margin-top:4rem;
+    margin-top:0.5rem;
     width:100%;
-    max-width:320px;
+    max-width:340px;
 }
-
 .button button {
     width:100%;
     background:#ff6b35;
     color:#fff;
     border:none;
-    padding:0.85rem 1.5rem;
+    padding:0.75rem 1.5rem;
     border-radius:6px;
     font-size:1.1rem;
     cursor:pointer;
@@ -106,8 +109,6 @@ header h1 {
     justify-content:center;
     align-items:center;
     transition:background .25s, transform .25s;
-    position:relative;
-    overflow:hidden;
 }
 
 .button button:hover {
@@ -116,7 +117,7 @@ header h1 {
 }
 
 .btn-text {
-    transition:transform .3s ease;
+    transition:transform .5s ease;
 }
 
 .button button:hover .btn-text {
@@ -126,7 +127,7 @@ header h1 {
 .food-icon {
     opacity:0;
     transform:translateX(10px);
-    transition:opacity .3s ease, transform .3s ease;
+    transition:opacity .5s ease, transform .5s ease;
 }
 
 .button button:hover .food-icon {
@@ -134,32 +135,16 @@ header h1 {
     transform:translateX(0);
 }
 
-.function {
-    text-align:center;
+.login-link {
     margin-top:3rem;
-    font-size: large;
+    font-size:1rem;
+    text-align:center;
 }
-
-.function a {
-    color:#ffffff;
+.login-link a {
+    color:#fffefe;
     text-decoration:none;
 }
 
-.function a:hover {
-    text-decoration:underline;
-}
-
-.back-home {
-    margin-top:2rem;
-    color:#fff;
-    font-size:large;
-}
-
-.back-home a {
-    color:#ffecb3;
-    text-decoration:none;
-}
-
-.back-home a:hover {
+.login-link a:hover {
     text-decoration:underline;
 }
