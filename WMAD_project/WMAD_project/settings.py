@@ -107,6 +107,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# Email Backend Configuration for Development
+# During development, emails will be printed to the console. In production, configure an appropriate email backend.
+# https://docs.djangoproject.com/en/5.2/topics/email/#email-backends
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -158,3 +164,9 @@ LOGGING = {
         },
     },
 }
+
+
+# 2024-06 Addition: Authentication Redirect URLs Settings
+LOGIN_REDIRECT_URL = 'home'      # after login → go to home
+LOGOUT_REDIRECT_URL = 'home'     # after logout → go to home
+LOGIN_URL = 'login'              # for @login_required redirects
