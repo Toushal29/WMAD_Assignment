@@ -1,0 +1,301 @@
+/* ==== base account/template ==== */
+/* topbar*/
+.topbar {
+    background-color: wheat;
+    border-bottom: 1px solid #ddd;
+    padding: 5px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.logo img {
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    height: 60px;
+    border-radius: 10px;
+}
+
+.logo h3 {
+    margin-left: 10px;
+    padding-top: 20px;
+}
+
+.top-nav a {
+    text-decoration: none;
+    color: #333;
+    margin-left: 20px;
+    font-size: 0.95rem;
+}
+
+.top-nav a:hover {
+    text-decoration: underline;
+}
+
+.account-container {
+    display: flex;
+    height: calc(100vh - 90px);
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 230px;
+    background-color: beige;
+    border-right: 1px solid #ddd;
+    padding: 30px 20px;
+}
+
+.sidebar h3 {
+    margin-bottom: 20px;
+    color: #444;
+    font-size: 1.1rem;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar li {
+    margin-bottom: 15px;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    padding: 8px 10px;
+    border-radius: 5px;
+    transition: background 0.2s ease;
+}
+
+.sidebar a:hover, .sidebar .active a {
+    background-color: #333;
+    color: white;
+}
+
+.container {
+    flex: 1;
+    margin: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.content {
+    margin: 10px;
+    width: 100%;
+    max-width: 750px;
+}
+
+.content h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.4rem;
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-group {
+    /* margin-right: 10px;
+    margin-left: 10px; */
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #555;
+}
+
+.form-group input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #333;
+}
+
+.btn-update {
+    background-color: #ff6b35d3;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    align-self: center;
+    margin-top: 10px;
+}
+
+.btn-update:hover {
+    background-color: #ff6b35;
+}
+
+
+/* ===== SETTINGS PAGE ===== */
+.settings-section {
+    margin-bottom: 30px;
+}
+
+.settings-section h3 {
+    font-size: 1.1rem;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    background-color: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 10px 15px;
+}
+
+.setting-item label {
+    font-weight: 600;
+    color: #555;
+}
+
+.setting-item select {
+    padding: 6px 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: white;
+}
+
+.setting-item select:focus {
+    outline: none;
+    border-color: #333;
+}
+
+/* Buttons */
+.btn-action {
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-action:hover {
+    background-color: #555;
+}
+
+/* Danger Zone */
+.danger-zone h3 {
+    color: #a30000;
+    border-color: #ffcccc;
+}
+
+.btn-danger {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-danger:hover {
+    background-color: #d60000;
+}
+
+.note {
+    color: #888;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+
+/* ===== ORDERS & REVIEWS COMMON STYLES ===== */
+.scroll-section {
+    max-height: 65vh;       /* only this section scrolls */
+    overflow-y: auto;
+    padding-right: 10px;
+    scrollbar-width: thin;
+}
+
+/* Simple scrollbar styling for webkit browsers */
+.scroll-section::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scroll-section::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+/* Order cards */
+.order-card, .review-card {
+    background-color: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.order-card h4,
+.review-card h4 {
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.order-card p,
+.review-card p {
+    margin-bottom: 4px;
+    color: #555;
+}
+
+.status {
+    font-weight: bold;
+}
+
+.status.delivered {
+    color: green;
+}
+
+.status.pending {
+    color: orange;
+}
+
+.status.cancelled {
+    color: red;
+}
+
+.review-date {
+    font-size: 0.85rem;
+    color: #888;
+}

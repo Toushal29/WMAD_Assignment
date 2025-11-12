@@ -166,7 +166,5 @@ LOGGING = {
 }
 
 
-# 2024-06 Addition: Authentication Redirect URLs Settings
-LOGIN_REDIRECT_URL = 'home'      # after login → go to home
-LOGOUT_REDIRECT_URL = 'home'     # after logout → go to home
-LOGIN_URL = 'login'              # for @login_required redirects
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'

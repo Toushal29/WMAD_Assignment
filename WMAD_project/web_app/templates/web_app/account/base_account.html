@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Account{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'web_app/css/profile.css' %}">
+    {% block extra_css %}{% endblock %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #d0d0d0;
+            color: #333;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="logo">
+            <img src="{% static 'web_app/images/logo.png' %}" alt="Saveur Moris- Logo">
+            <h3>SaveurMoris</h3>
+        </div>
+        <nav class="top-nav">
+            <a href="{% url 'home' %}">Back to Home</a>
+            <a href="#">Help</a>
+            <a href="#">Log Out</a>
+        </nav>
+    </header>
+    <div class="account-container">
+        <aside class="sidebar">
+            <h3>My Account</h3>
+            <ul>
+                <li class="{% if section == 'profile' %}active{% endif %}">
+                    <a href="{% url 'profile' %}">Account Information</a>
+                </li>
+                <li class="{% if section == 'orders' %}active{% endif %}">
+                    <a href="{% url 'orders' %}">My Orders</a>
+                </li>
+                <li class="{% if section == 'reviews' %}active{% endif %}">
+                    <a href="{% url 'reviews' %}">My Reviews</a>
+                </li>
+                <li class="{% if section == 'settings' %}active{% endif %}">
+                    <a href="{% url 'settings' %}">Settings</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- main content area -->
+        <div class="container">
+            <main class="content">
+                {% block content %}
+                <!-- page specific content goes here -->
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
