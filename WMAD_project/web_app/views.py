@@ -106,3 +106,12 @@ def delete_account(request):
         return redirect('home')
 
     return render(request, 'web_app/account/confirm_delete.html')
+def privacy_policy(request):
+    return render(request, 'web_app/other_pages/privacy_policy.html')
+
+from django.shortcuts import render
+from web_app.models import Special  # adjust the import path as per your app name
+
+def home(request):
+    special = Special.objects.filter(is_active=True).first()
+    return render(request, 'web_app/main_page/home.html', {'special': special})
