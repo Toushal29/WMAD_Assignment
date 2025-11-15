@@ -10,7 +10,7 @@ urlpatterns = [
       # web_app/urls.py
      path('login/', views.user_login, name='login'), 
 
-    path('signup/', views.signup, name='signup'),
+    path('signup/', views.user_signup, name='signup'),
     path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
     
 

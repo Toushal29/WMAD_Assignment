@@ -70,3 +70,40 @@ def user_login(request):
 
     # ✅ Correct template path
     return render(request, 'web_app/entry/login.html')
+
+# web_app/views.py
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.contrib.auth import authenticate, login as auth_login
+
+def user_signup(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        # Validate inputs
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match")
+            return redirect('signup')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already taken")
+            return redirect('signup')
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already registered")
+            return redirect('signup')
+
+        # Create user
+        user = User.objects.create_user(username=username, email=email, password=password)
+        user.save()
+
+        # Auto-login after signup
+        auth_login(request, user)
+        messages.success(request, f"Welcome, {username}! Your account has been created.")
+        return redirect('home')
+
+    return render(request, 'web_app/entry/signup.html')
