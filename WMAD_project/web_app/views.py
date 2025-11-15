@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import CustomUserCreationForm
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import ProfileUpdateForm
 from .models import Customer
@@ -115,3 +115,38 @@ from web_app.models import Special  # adjust the import path as per your app nam
 def home(request):
     special = Special.objects.filter(is_active=True).first()
     return render(request, 'web_app/main_page/home.html', {'special': special})
+
+from django.shortcuts import render, redirect
+
+from django.contrib import messages
+
+# web_app/views.py
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib import messages
+
+def home(request):
+    return render(request, 'web_app/main_page/home.html')  # your home page
+
+
+def user_logout(request):
+    auth_logout(request)
+    return redirect('login')
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            auth_login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'Invalid username or password')
+
+    # ✅ Correct template path
+    return render(request, 'web_app/entry/login.html')
