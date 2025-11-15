@@ -8,6 +8,9 @@ urlpatterns = [
     path('order/', views.order, name='order'),
     path('reservation/', views.reservation, name='reservation'),
     path('about-contact/', views.about_contact, name='about_contact'),
+      # web_app/urls.py
+     path('login/', views.user_login, name='login'), 
+    path('signup/', views.user_signup, name='signup'),
     path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
     path('account/login/', views.login_view, name='login'),
     path('account/signup/', views.signup, name='signup'),       
