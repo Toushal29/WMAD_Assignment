@@ -187,3 +187,9 @@ def user_signup(request):
         return redirect('home')
 
     return render(request, 'web_app/entry/signup.html')
+
+from .models import MenuItem
+
+def menu(request):
+    items = MenuItem.objects.filter(available=True)
+    return render(request,'web_app/main_page/menu.html', {'items': items})

@@ -1,30 +1,27 @@
-{% extends 'web_app/main_page/base.html' %}                   <!--gets the base-->
-{% block title %}Menu{% endblock %}   <!--overwrite the title-->
-{% block extra_css %}
+{% extends 'web_app/main_page/base.html' %}
 {% load static %}
-    <style>
-        * {
-            text-decoration: none;
-            margin: 0px;
-            padding: 0px;
-        }
-        body{
-            background-image: url("{% static 'web_app/images/bk_img6.png' %}");
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-position: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-        h1 {
-            color: white;
-            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-        }
-    </style>
+
+{% block title %}Menu{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'web_app/css/menu.css' %}">
 {% endblock %}
 
-<!--this add the main contents to the web page.-->
 {% block content %}
-    <h1>Menus</h1>
+<h1>Our Menu</h1>
+
+<div class="menu-items">
+    {% for item in items %}
+        <div class="menu-item">
+            {% if item.image %}
+                <img src="{{ item.image.url }}" alt="{{ item.name }}" style="width:100%; border-radius:5px;">
+            {% endif %}
+            <h3>{{ item.name }}</h3>
+            <p>{{ item.description }}</p>
+            <p>Price: ${{ item.price }}</p>
+        </div>
+    {% empty %}
+        <p>No menu items available.</p>
+    {% endfor %}
+</div>
 {% endblock %}

@@ -183,3 +183,7 @@ AUTH_USER_MODEL = 'web_app.Users'
 ADMIN_SITE_SESSION_COOKIE_NAME = "admin_sessionid"  # Custom session cookie name for admin site
 
 SESSION_SAVE_EVERY_REQUEST = True
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
