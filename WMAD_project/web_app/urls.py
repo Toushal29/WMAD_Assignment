@@ -7,7 +7,11 @@ urlpatterns = [
     path('order/', views.order, name='order'),
     path('reservation/', views.reservation, name='reservation'),
     path('about-contact/', views.about_contact, name='about_contact'),
-    path('login/', views.login, name='login'),
+      # web_app/urls.py
+     path('login/', views.user_login, name='login'), 
+
     path('signup/', views.signup, name='signup'),
     path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
+    
+
 ]
