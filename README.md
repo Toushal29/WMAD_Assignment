@@ -5,13 +5,16 @@
 **WebRestaurant** is a collaborative Django-based restaurant web application built with Django 5.2.7. The project allows users to interact with a restaurant website while providing an admin control panel with maintenance mode functionality.
 
 ### Architecture
+
 - **Backend**: Django 5.2.7 (Python-based web framework)
 - **Database**: SQLite3 (default)
 - **Frontend**: HTML templates with integrated static files (CSS/JS)
 - **Project Structure**: Multi-app Django project with separate apps for web interface and control panel
 
 ### Core Apps
+
 1. **web_app**: Main restaurant website interface
+
    - Home page
    - Menu display
    - Order placement
@@ -28,56 +31,176 @@
 ## Key Features
 
 ### Maintenance Mode
+
 - Custom middleware allows toggling the entire site into maintenance mode
 - When enabled, customers see a maintenance page while control panel remains accessible
 - Toggle functionality available through the control panel dashboard
 
 ### Logging
+
 - Debug logging configured to write to `debug.log` file
 - Captures Django-level debug information for troubleshooting
 
 ## Project Structure
+
 ```
-WMAD_Assignment/
-├── README.md
-├── SETUP_GUIDE.md
-├── requirements.txt
-├── .gitignore
-└── WMAD_project/
-    ├── manage.py
-    ├── WMAD_project/ (main project config)
-    │   ├── settings.py
-    │   ├── urls.py
-    │   └── wsgi.py
-    ├── web_app/ (main website)
-    │   ├── views.py
-    │   ├── urls.py
-    │   ├── models.py
-    │   ├── templates/
-    │   └── static/
-    └── control_panel/ (admin panel)
-        ├── views.py
-        ├── urls.py
-        ├── models.py
-        ├── middleware.py
-        └── templates/
+C:.
+│   db.sqlite3
+│   debug.log
+│   manage.py
+│
+├───control_panel
+│   │   admin.py
+│   │   apps.py
+│   │   middleware.py
+│   │   models.py
+│   │   tests.py
+│   │   urls.py
+│   │   views.py
+│   │   __init__.py
+│   │
+│   ├───migrations
+│   │   │   __init__.py
+│   │   │
+│   │   └───__pycache__
+│   │           __init__.cpython-313.pyc
+│   │
+│   ├───static
+│   │   └───control_panel
+│   │       └───images
+│   │               logo.png
+│   │
+│   ├───templates
+│   │   └───control_panel
+│   │           customer_maintenance.html
+│   │           dashboard.html
+│   │
+│   └───__pycache__
+│           admin.cpython-313.pyc
+│           apps.cpython-313.pyc
+│           middleware.cpython-313.pyc
+│           models.cpython-313.pyc
+│           urls.cpython-313.pyc
+│           views.cpython-313.pyc
+│           __init__.cpython-313.pyc
+│
+├───web_app
+│   │   admin.py
+│   │   apps.py
+│   │   forms.py
+│   │   models.py
+│   │   tests.py
+│   │   urls.py
+│   │   views.py
+│   │   __init__.py
+│   │
+│   ├───migrations
+│   │   │   __init__.py
+│   │   │
+│   │   └───__pycache__
+│   │           0001_initial.cpython-313.pyc
+│   │           __init__.cpython-313.pyc
+│   │
+│   ├───static
+│   │   └───web_app
+│   │       ├───css
+│   │       │       about_contact.css
+│   │       │       footer.css
+│   │       │       log_in.css
+│   │       │       navbar.css
+│   │       │       password_reset.css
+│   │       │       privacy_policy.css
+│   │       │       profile.css
+│   │       │       signup.css
+│   │       │
+│   │       ├───images
+│   │       │       bk_img2.png
+│   │       │       bk_img3.png
+│   │       │       bk_img4.png
+│   │       │       bk_img5.png
+│   │       │       bk_img6.png
+│   │       │       login.png
+│   │       │       logo.png
+│   │       │       min_apollo.png
+│   │       │
+│   │       └───js
+│   │               login.js
+│   │               signup.js
+│   │
+│   ├───templates
+│   │   ├───registration
+│   │   │       login.html
+│   │   │       password_reset_complete.html
+│   │   │       password_reset_confirm.html
+│   │   │       password_reset_done.html
+│   │   │       password_reset_form.html
+│   │   │       signup.html
+│   │   │
+│   │   └───web_app
+│   │       ├───account
+│   │       │       base_account.html
+│   │       │       orders.html
+│   │       │       profile.html
+│   │       │       reviews.html
+│   │       │       settings.html
+│   │       │
+│   │       ├───components
+│   │       │       footer.html
+│   │       │       navbar.html
+│   │       │
+│   │       ├───main_page
+│   │       │       about_contact.html
+│   │       │       base.html
+│   │       │       home.html
+│   │       │       menu.html
+│   │       │       order.html
+│   │       │       reservation.html
+│   │       │
+│   │       └───other_pages
+│   │               privacy_policy.html
+│   │
+│   └───__pycache__
+│           admin.cpython-313.pyc
+│           apps.cpython-313.pyc
+│           forms.cpython-313.pyc
+│           models.cpython-313.pyc
+│           urls.cpython-313.pyc
+│           views.cpython-313.pyc
+│           __init__.cpython-313.pyc
+│
+└───WMAD_project
+    │   asgi.py
+    │   settings.py
+    │   urls.py
+    │   wsgi.py
+    │   __init__.py
+    │
+    └───__pycache__
+            settings.cpython-313.pyc
+            urls.cpython-313.pyc
+            wsgi.cpython-313.pyc
+            __init__.cpython-313.pyc
 ```
 
 ## Development Setup
 
 ### Initial Setup
+
 1. **Virtual Environment**:
+
    ```bash
    python -m venv .venv
    .\.venv\Scripts\activate  # Windows
    ```
 
 2. **Install Dependencies**:
+
    ```bash
    pip install -r requirements.txt
    ```
 
 3. **Database Migrations**:
+
    ```bash
    python manage.py migrate
    ```
@@ -89,6 +212,7 @@ WMAD_Assignment/
    Visit `http://127.0.0.1:8000/` to access the application.
 
 ### Key Commands
+
 - **Create migrations**: `python manage.py makemigrations`
 - **Apply migrations**: `python manage.py migrate`
 - **Run server**: `python manage.py runserver`
@@ -97,6 +221,7 @@ WMAD_Assignment/
 ## Development Conventions
 
 ### Project Workflow
+
 1. Switch to development branch: `git checkout development`
 2. Create feature branch: `git checkout -b feature/<featureName>`
 3. Make changes
@@ -107,6 +232,7 @@ WMAD_Assignment/
 8. After merge: Sync with development branch
 
 ### Code Structure
+
 - Separate apps for different functionality (web_app vs control_panel)
 - Template structure: `app_name/templates/app_name/page.html`
 - Static files: `app_name/static/app_name/`
@@ -115,6 +241,7 @@ WMAD_Assignment/
 ## Configuration Details
 
 ### Settings
+
 - Debug mode: Enabled (`DEBUG = True`)
 - Allowed hosts: `['*']` (not production-ready)
 - Static files: Located at `web_app/static/`
@@ -122,10 +249,12 @@ WMAD_Assignment/
 - Custom maintenance mode setting: `MAINTENANCE_MODE = False`
 
 ### Middleware
+
 - Custom `MaintenanceMiddleware` handles site-wide maintenance mode
 - Standard Django security and session middleware included
 
 ### URLs
+
 - Main website accessible at root path (`/`)
 - Control panel accessible at `/control/`
 - Admin interface at `/admin/`
@@ -143,12 +272,14 @@ WMAD_Assignment/
 ## Special Features
 
 ### Maintenance Mode Implementation
+
 1. Toggle accessible via control panel at `/control/maintenance/toggle/`
 2. Configurable via `MAINTENANCE_MODE` setting in `settings.py`
 3. Custom middleware renders maintenance page to customers when enabled
 4. Control panel (`/control/`) remains accessible during maintenance
 
 ### Dashboard Functionality
+
 - Shows server status
 - Displays restaurant name ("Saveur Moris")
 - Shows maintenance mode status
@@ -168,6 +299,7 @@ The project includes Django's standard testing framework. Tests would typically 
 ## Future Enhancement Areas
 
 Potential areas for improvement:
+
 - Production security settings (proper SECRET_KEY, allowed hosts, etc.)
 - Database configuration for production environments
 - Enhanced logging configuration

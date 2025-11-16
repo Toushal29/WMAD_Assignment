@@ -10,19 +10,37 @@
     
     <link rel="stylesheet" href="{% static 'web_app/css/about_contact.css' %}">
 </head>
-<body>
+<body class="about-contact-page">
     {% include 'web_app/components/navbar.html' %}
     <main>
         <section id="about-us" class="page-section">
+            <h1 class="h1au">About Us</h1>
             <div class="content-container">
-                <h1>About Us</h1>
+                <h2>Authentic Mauritian Cuisine</h2>
+                <br><hr><br>
+                <h3>We are passionate about bringing the true taste of Mauritius to your table. </h3>
+                <br>
                 <p>Welcome to Saveur Moris, where we bring the vibrant flavors of Mauritius to your plate. Our restaurant is dedicated to showcasing authentic Mauritian cuisine, crafted with fresh ingredients and time-honored recipes. From our family to yours, we invite you to experience the warmth, culture, and taste of our island heritage.</p>
+                <br><br>
+                <p>Come join us at ___ to offer to your taste buds the adventure of their life</p>
+                <!-- Google Map inside About Us section -->
+                <div class="about-map">
+                    <h3>Find Us Here</h3>
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.720842945481!2d57.4975!3d-20.1609!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x217c5b1a3b7436f3%3A0x8fb70a5e3e4ad4f7!2sPort%20Louis%2C%20Mauritius!5e0!3m2!1sen!2smu!4v1700000000000"
+                        width="100%"
+                        height="200"
+                        style="border:0; border-radius: 10px;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
             </div>
         </section>
-
         <section id="contact-us" class="page-section">
+            <h1 class="h1cu">Contact Us</h1>
             <div class="content-container">
-                <h1>Contact Us</h1>
                 <p>Have questions or want to get in touch? Reach out to us! We're here to assist with reservations, inquiries, or feedback.</p>
                 <form class="contact-form">
                     <input type="text" placeholder="Your Name" required>

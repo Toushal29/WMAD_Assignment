@@ -138,33 +138,45 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Redirect URLs after login/logout
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
 
-# 2024-06 Addition: Logging Configuration for Debugging Purposes
-# https://docs.djangoproject.com/en/5.2/topics/logging/
-# This configuration logs debug information to a file named 'debug.log' in the BASE_DIR.
-# Adjust the logging level and handlers as needed for your application.
-# Example usage: logging.getLogger('django').debug('Debug message')
-# Note: Ensure proper permissions for the log file in production environments.
-# Adjust the logging settings as necessary for your deployment environment.
+# Logging Configuration for Control Panel
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'debug.log'),
+
+    'formatters': {
+        'control_panel_format': {
+            'format': '[{asctime}] {message}',
+            'style': '{',
         },
     },
+
+    'handlers': {
+        'control_panel_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'control_panel.log'),
+            'formatter': 'control_panel_format',
+        },
+    },
+
     'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
+        'control_panel': {
+            'handlers': ['control_panel_file'],
+            'level': 'INFO',
+            'propagate': False,
         },
     },
 }
 
 
-LOGOUT_REDIRECT_URL = '/'
-LOGIN_REDIRECT_URL = '/'
+# Super maintenance mode password (for future use)
+SUPER_MAINTENANCE_PASSWORD = "super_secret_key2025"
+
+MAINTENANCE_ALERT_EMAILS = [            # list of emails to notify when maintenance mode is toggled
+    "toushal37@gmail.com",
+    # "owner2@example.com",
+]
