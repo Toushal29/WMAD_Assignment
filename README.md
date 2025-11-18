@@ -45,10 +45,10 @@
 
 ```
 C:.
+│   control_panel.log
 │   db.sqlite3
-│   debug.log
 │   manage.py
-│
+│   
 ├───control_panel
 │   │   admin.py
 │   │   apps.py
@@ -58,15 +58,18 @@ C:.
 │   │   urls.py
 │   │   views.py
 │   │   __init__.py
-│   │
+│   │   
 │   ├───migrations
 │   │   │   __init__.py
-│   │   │
+│   │   │   
 │   │   └───__pycache__
 │   │           __init__.cpython-313.pyc
 │   │
 │   ├───static
 │   │   └───control_panel
+│   │       ├───css
+│   │       │       dashboard.css
+│   │       │       
 │   │       └───images
 │   │               logo.png
 │   │
@@ -74,6 +77,7 @@ C:.
 │   │   └───control_panel
 │   │           customer_maintenance.html
 │   │           dashboard.html
+│   │           logs.html
 │   │
 │   └───__pycache__
 │           admin.cpython-313.pyc
@@ -95,6 +99,7 @@ C:.
 │   │   __init__.py
 │   │
 │   ├───migrations
+│   │   │   0001_initial.py
 │   │   │   __init__.py
 │   │   │
 │   │   └───__pycache__

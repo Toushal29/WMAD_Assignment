@@ -22,5 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('web_app.urls')),                      # main website
     path('control/', include('control_panel.urls')),        # control panel section for website maintenance
-    path('account/', include('django.contrib.auth.urls')),          # django's built-in authentication views
+    path('admin-site/', include('admin_site.urls')),        # custom admin site for restaurant management
 ]

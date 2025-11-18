@@ -39,11 +39,20 @@
             </div>
         </header>
 
+        {% if form.errors %}
+        <div class="form-error-box">
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+        </div>
+        {% endif %}
+
         <main class="container">
             <h3>Welcome Back! Please Enter Your Details</h3>
             <form method="post" action="">
                 {% csrf_token %}
-                {{ form.non_field_errors }}
 
                 <div class="input-group">
                     <i class="fas fa-user"></i>
@@ -72,7 +81,7 @@
                 </div>
             </form>
             <div class="function">
-                <p>Forgot Password? <a href="{% url 'password_reset' %}">Reset password</a></p>
+                <p>Forgot Password? <a href="{% url 'custom_reset_request' %}">Reset password</a></p>
                 <p>Don't have an account? <a href="{% url 'signup' %}">Sign Up</a></p>
             </div>
         </main>

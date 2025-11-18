@@ -1,0 +1,15 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('login/', views.admin_login, name='admin_login'),
+
+    path('', views.admin_dashboard, name='admin_dashboard'),
+    path('reservation/', views.reservation_page, name='admin_reservation'),
+    path('edit-menu/', views.edit_menu_page, name='admin_edit_menu'),
+    path('feedback/', views.feedback_page, name='admin_feedback'),
+    path('customers/', views.customer_details_page, name='admin_customer_details'),
+    path('edit-price/', views.edit_price_page, name='admin_edit_price'),
+    path('orders/', views.orders_page, name='admin_orders'),
+    path('logout/', views.admin_logout, name='admin_logout'),
+]
