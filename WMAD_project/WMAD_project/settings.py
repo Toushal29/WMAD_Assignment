@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'web_app',
     'control_panel',
+    'admin_site',
 ]
 
 # 2024-06 Addition: Maintenance Mode Setting
@@ -55,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'control_panel.middleware.MaintenanceMiddleware',               # Custom middleware for maintenance mode
+    'admin_site.middleware.AdminSiteSessionMiddleware',                 # Custom middleware for admin session handling
 ]
 
 ROOT_URLCONF = 'WMAD_project.urls'
@@ -129,9 +131,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "web_app/static"),
-]
+STATICFILES_DIRS = []
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -180,3 +180,8 @@ MAINTENANCE_ALERT_EMAILS = [            # list of emails to notify when maintena
     "toushal37@gmail.com",
     # "owner2@example.com",
 ]
+
+# Custom User Model Setting
+AUTH_USER_MODEL = 'web_app.Users'
+
+ADMIN_SITE_SESSION_COOKIE_NAME = "admin_sessionid"  # Custom session cookie name for admin site

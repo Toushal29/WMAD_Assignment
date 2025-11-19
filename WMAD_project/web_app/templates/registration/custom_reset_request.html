@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reset Password - Saveur Moris</title>
+    <link rel="stylesheet" href="{% static 'web_app/css/password_reset.css' %}">
+</head>
+<body>
+<header>
+    <h1>Reset Your Password</h1>
+</header>
+
+<main class="container">
+    <p>Enter your email address and we’ll send you a reset link.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            {{ form.email }}
+        </div>
+
+        <button type="submit" class="btn">Send Reset Link</button>
+    </form>
+
+    <p><a href="/account/login/">Back to Login</a></p>
+</main>
+</body>
+</html>

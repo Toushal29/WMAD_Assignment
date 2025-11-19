@@ -1,48 +1,63 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.forms import AuthenticationForm
+from .models import Users, Customer
 
 class CustomUserCreationForm(UserCreationForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({'placeholder': 'Username'})
-        self.fields['email'].widget.attrs.update({'placeholder': 'Email'})
-        self.fields['first_name'].widget.attrs.update({'placeholder': 'First Name'})
-        self.fields['last_name'].widget.attrs.update({'placeholder': 'Last Name'})
-        self.fields['phone_number'].widget.attrs.update({'placeholder': 'Phone Number'})
-        self.fields['address'].widget.attrs.update({'placeholder': 'Address'})
-        self.fields['password1'].widget.attrs.update({'placeholder': 'Password'})
-        self.fields['password2'].widget.attrs.update({'placeholder': 'Confirm Password'})
-
     email = forms.EmailField(required=True)
-    first_name = forms.CharField(max_length=50, required=True)
-    last_name = forms.CharField(max_length=50, required=True)
-    phone_number = forms.CharField(max_length=20, required=True)
-    address = forms.CharField(max_length=255, required=True)
+    phone_no = forms.CharField(max_length=20, required=True)
+    address = forms.CharField(max_length=255, required=False)
 
     class Meta:
-        model = User
-        fields = ['username', 'email', 'first_name', 'last_name', 'phone_number', 'address', 'password1', 'password2']
+        model = Users
+        fields = [
+            'username', 'email', 'first_name', 'last_name',
+            'phone_no', 'address',
+            'password1', 'password2'
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Placeholders
+        placeholders = {
+            'username': 'Username',
+            'email': 'Email',
+            'first_name': 'First Name',
+            'last_name': 'Last Name',
+            'phone_no': 'Phone Number',
+            'address': 'Address',
+            'password1': 'Password',
+            'password2': 'Confirm Password'
+        }
+
+        for field, placeholder in placeholders.items():
+            if field in self.fields:
+                self.fields[field].widget.attrs.update({
+                    'placeholder': placeholder
+                })
+
+        # Remove Django’s strong password hints
+        self.fields['password1'].help_text = ""
+        self.fields['password2'].help_text = ""
+
+        # Default role (hidden)
+        # signup page must always create customer
+        self.role = "customer"
 
     def save(self, commit=True):
         user = super().save(commit=False)
+
         user.email = self.cleaned_data['email']
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
+        user.phone_no = self.cleaned_data['phone_no']
+        user.role = "customer"       # FIXED: role always customer on signup
+
         if commit:
             user.save()
+
+            # Create customer profile
+            Customer.objects.create(
+                user=user,
+                address=self.cleaned_data['address']
+            )
+
         return user
-
-
-class CustomAuthenticationForm(AuthenticationForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({
-            'placeholder': 'Username',
-            'class': 'login-input'
-        })
-        self.fields['password'].widget.attrs.update({
-            'placeholder': 'Password',
-            'class': 'login-input'
-        })

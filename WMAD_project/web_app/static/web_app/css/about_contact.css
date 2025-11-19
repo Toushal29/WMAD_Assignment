@@ -240,7 +240,7 @@ header {
 /* Main section titles */
 .h1au, .h1cu {
     opacity: 0;
-    animation: fadeUp 2s ease-out forwards, softGlow 5s ease-in-out infinite;
+    animation: fadeUp 1s ease-out forwards, softGlow 5s ease-in-out infinite;
 }
 
 
@@ -257,17 +257,17 @@ header {
 .content-container p,
 .content-container hr {
     opacity: 0;
-    animation: fadeUp 1.8s ease-out forwards;
+    animation: fadeUp 1s ease-out forwards;
 }
 
 /* Map fade-up */
 .about-map {
     opacity: 0;
-    animation: fadeUp 2s ease-out forwards;
+    animation: fadeUp 1s ease-out forwards;
 }
 
 /* Contact form fade-up */
 .contact-form {
     opacity: 0;
-    animation: fadeUp 2.2s ease-out forwards;
+    animation: fadeUp 1s ease-out forwards;
 }

@@ -29,7 +29,9 @@ def signup(request):
             return redirect('login')
     else:
         form = CustomUserCreationForm()
+
     return render(request, 'registration/signup.html', {'form': form})
+
 
 def profile_page(request):
     return render(request, 'web_app/account/profile.html', {'section': 'profile'})
@@ -44,20 +46,24 @@ def reviews_page(request):
     return render(request, 'web_app/account/reviews.html', {'section': 'reviews'})
 
 
-## This is a test.
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
+
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
+
+            user = authenticate(request, username=username, password=password)
+
             if user is not None:
                 login(request, user)
                 return redirect('home')
     else:
         form = AuthenticationForm()
+
     return render(request, 'registration/login.html', {'form': form})
+
 
 def logout_view(request):
     logout(request)
