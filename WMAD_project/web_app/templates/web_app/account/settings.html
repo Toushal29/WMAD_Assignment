@@ -9,7 +9,7 @@
         <h3>Account & Security</h3>
         <div class="setting-item">
             <label>Change Password</label>
-            <button class="btn-action">Change</button>
+            <a href="{% url 'custom_change_password' %}" class="btn-action">Change</a>
         </div>
         <!-- <div class="setting-item">
             <label>Two-Step Verification</label>
@@ -42,7 +42,9 @@
         <h3>Danger Zone</h3>
         <div class="setting-item">
             <label>Delete My Account</label>
-            <button class="btn-danger">Delete</button>
+            <form action="{% url 'delete_account' %}" method="GET">
+                <button class="btn-danger" type="submit">Delete</button>
+            </form>
         </div>
         <div class="setting-item">
             <label>Clear Saved Data</label>

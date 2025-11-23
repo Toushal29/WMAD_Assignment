@@ -95,17 +95,13 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+
+    # remove common password and similar to usrname password.
 ]
 
 
@@ -185,3 +181,5 @@ MAINTENANCE_ALERT_EMAILS = [            # list of emails to notify when maintena
 AUTH_USER_MODEL = 'web_app.Users'
 
 ADMIN_SITE_SESSION_COOKIE_NAME = "admin_sessionid"  # Custom session cookie name for admin site
+
+SESSION_SAVE_EVERY_REQUEST = True

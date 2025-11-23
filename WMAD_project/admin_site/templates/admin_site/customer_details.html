@@ -3,5 +3,206 @@
 {% block title %}Customer Details{% endblock %}
 
 {% block content %}
-<h1>Customer Details</h1>
+    <h1 style="margin-bottom: 20px;">Customer Details</h1>
+
+    <style>
+    /* Table styling */
+    .customer-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .customer-table th,
+    .customer-table td {
+        border: 1px solid #ccc;
+        padding: 5px;
+    }
+    .customer-table th {
+        background: #f0f0f0;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+        position: fixed;
+        display: none;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.45);
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-box {
+        width: 500px;
+        max-height: 80vh;
+        overflow-y: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .modal-close {
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 18px;
+    }
+    .modal-section {
+        margin-top: 15px;
+        padding: 10px;
+        background: #fafafa;
+        border-radius: 6px;
+    }
+    .modal-section h3 {
+        margin-top: 0;
+    }
+    </style>
+
+    <form method="GET" style="margin-bottom: 20px;">
+        <input type="text" 
+            name="search" 
+            placeholder="Search customer..." 
+            value="{{ search }}" 
+            style="padding: 8px; width: 250px;">
+        <button type="submit" style="padding: 8px;">Search</button>
+    </form>
+
+    <!-- CUSTOMER TABLE -->
+    <table class="customer-table">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Actions</th>
+        </tr>
+        {% for c in customers %}
+        <tr>
+            <td>{{ c.user.first_name }} {{ c.user.last_name }}</td>
+            <td>{{ c.user.email }}</td>
+            <td>{{ c.user.phone_no }}</td>
+            <td>
+                <button onclick="openModal('{{ c.user.id }}')">View</button>
+                <button onclick="openEditModal('{{ c.user.id }}')">Edit</button>
+                <button onclick="openDeleteModal('{{ c.user.id }}')" style="background:red; color:white;">
+                    Delete
+                </button>
+            </td>
+        </tr>
+
+        <!-- MODAL FOR THIS CUSTOMER -->
+        <div id="modal-{{ c.user.id }}" class="modal-overlay">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <h2>{{ c.user.first_name }} {{ c.user.last_name }}</h2>
+                    <span class="modal-close" onclick="closeModal('{{ c.user.id }}')">×</span>
+                </div>
+                <div class="modal-section">
+                    <h3>Basic Information</h3>
+                    <p><strong>Email:</strong> {{ c.user.email }}</p>
+                    <p><strong>Phone:</strong> {{ c.user.phone_no }}</p>
+                    <p><strong>Address:</strong> {{ c.address }}</p>
+                </div>
+                <div class="modal-section">
+                    <h3>Orders</h3>
+                    {% for o in c.order_set.all %}
+                        <p>Order #{{ o.orderID }} — {{ o.order_date }}</p>
+                    {% empty %}
+                        <p>No orders</p>
+                    {% endfor %}
+                </div>
+                <div class="modal-section">
+                    <h3>Reservations</h3>
+                    {% for r in c.reservation_set.all %}
+                        <p>{{ r.reservation_date }} at {{ r.reservation_time }} ({{ r.party_size }} people) — {{ r.status }}</p>
+                    {% empty %}
+                        <p>No reservations</p>
+                    {% endfor %}
+                </div>
+                <div class="modal-section">
+                    <h3>Reviews</h3>
+                    {% for rv in c.reviews_set.all %}
+                        <p><strong>{{ rv.rating }}/5</strong> — {{ rv.comment }}</p>
+                    {% empty %}
+                        <p>No reviews</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- EDIT MODAL -->
+        <div id="edit-modal-{{ c.user.id }}" class="modal-overlay">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <h2>Edit Customer</h2>
+                    <span class="modal-close" onclick="closeEditModal('{{ c.user.id }}')">×</span>
+                </div>
+                <form method="POST" action="{% url 'admin_customer_update' c.user.id %}">
+                    {% csrf_token %}
+                    <label>First Name:</label>
+                    <input type="text" name="first_name" value="{{ c.user.first_name }}" required><br><br>
+                    <label>Last Name:</label>
+                    <input type="text" name="last_name" value="{{ c.user.last_name }}" required><br><br>
+                    <label>Email:</label>
+                    <input type="email" name="email" value="{{ c.user.email }}" required><br><br>
+                    <label>Phone:</label>
+                    <input type="text" name="phone_no" value="{{ c.user.phone_no }}"><br><br>
+                    <label>Address:</label>
+                    <input type="text" name="address" value="{{ c.address }}"><br><br>
+                    <button type="submit" style="padding:10px; background:black; color:white;">
+                        Save Changes
+                    </button>
+                    <button type="button" onclick="closeEditModal('{{ c.user.id }}')" style="padding:10px;">
+                        Cancel
+                    </button>
+                </form>
+            </div>
+        </div>
+        <!-- DELETE MODAL -->
+        <div id="delete-modal-{{ c.user.id }}" class="modal-overlay">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <h2>Delete Customer</h2>
+                    <span class="modal-close" onclick="closeDeleteModal('{{ c.user.id }}')">×</span>
+                </div>
+                <p>Are you sure you want to delete <strong>{{ c.user.first_name }} {{ c.user.last_name }}</strong>?</p>
+                <p>This action cannot be undone.</p>
+                <form method="POST" action="{% url 'admin_customer_delete' c.user.id %}">
+                    {% csrf_token %}
+                    <button type="submit" style="padding:10px; background:red; color:white;">
+                        Yes, Delete
+                    </button>
+                    <button type="button" onclick="closeDeleteModal('{{ c.user.id }}')" style="padding:10px;">
+                        Cancel
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </table>
+
+    <script>
+    function openModal(id) {
+        document.getElementById("modal-" + id).style.display = "flex";
+    }
+    function closeModal(id) {
+        document.getElementById("modal-" + id).style.display = "none";
+    }
+    function openEditModal(id) {
+        document.getElementById("edit-modal-" + id).style.display = "flex";
+    }
+
+    function closeEditModal(id) {
+        document.getElementById("edit-modal-" + id).style.display = "none";
+    }
+    function openDeleteModal(id) {
+        document.getElementById("delete-modal-" + id).style.display = "flex";
+    }
+
+    function closeDeleteModal(id) {
+        document.getElementById("delete-modal-" + id).style.display = "none";
+    }
+
+    </script>
+
 {% endblock %}

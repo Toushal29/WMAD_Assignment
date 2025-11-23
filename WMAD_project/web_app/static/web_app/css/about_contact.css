@@ -40,16 +40,16 @@ header {
     backdrop-filter: blur(10px);
     border-width: 1px;
     padding: 5px 5px;
-    margin-top: -50px;
-    margin-bottom: 50px;
     font-size: 3em;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     z-index: 2;
+    margin-top: -40px;
+    margin-bottom: 20px;
 }
 
 .h1cu {
     text-decoration: underline;
-    margin-top: -350px;
+    margin-top: -200px;
     margin-bottom: 150px;
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 10px;
@@ -83,7 +83,6 @@ header {
     padding: 10px;
     border-radius: 10px;
     max-width: 800px;
-    padding: 20px;
     text-align: center;
     z-index: 2;
 }
@@ -147,47 +146,65 @@ header {
     background-color: #c0392b;
 }
 
-/* Map inside About Us */
-.about-map {
-    margin-top: 30px;
+.opening-hours {
     padding: 15px;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(4px);
     border: 1px solid white;
+    width: 500px;
+    margin: auto;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.opening-hours h3 {
+    text-decoration: underline;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.opening-hours ul {
+    list-style: none;
+    padding-left: 0;
+    display: grid;
+    justify-content: center;
+}
+
+.opening-hours li {
+    margin: 3px 0;
+}
+
+.about-map {
+    border-radius: 10px;
 }
 
 .about-map h3 {
     margin-bottom: 10px;
-    font-size: 1.4em;
+    font-size: 1.2em;
+    text-decoration: underline;
 }
 
-/* Apply ONLY when body has class "about-contact-page" */
-/* Darker navbar only for About & Contact page */
 .about-contact-page .navbar {
-    background-color: rgba(0, 0, 0, 0.25) !important;
+    background-color: rgba(0, 0, 0, 0.25);
     backdrop-filter: blur(6px);
     transition: 500ms;
 }
 
 .about-contact-page .navbar:hover {
     transition: 500ms;
-    background-color: rgba(0, 0, 0, 0.5) !important;
+    background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(6px);
 }
 
-/* Hover effect */
 .about-contact-page .navbar a:hover {
     background-color: rgba(255, 255, 255, 0.3);
     padding: 10px 20px;
     border-radius: 25px;
-    color: white !important;
+    color: white;
 }
 
-
-
-
-/* Smooth fade + upward movement */
 @keyframes fadeUp {
     0% {
         opacity: 0;
@@ -199,7 +216,6 @@ header {
     }
 }
 
-/* Soft glowing text animation */
 @keyframes softGlow {
     0% {
         text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
@@ -212,7 +228,6 @@ header {
     }
 }
 
-/* Steam rising animation */
 @keyframes steamUp {
     0% { opacity: 0.3; transform: translateY(10px); }
     50% { opacity: 0.6; transform: translateY(-10px); }
@@ -237,37 +252,40 @@ header {
     }
 }
 
-/* Main section titles */
 .h1au, .h1cu {
     opacity: 0;
     animation: fadeUp 1s ease-out forwards, softGlow 5s ease-in-out infinite;
 }
 
-
-/* Content container fades in next */
 .content-container {
     opacity: 0;
     animation: fadeUp 1s ease-out forwards;
     animation: contentReveal 1s ease-out forwards;
 }
 
-/* Text elements fade in slightly later */
 .content-container h2,
 .content-container h3,
 .content-container p,
 .content-container hr {
     opacity: 0;
     animation: fadeUp 1s ease-out forwards;
+    margin-bottom: 10px;
 }
 
-/* Map fade-up */
 .about-map {
     opacity: 0;
     animation: fadeUp 1s ease-out forwards;
 }
 
-/* Contact form fade-up */
 .contact-form {
     opacity: 0;
     animation: fadeUp 1s ease-out forwards;
+}
+
+.about-contact-page #footer {
+    padding: 0px;
+    margin: 0px;
+    position: static;
+    background-color: rgb(0, 0, 0);
+    backdrop-filter: blur(4px);
 }

@@ -47,8 +47,61 @@
 C:.
 │   control_panel.log
 │   db.sqlite3
+│   debug.log
 │   manage.py
-│   
+│
+├───admin_site
+│   │   admin.py
+│   │   apps.py
+│   │   middleware.py
+│   │   models.py
+│   │   tests.py
+│   │   urls.py
+│   │   views.py
+│   │   __init__.py
+│   │
+│   ├───migrations
+│   │   │   __init__.py
+│   │   │
+│   │   └───__pycache__
+│   │           __init__.cpython-312.pyc
+│   │           __init__.cpython-313.pyc
+│   │
+│   ├───static
+│   │   └───admin_site
+│   │       ├───css
+│   │       │       admin_navbar.css
+│   │       │
+│   │       ├───images
+│   │       └───js
+│   ├───templates
+│   │   └───admin_site
+│   │           base_admin.html
+│   │           customer_details.html
+│   │           dashboard.html
+│   │           edit_menu.html
+│   │           edit_price.html
+│   │           feedback.html
+│   │           login.html
+│   │           orders.html
+│   │           reservation.html
+│   │
+│   └───__pycache__
+│           admin.cpython-312.pyc
+│           admin.cpython-313.pyc
+│           apps.cpython-312.pyc
+│           apps.cpython-313.pyc
+│           middleware.cpython-312.pyc
+│           middleware.cpython-313.pyc
+│           models.cpython-312.pyc
+│           models.cpython-313.pyc
+│           urls.cpython-312.pyc
+│           urls.cpython-313.pyc
+│           views.cpython-312.pyc
+│           views.cpython-313.pyc
+│           __init__.cpython-312.pyc
+│           __init__.cpython-313.pyc
+│
 ├───control_panel
 │   │   admin.py
 │   │   apps.py
@@ -58,18 +111,19 @@ C:.
 │   │   urls.py
 │   │   views.py
 │   │   __init__.py
-│   │   
+│   │
 │   ├───migrations
 │   │   │   __init__.py
-│   │   │   
+│   │   │
 │   │   └───__pycache__
+│   │           __init__.cpython-312.pyc
 │   │           __init__.cpython-313.pyc
 │   │
 │   ├───static
 │   │   └───control_panel
 │   │       ├───css
 │   │       │       dashboard.css
-│   │       │       
+│   │       │
 │   │       └───images
 │   │               logo.png
 │   │
@@ -80,12 +134,19 @@ C:.
 │   │           logs.html
 │   │
 │   └───__pycache__
+│           admin.cpython-312.pyc
 │           admin.cpython-313.pyc
+│           apps.cpython-312.pyc
 │           apps.cpython-313.pyc
+│           middleware.cpython-312.pyc
 │           middleware.cpython-313.pyc
+│           models.cpython-312.pyc
 │           models.cpython-313.pyc
+│           urls.cpython-312.pyc
 │           urls.cpython-313.pyc
+│           views.cpython-312.pyc
 │           views.cpython-313.pyc
+│           __init__.cpython-312.pyc
 │           __init__.cpython-313.pyc
 │
 ├───web_app
@@ -103,7 +164,9 @@ C:.
 │   │   │   __init__.py
 │   │   │
 │   │   └───__pycache__
+│   │           0001_initial.cpython-312.pyc
 │   │           0001_initial.cpython-313.pyc
+│   │           __init__.cpython-312.pyc
 │   │           __init__.cpython-313.pyc
 │   │
 │   ├───static
@@ -134,11 +197,14 @@ C:.
 │   │
 │   ├───templates
 │   │   ├───registration
+│   │   │       custom_reset_complete.html
+│   │   │       custom_reset_confirm.html
+│   │   │       custom_reset_email.html
+│   │   │       custom_reset_email.txt
+│   │   │       custom_reset_request.html
+│   │   │       custom_reset_sent.html
+│   │   │       custom_reset_subject.txt
 │   │   │       login.html
-│   │   │       password_reset_complete.html
-│   │   │       password_reset_confirm.html
-│   │   │       password_reset_done.html
-│   │   │       password_reset_form.html
 │   │   │       signup.html
 │   │   │
 │   │   └───web_app
@@ -165,12 +231,19 @@ C:.
 │   │               privacy_policy.html
 │   │
 │   └───__pycache__
+│           admin.cpython-312.pyc
 │           admin.cpython-313.pyc
+│           apps.cpython-312.pyc
 │           apps.cpython-313.pyc
+│           forms.cpython-312.pyc
 │           forms.cpython-313.pyc
+│           models.cpython-312.pyc
 │           models.cpython-313.pyc
+│           urls.cpython-312.pyc
 │           urls.cpython-313.pyc
+│           views.cpython-312.pyc
 │           views.cpython-313.pyc
+│           __init__.cpython-312.pyc
 │           __init__.cpython-313.pyc
 │
 └───WMAD_project
@@ -181,9 +254,13 @@ C:.
     │   __init__.py
     │
     └───__pycache__
+            settings.cpython-312.pyc
             settings.cpython-313.pyc
+            urls.cpython-312.pyc
             urls.cpython-313.pyc
+            wsgi.cpython-312.pyc
             wsgi.cpython-313.pyc
+            __init__.cpython-312.pyc
             __init__.cpython-313.pyc
 ```
 
