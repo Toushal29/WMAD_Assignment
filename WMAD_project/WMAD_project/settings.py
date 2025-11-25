@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-$o(!=e4(-06&ttx*5w-+rv@6ol8z-e_wp%37#$8v+gk)3g_49t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -39,8 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'web_app',
+    'control_panel',
 ]
 
+# 2024-06 Addition: Maintenance Mode Setting
+MAINTENANCE_MODE = False                # Set to True to enable maintenance mode
+
+# 2024-06 Addition: Middleware for Maintenance Mode Handling
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -49,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'control_panel.middleware.MaintenanceMiddleware',               # Custom middleware for maintenance mode
 ]
 
 ROOT_URLCONF = 'WMAD_project.urls'
@@ -125,3 +131,30 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# 2024-06 Addition: Logging Configuration for Debugging Purposes
+# https://docs.djangoproject.com/en/5.2/topics/logging/
+# This configuration logs debug information to a file named 'debug.log' in the BASE_DIR.
+# Adjust the logging level and handlers as needed for your application.
+# Example usage: logging.getLogger('django').debug('Debug message')
+# Note: Ensure proper permissions for the log file in production environments.
+# Adjust the logging settings as necessary for your deployment environment.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

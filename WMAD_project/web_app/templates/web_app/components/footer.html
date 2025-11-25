@@ -1,33 +1,10 @@
 {% load static %}
-<style>
-    .footer {
-        background-color: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(3px);
-        color: white;
-        text-align: center;
-        font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-    }
-    .footer p {
-        margin: 5px;
-    }
-    .footer a {
-        color: white;
-        text-decoration: none;
-        margin: 20px;
-    }
-    .footer a:hover {
-        text-decoration: underline;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'web_app/css/footer.css' %}">
 
-<footer class="footer">
+<footer id="footer">
     <p>&copy; 2025 Saveur Moris. All rights reserved.</p>
-    <p>
-        <a href="{% url 'contact' %}">Contact Us</a> |
-        <a href="{% url 'about' %}">About Us</a> |
-        <a href="#">Privacy Policy</a>
-    </p>
+    <ul>
+        <li><a href="{% url 'about_contact' %}">About & Contact</a></li>
+        <li><a href="{% url 'privacy_policy' %}">Privacy Policy</a></li>
+    </ul>
 </footer>
