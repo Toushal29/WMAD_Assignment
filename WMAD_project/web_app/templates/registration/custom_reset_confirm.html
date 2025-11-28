@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create New Password</title>
+    <link rel="stylesheet" href="{% static 'web_app/css/password_reset.css' %}">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        .input-group {
+            position: relative;
+            margin-bottom: 18px;
+        }
+        .input-group input {
+            width: 100%;
+            padding-right: 40px !important;
+        }
+        .toggle-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Create New Password</h1>
+    </header>
+    <main class="container">
+        {% if validlink %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+                {{ form.new_password1 }}
+                <i class="fas fa-eye toggle-icon" id="togglePwd1"></i>
+            </div>
+            <div class="input-group">
+                {{ form.new_password2 }}
+                <i class="fas fa-eye toggle-icon" id="togglePwd2"></i>
+            </div>
+            <button type="submit" class="btn">Save Password</button>
+        </form>
+        {% else %}
+            <p>Your link is invalid or expired.</p>
+            <p><a href="/account/reset-password/">Request New Reset Link</a></p>
+        {% endif %}
+    </main>
+    <script>
+        document.getElementById('{{ form.new_password1.id_for_label }}').placeholder = "Enter new password";
+        document.getElementById('{{ form.new_password2.id_for_label }}').placeholder = "Confirm new password";
+        document.getElementById("togglePwd1").onclick = function() {
+            let field = document.getElementById('{{ form.new_password1.id_for_label }}');
+            field.type = field.type === "password" ? "text" : "password";
+            this.classList.toggle("fa-eye-slash");
+        };
+        document.getElementById("togglePwd2").onclick = function() {
+            let field = document.getElementById('{{ form.new_password2.id_for_label }}');
+            field.type = field.type === "password" ? "text" : "password";
+            this.classList.toggle("fa-eye-slash");
+        };
+    </script>
+</body>
+</html>

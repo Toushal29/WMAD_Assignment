@@ -16,7 +16,17 @@
             </ul>
         </div>
         <div class="login-container">
-            <a href="{% url 'login' %}" class="login-link">Log In</a>
+            {% if user.is_authenticated %}
+                <div class="user-dropdown">
+                    <span class="username">👤 Hi, {{ user.username }}</span>
+                    <div class="dropdown-content">
+                        <a href="{% url 'profile' %}">Profile</a>
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="{% url 'login' %}" class="login-link">Log In</a>
+            {% endif %}
         </div>
     </nav>
 </header>
