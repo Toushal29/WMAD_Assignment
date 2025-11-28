@@ -35,3 +35,26 @@
 #footer a:hover {
     text-decoration: underline;
 }
+
+/* ADDITION PART 2*/
+#footer-socials {
+    margin-top: 1px;
+    text-align: center;
+}
+
+.social-icon {
+    width: 32px;                /* this here wil */
+    height: auto;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.social-icon:hover,
+.social-icon:focus {
+    transform: scale(1.15);
+    opacity: 0.95;
+}
+/* ADDITION PART 2 END */
