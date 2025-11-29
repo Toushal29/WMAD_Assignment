@@ -2,10 +2,11 @@ from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
 
+
 urlpatterns = [
     path('', views.home, name='home'),
     path('menu/', views.menu, name='menu'),
-    path('order/', views.order, name='order'),
+    path("order/", views.order, name="order"),
     path('reservation/', views.reservation, name='reservation'),
     path('about-contact/', views.about_contact, name='about_contact'),
     path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
@@ -68,4 +69,20 @@ urlpatterns = [
         ),
         name='custom_change_password_done'
     ),
+
+     
+
+    # orderAJAX
+    path("ajax/load-more/", views.load_more_menu, name="load_more"),
+    path("ajax/add-to-cart/", views.add_to_cart, name="add_to_cart"),
+    path("ajax/get-cart/", views.get_cart_items, name="get_cart"),
+    path("ajax/remove-from-cart/", views.remove_from_cart, name="remove_from_cart"),
+    path("ajax/clear-cart/", views.clear_cart, name="clear_cart"),
+    path("ajax/confirm-order/", views.confirm_order, name="confirm_order"),
+    path("my-orders/", views.my_orders, name="my_orders"),
+    path("cancel-order/<int:orderid>/", views.cancel_order, name="cancel_order")
+    
+    
 ]
+
+

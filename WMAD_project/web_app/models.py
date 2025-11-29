@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
-
+from django.conf import settings
 # USERS / ADMIN / CUSTOMER
 class Users(AbstractUser):
     phone_no = models.CharField(max_length=20, blank=True, null=True)
@@ -32,7 +32,7 @@ class Menu(models.Model):
     menuName = models.CharField(max_length=150)
     description = models.TextField()
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    image_url = models.ImageField(upload_to='menu_images/')
+    image_url = models.ImageField(upload_to='menu_images/')   # static files, so no ImageField
 
     def __str__(self):
         return self.menuName
@@ -58,51 +58,77 @@ class Reservation(models.Model):
         return f"{self.customer.user.username} - {self.reservation_date} {self.reservation_time}"
 
 # ORDER (Placed by customer)
-class Order(models.Model):
-    orderID = models.AutoField(primary_key=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    order_date = models.DateTimeField(default=timezone.now)
-    order_type = models.CharField(
-        max_length=20,
-        choices=[
-            ('delivery', 'Delivery'),
-            ('pickup', 'Pickup'),
-            ('dine-in', 'Dine In'),
-        ]
-    )
+# a cart  belongs to a user
 
-    delivery_addr = models.CharField(max_length=255, blank=True, null=True)
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+class Cart(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
-    def calculate_total(self):
-        total = sum(item.subtotal for item in self.orderitem_set.all())
-        return total
+    def total_amount(self):
+        return sum(item.subtotal() for item in self.cartitem_set.all())
 
-    def save(self, *args, **kwargs):            # recalc total every save()
-        self.total_amount = self.calculate_total()
-        super().save(*args, **kwargs)
 
-    def __str__(self):
-        return f"Order {self.orderID} - {self.customer.user.username}"
 
-# ORDER ITEMS (Many-to-Many)
-class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+# cartitem
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
-    unit_price = models.DecimalField(max_digits=8, decimal_places=2)
+    unit_price = models.DecimalField(max_digits=6, decimal_places=2)
 
-    @property
     def subtotal(self):
         return self.unit_price * self.quantity
 
-    def save(self, *args, **kwargs):            # get price at moment of order
-        if not self.unit_price:
-            self.unit_price = self.menu.price
-        super().save(*args, **kwargs)
+
+
+# order
+
+
+
+class Order(models.Model):
+    ORDER_TYPES = (
+        ("pickup", "Pickup"),
+        ("dinein", "Dine-IN"),
+        ("delivery", "Delivery"),
+    )
+    
+    STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("completed", "Completed"),
+        ("cancelled", "Cancelled"),
+    )
+    orderid = models.AutoField(primary_key=True)
+    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    # Separate fields
+    order_date = models.DateField(auto_now_add=True)   
+    order_time = models.TimeField(auto_now_add=True)   
+
+    totalamount = models.DecimalField(max_digits=10, decimal_places=2)
+    ordertype = models.CharField(max_length=20, choices=ORDER_TYPES)
+    deliveryaddress = models.CharField(max_length=255, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+      
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="pending")
 
     def __str__(self):
-        return f"{self.menu.menuName} x {self.quantity}"
+        return f"Order #{self.orderid}"
+
+
+
+# order items
+
+class OrderContain(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    unitprice = models.DecimalField(max_digits=6, decimal_places=2)
+
 
 # REVIEWS
 # Supports:
