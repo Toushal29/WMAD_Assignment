@@ -1,0 +1,114 @@
+
+* {
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #000;   
+    color: #fff;              
+    font-family: Arial, sans-serif;
+    text-align: center;       
+    margin: 0;
+    padding: 20px;
+
+    background-image: url("../images/bk_img2.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+h1 {
+    margin: 20px 0;
+    text-align: left;
+    color: #fff;
+}
+
+.table-container {
+    max-height: 400px;
+    margin: 0 auto;
+    width: 90%;
+    overflow-y: auto;
+    overflow-x: auto;
+    padding: 20px;
+}
+
+.orders-table {
+    width: 100%;
+    margin: 0 auto;           
+    border-collapse: collapse;
+    text-align: center;       
+    background-color: rgba(14, 1, 1, 0.9);
+}
+
+.orders-table th,
+.orders-table td {
+    border: 1px solid #fff;
+    padding: 10px;
+    color: #fff;
+    text-align: center;
+}
+
+.orders-table thead {
+    background-color: #000;  
+}
+
+.orders-table tbody tr:nth-child(even) {
+    background-color: #222;   
+}
+
+.orders-table tbody tr:nth-child(odd) {
+    background-color: #333;   
+}
+
+/* Nested items table */
+.items-table {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+    text-align: center;
+    background-color: rgba(17, 17, 17, 0.9);
+}
+
+.items-table th,
+.items-table td {
+    border: 1px solid #fff;
+    padding: 8px;
+    color: #fff;
+    text-align: center;
+}
+
+.items-table thead th {
+    background-color: #000;   
+}
+
+/* Buttons */
+.toggle-items-btn,
+.cancel-btn {
+    background-color: #444;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.toggle-items-btn:hover,
+.cancel-btn:hover {
+    background-color: #666;
+}
+
+.cancel-btn:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+
+.hidden-items {
+    display: none;
+}

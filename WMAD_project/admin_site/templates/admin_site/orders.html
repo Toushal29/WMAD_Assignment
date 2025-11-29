@@ -1,7 +1,144 @@
 {% extends 'admin_site/base_admin.html' %}
+{% load static %}
 
 {% block title %}Orders{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin_site/css/orders.css' %}">
+{% endblock %}
+
 {% block content %}
-<h1>Orders</h1>
+
+<h1 class="title">Dashboard – ORDERS</h1>
+
+<!-- Summary Cards -->
+<div class="summary-container">
+
+    <div class="card">
+        <h2>{{ total_orders }}</h2>
+        <p>Total Orders</p>
+    </div>
+
+    <div class="card">
+        <h2>{{ total_delivered }}</h2>
+        <p>Total Delivered</p>
+    </div>
+
+    <div class="card">
+        <h2>{{ total_cancelled }}</h2>
+        <p>Total Cancelled</p>
+    </div>
+
+</div>
+
+<!-- Filter Section -->
+<form method="GET" class="filter-bar">
+    <label>From:
+        <input type="date" name="start" value="{{ start }}">
+    </label>
+
+    <label>To:
+        <input type="date" name="end" value="{{ end }}">
+    </label>
+
+    <label>Status:
+        <select name="status">
+            <option value="">All</option>
+            <option value="pending" {% if status_filter == "pending" %}selected{% endif %}>Pending</option>
+            <option value="completed" {% if status_filter == "completed" %}selected{% endif %}>Completed</option>
+            <option value="cancelled" {% if status_filter == "cancelled" %}selected{% endif %}>Cancelled</option>
+        </select>
+    </label>
+
+    <button type="submit" class="filter-btn">Apply</button>
+</form>
+
+<!-- Orders List -->
+<div class="order-list">
+    {% for order in orders %}
+    <div class="order-card">
+
+         
+        
+        <div class="left">
+            <p class="oid">OrderId: {{ order.orderid }}</p>
+            <br>
+            <p class="oname">customerUserName: {{ order.customer }}</p>
+            
+            <br>
+             <p class="ophone">PhoneNum: {{ order.phone}}</p>
+            
+            <br>
+            <p class="oaddress">Address: {{ order.address}}</p>
+
+            
+        </div>
+        
+        <div class="middle">
+            <table class="items-table">
+             <thead>
+            <tr>
+             <th>Item Name</th>
+             <th>Quantity</th>
+            </tr>
+             </thead>
+            <tbody>
+              {% for item in order.items %}
+               <tr>
+                <td>   {{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+              </tr>
+              {% endfor %}
+             </tbody>
+            </table>
+        </div>
+
+        <div class="right">
+            <p class="date">{{ order.date }}</p>
+            <p class="amount">Rs {{ order.total }}</p>
+
+            <p class="status {{ order.status }}">
+                {{ order.status|title }}
+            </p>
+
+            {% if order.status == "pending" %}
+            <div class="actions">
+                <button onclick="completeOrder('{{ order.orderid }}')" class="success">Complete</button>
+                <button onclick="cancelOrder('{{ order.orderid }}')" class="danger">Cancel</button>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+function csrf() {
+    return document.cookie.split("; ")
+        .find(function(r) { return r.startsWith("csrftoken="); })
+        ?.split("=")[1];
+}
+
+function completeOrder(id) {
+    fetch("/admin-site/ajax/order-complete/", {
+        method: "POST",
+        headers: { "X-CSRFToken": csrf() },
+        body: new URLSearchParams({ order_id: id })
+    }).then(function() {
+        location.reload();
+    });
+}
+
+function cancelOrder(id) {
+    fetch("/admin-site/ajax/order-cancel/", {
+        method: "POST",
+        headers: { "X-CSRFToken": csrf() },
+        body: new URLSearchParams({ order_id: id })
+    }).then(function() {
+        location.reload();
+    });
+}
+</script>
+
 {% endblock %}

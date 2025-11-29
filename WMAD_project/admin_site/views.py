@@ -6,6 +6,8 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.db import models
 
+from django.views.decorators.http import require_POST
+
 from web_app.models import (
     Users,
     Customer,
@@ -13,9 +15,10 @@ from web_app.models import (
     Menu,
     Order,
     Reviews,
-    OrderItem
+    Cart,
+    CartItem,
+    OrderContain,
 )
-
 def admin_required(view_func):
     def wrapper(request, *args, **kwargs):
 
@@ -129,24 +132,6 @@ def edit_price_page(request):
         }
     )
 
-@admin_required
-def orders_page(request):
-    orders = (
-        Order.objects
-        .select_related('customer__user')
-        .prefetch_related('orderitem_set__menu')
-        .all()
-    )
-
-    return render(
-        request,
-        'admin_site/orders.html',
-        {
-            'active_tab': 'orders',
-            'admin_user': request.admin_user,
-            'orders': orders,
-        }
-    )
 
 @admin_required
 def customer_edit(request, id):
@@ -244,3 +229,92 @@ def customer_details_page(request):
             'search': search,
         }
     )
+
+
+
+@admin_required
+def orders_page(request):
+    # Date filtering 
+    start = request.GET.get("start")
+    end = request.GET.get("end")
+    
+    #status filtering 
+    status_filter = request.GET.get("status")
+
+    orders = Order.objects.all()
+
+    if start and end:
+        orders = orders.filter(order_date__range=[start, end])
+
+    if status_filter in ["pending", "completed", "cancelled"]:
+        orders = orders.filter(status=status_filter)
+
+    orders = orders.order_by('-order_date', '-order_time')
+
+    # --- Summary Cards ---
+    total_orders = orders.count()
+    total_delivered = orders.filter(status="completed").count()
+    total_cancelled = orders.filter(status="cancelled").count()
+
+    # --- Order List ---
+    data = []
+    for o in orders.select_related("customer"):
+        profile = getattr(o.customer, "customerprofile", None)
+
+        data.append({
+            "orderid": o.orderid,
+            "customer": o.customer.username,
+            
+            "address": "Sur place" if o.ordertype in ["pickup", "dinein"] else o.deliveryaddress,
+
+            "date": o.order_date,
+            "total": o.totalamount,
+            "status": o.status,
+            "phone" :o.customer.phone_no or "None",
+            "items": [{"name": item.menu.menuName,"quantity": item.quantity,}for item in o.ordercontain_set.all() ]
+
+        })
+
+    return render(request, "admin_site/orders.html", {
+        "orders": data,
+        "total_orders": total_orders,
+        "total_delivered": total_delivered,
+        "total_cancelled": total_cancelled,
+        "start": start or "",
+        "end": end or "",
+        "status_filter": status_filter or "",
+    }) 
+
+
+@admin_required
+@require_POST
+def complete_order(request):
+    order_id = request.POST.get("order_id")
+    if not order_id:
+        return JsonResponse({"success": False, "error": "No order_id provided"})
+
+    try:
+        order = Order.objects.get(orderid=order_id)
+        order.status = "completed"
+        order.save()
+        return JsonResponse({"success": True})
+    except Order.DoesNotExist:
+        return JsonResponse({"success": False, "error": "Order not found"})
+    
+    
+@admin_required
+@require_POST
+def admin_cancel_order(request):
+    orderid = request.POST.get("order_id")
+    if not orderid:
+        return JsonResponse({"success": False})
+
+    order = Order.objects.filter(orderid=orderid).first()
+    if not order:
+        return JsonResponse({"success": False})
+
+    order.status = "cancelled"
+    order.save()
+
+    return JsonResponse({"success": True})
+

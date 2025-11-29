@@ -1,0 +1,141 @@
+
+.order-card {
+
+    display: flex;
+    justify-content: space-between;
+    background: white;
+    padding: 25px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    
+}
+
+
+.left  {
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+
+
+
+.right {
+    text-align: right;
+}
+
+.amount {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.status {
+    margin-top: 10px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    color: white;
+    display: inline-block;
+}
+.status.pending { background: #ff9800; }
+.status.completed { background: #4CAF50; }
+.status.cancelled { background: #e63946; }
+
+.actions button {
+    margin-top: 10px;
+    padding: 6px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.success { background: #4CAF50; color: white; }
+.danger { background: #e63946; color: white; }
+
+
+.summary-container {
+    display: flex;
+    justify-content: space-between;   
+    align-items: center;
+    gap: 20px;                         
+    padding: 20px;
+    width: 100%;
+    max-width: 700px;
+    margin: 20px auto;                
+}
+
+.card {
+    flex: 1;                           
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(6px);        
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+
+
+.card h2 {
+    font-size: 25px;
+    margin-bottom: 8px;
+    color:red; 
+}
+
+
+.card p {
+    font-size: 16px;
+    
+    color: rgb(16, 16, 16);
+}
+
+.middle {
+    flex: 1;               
+    max-height: auto;     
+    overflow-y: auto;      
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    margin-top: 50px    
+}
+
+.middle .items-table th,
+.middle .items-table td {
+    box-sizing: border-box; 
+}
+
+.middle .items-table th {
+    padding: 8px 12px;  
+}
+
+.middle .items-table td {
+    padding: 8px 12px;  
+    font-size: 0.8rem;
+}
+
+.items-table {
+    border-collapse: collapse;
+     width: 60%;
+}
+
+.items-table th, .items-table td {
+    padding: 6px 12px;
+    border-bottom: 1px solid #ddd; 
+}
+
+.items-table th {
+    font-weight: bold;
+    text-align: left;
+}
+
+.items-table td:first-child {
+    width: 70%;        
+    text-align: left;
+}
+
+.items-table td:last-child {
+    width: 30%;        
+    text-align: center;
+}
+
