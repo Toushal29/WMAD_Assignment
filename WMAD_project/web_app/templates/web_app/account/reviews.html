@@ -1,0 +1,39 @@
+{% extends 'web_app/account/base_account.html' %}
+{% block title %}My Reviews{% endblock %}
+
+{% block content %}
+    <h2>My Reviews</h2>
+
+    <div class="scroll-section">
+        <!-- Example review cards -->
+        <div class="review-card">
+            <h4>Chicken Curry</h4>
+            <p>Rating: ⭐⭐⭐⭐☆</p>
+            <p>“Delicious! The curry was perfectly spiced and portioned.”</p>
+            <p class="review-date">Reviewed on: 2025-11-10</p>
+        </div>
+
+        <div class="review-card">
+            <h4>Seafood Platter</h4>
+            <p>Rating: ⭐⭐⭐⭐⭐</p>
+            <p>“Absolutely loved it! Will definitely order again.”</p>
+            <p class="review-date">Reviewed on: 2025-11-05</p>
+        </div>
+
+        <div class="review-card">
+            <h4>Pasta Alfredo</h4>
+            <p>Rating: ⭐⭐⭐☆☆</p>
+            <p>“Good but could use a bit more sauce.”</p>
+            <p class="review-date">Reviewed on: 2025-10-30</p>
+        </div>
+
+        {% for i in "1234567890" %}
+        <div class="review-card">
+            <h4>Sample Dish {{ i }}</h4>
+            <p>Rating: ⭐⭐⭐⭐☆</p>
+            <p>“Sample review text for scroll testing.”</p>
+            <p class="review-date">Reviewed on: 2025-11-01</p>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
