@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import CustomUserCreationForm
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import ProfileUpdateForm
 from .models import Customer
@@ -11,17 +11,29 @@ from django.contrib.auth.models import User
 
 from .models import Special, MenuItem
 
+
+# ===========================
+# MAIN PAGES
+# ===========================
+
 def home(request):
-    return render(request, 'web_app/main_page/home.html')
+    special = Special.objects.filter(is_active=True).first()
+    return render(request, 'web_app/main_page/home.html', {'special': special})
+
 
 def menu(request):
-    return render(request, 'web_app/main_page/menu.html')
+    items = MenuItem.objects.filter(available=True)
+    
+    return render(request, 'web_app/main_page/menu.html', {'items': items})
+
 
 def order(request):
     return render(request, 'web_app/main_page/order.html')
 
+
 def reservation(request):
     return render(request, 'web_app/main_page/reservation.html')
+
 
 def about_contact(request):
     return render(request, 'web_app/main_page/about_contact.html')
