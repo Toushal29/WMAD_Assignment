@@ -17,7 +17,7 @@ from web_app.models import (
     Reviews,
     Cart,
     CartItem,
-    OrderContain,
+    OrderItem,
 )
 def admin_required(view_func):
     def wrapper(request, *args, **kwargs):
@@ -249,7 +249,7 @@ def orders_page(request):
     if status_filter in ["pending", "completed", "cancelled"]:
         orders = orders.filter(status=status_filter)
 
-    orders = orders.order_by('-order_date', '-order_time')
+    orders = Order.objects.order_by('-order_date')
 
     # --- Summary Cards ---
     total_orders = orders.count()
@@ -271,7 +271,7 @@ def orders_page(request):
             "total": o.totalamount,
             "status": o.status,
             "phone" :o.customer.phone_no or "None",
-            "items": [{"name": item.menu.menuName,"quantity": item.quantity,}for item in o.ordercontain_set.all() ]
+            "items": [{"name": item.menu.menuName,"quantity": item.quantity,}for item in o.orderitem_set.all()]
 
         })
 

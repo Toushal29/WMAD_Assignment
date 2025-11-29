@@ -1,3 +1,5 @@
+# C:\Users\toush\Desktop\WMAD_Assignment\WMAD_project\web_app\views.py
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -8,17 +10,12 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
 from .forms import CustomUserCreationForm, ProfileUpdateForm
-from .models import (
-    Customer, Special, Menu, Cart, CartItem,
-    Order, OrderContain
-)
+from .models import (Cart, CartItem, Order, OrderItem, Menu, Special, Customer)
+
 
 User = get_user_model()
 
 
-# ================================================================
-# MAIN PAGES
-# ================================================================
 def home(request):
     special = Special.objects.filter(is_active=True).first()
     return render(request, 'web_app/main_page/home.html', {'special': special})
@@ -49,10 +46,6 @@ def about_contact(request):
 def privacy_policy(request):
     return render(request, 'web_app/other_pages/privacy_policy.html')
 
-
-# ================================================================
-# SIGNUP (registration folder)
-# ================================================================
 def signup(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -64,10 +57,6 @@ def signup(request):
 
     return render(request, 'registration/signup.html', {'form': form})
 
-
-# ================================================================
-# PROFILE / ACCOUNT
-# ================================================================
 @login_required
 def profile_page(request):
     user = request.user
@@ -116,10 +105,6 @@ def delete_account(request):
 
     return render(request, 'web_app/account/confirm_delete.html')
 
-
-# ================================================================
-# AUTHENTICATION (registration folder)
-# ================================================================
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -142,10 +127,6 @@ def logout_view(request):
     logout(request)
     return redirect('home')
 
-
-# ================================================================
-# SIMPLE AUTH (entry folder)
-# ================================================================
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -158,7 +139,7 @@ def user_login(request):
 
         messages.error(request, 'Invalid username or password')
 
-    return render(request, 'web_app/entry/login.html')
+    return render(request, 'registration/login.html')
 
 
 def user_logout(request):
@@ -190,12 +171,8 @@ def user_signup(request):
         messages.success(request, f"Welcome, {username}!")
         return redirect('home')
 
-    return render(request, 'web_app/entry/signup.html')
+    return render(request, 'registration/signup.html')
 
-
-# ================================================================
-# ORDER SYSTEM (AJAX + Cart + Checkout)
-# ================================================================
 def load_more_menu(request):
     offset = int(request.GET.get("offset", 0))
     limit = 8
@@ -240,7 +217,7 @@ def get_cart_items(request):
         "menuID": ci.menu.menuID,
         "name": ci.menu.menuName,
         "qty": ci.quantity,
-        "subtotal": float(ci.subtotal()),
+        "subtotal": float(ci.subtotal),
     } for ci in cart.cartitem_set.all()]
 
     return JsonResponse({"items": items})
@@ -292,16 +269,16 @@ def confirm_order(request):
     order = Order.objects.create(
         customer=request.user,
         totalamount=cart.total_amount(),
-        ordertype=delivery_mode,
+        order_type=delivery_mode,
         deliveryaddress=delivery_address,
     )
 
     for item in items:
-        OrderContain.objects.create(
+        OrderItem.objects.create(
             order=order,
             menu=item.menu,
             quantity=item.quantity,
-            unitprice=item.unit_price
+            unit_price=item.unit_price
         )
 
     items.delete()
@@ -317,7 +294,7 @@ def my_orders(request):
 @login_required
 @require_POST
 def cancel_order(request, orderid):
-    order = get_object_or_404(Order, orderid=orderid, customer=request.user)
+    order = get_object_or_404(Order, orderID=orderid, customer=request.user)
 
     if order.status == "completed":
         return JsonResponse({"error": "Completed orders cannot be cancelled."}, status=400)

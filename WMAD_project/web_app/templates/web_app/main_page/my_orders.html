@@ -5,6 +5,16 @@
 
 {% block extra_css %}
 <link rel="stylesheet" type="text/css" href="{% static 'web_app/css/my_orders.css' %}">
+<style>
+  body {
+      background-image: url("{% static 'web_app/images/bk_img2.png' %}");
+      background-size: cover;
+      background-position: center;
+      min-height: 100vh;
+      color: #fff;
+      font-family: "Poppins", sans-serif;
+  }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -28,21 +38,20 @@
   <tbody>
     {% for order in orders %}
     <tr>
-      <td>{{ order.orderid }}</td>
+      <td>{{ order.orderID }}</td>
       <td>{{ order.totalamount }}</td>
       <td>{{ order.order_date }}</td>
       <td>{{ order.order_time }}</td>
       <td>{{ order.ordertype }}</td>
       <td>{{ order.deliveryaddress }}</td>
       <td>{{ order.status }}</td>   
-         
       <td>
-        <button class="toggle-items-btn" onclick="toggleItems('{{ order.orderid }}')">+</button>
+        <button class="toggle-items-btn" onclick="toggleItems('{{ order.orderID }}')">+</button>
       </td>
 
       <td>
         {% if order.status != "completed" %}
-         <form method="post" action="{% url 'cancel_order' order.orderid %}">
+         <form method="post" action="{% url 'cancel_order' order.orderID %}">
             {% csrf_token %}
             <button type="submit" class="cancel-btn">Cancel</button>
          </form>
@@ -53,7 +62,7 @@
     </tr>
 
     <!-- Hidden items -->
-    <tr id="items-{{ order.orderid }}" class="hidden-items">
+    <tr id="items-{{ order.orderID }}" class="hidden-items">
       <td colspan="9">
         <table class="items-table">
           <thead>
@@ -63,7 +72,7 @@
             </tr>
           </thead>
           <tbody>
-            {% for item in order.ordercontain_set.all %}
+            {% for item in order.orderitem_set.all %}
             <tr>
               <td>{{ item.menu.menuName }}</td>
               <td>{{ item.quantity }}</td>

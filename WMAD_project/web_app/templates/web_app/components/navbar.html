@@ -18,9 +18,10 @@
         </div>
 
         <div class="login-container">
+            <button id="cart-toggle" class="cart-nav-btn">🛒</button>
             {% if user.is_authenticated %}
                 <div class="user-dropdown">
-                    <span class="username">👤 Hi, toushal</span>
+                    <span class="username">👤 Hi, {{ user.username }}</span>
                     <div class="dropdown-content">
                         <a href="/profile/">Profile</a>
                         <a href="/account/logout/">Logout</a>
@@ -29,7 +30,6 @@
             {% else %}
                 <a href="/login/" class="login-link">Log In</a>
             {% endif %}
-
             <button class="hamburger" id="navToggle">☰</button>
         </div>
     </nav>
