@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'web_app',
     'control_panel',
+    'admin_site',
 ]
 
 # 2024-06 Addition: Maintenance Mode Setting
@@ -55,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'control_panel.middleware.MaintenanceMiddleware',               # Custom middleware for maintenance mode
+    'admin_site.middleware.AdminSiteSessionMiddleware',                 # Custom middleware for admin session handling
 ]
 
 ROOT_URLCONF = 'WMAD_project.urls'
@@ -93,18 +95,20 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+
+    # remove common password and similar to usrname password.
 ]
+
+
+# Email Backend Configuration for Development
+# During development, emails will be printed to the console. In production, configure an appropriate email backend.
+# https://docs.djangoproject.com/en/5.2/topics/email/#email-backends
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 # Internationalization
@@ -123,38 +127,59 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "web_app/static"),
-]
+STATICFILES_DIRS = []
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Redirect URLs after login/logout
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
 
-# 2024-06 Addition: Logging Configuration for Debugging Purposes
-# https://docs.djangoproject.com/en/5.2/topics/logging/
-# This configuration logs debug information to a file named 'debug.log' in the BASE_DIR.
-# Adjust the logging level and handlers as needed for your application.
-# Example usage: logging.getLogger('django').debug('Debug message')
-# Note: Ensure proper permissions for the log file in production environments.
-# Adjust the logging settings as necessary for your deployment environment.
+# Logging Configuration for Control Panel
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'debug.log'),
+
+    'formatters': {
+        'control_panel_format': {
+            'format': '[{asctime}] {message}',
+            'style': '{',
         },
     },
+
+    'handlers': {
+        'control_panel_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'control_panel.log'),
+            'formatter': 'control_panel_format',
+        },
+    },
+
     'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
+        'control_panel': {
+            'handlers': ['control_panel_file'],
+            'level': 'INFO',
+            'propagate': False,
         },
     },
 }
+
+
+# Super maintenance mode password (for future use)
+SUPER_MAINTENANCE_PASSWORD = "super_secret_key2025"
+
+MAINTENANCE_ALERT_EMAILS = [            # list of emails to notify when maintenance mode is toggled
+    "toushal37@gmail.com",
+    # "owner2@example.com",
+]
+
+# Custom User Model Setting
+AUTH_USER_MODEL = 'web_app.Users'
+
+ADMIN_SITE_SESSION_COOKIE_NAME = "admin_sessionid"  # Custom session cookie name for admin site
+
+SESSION_SAVE_EVERY_REQUEST = True
