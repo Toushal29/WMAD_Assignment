@@ -1,3 +1,4 @@
+# C:\Users\toush\Desktop\WMAD_Assignment\WMAD_project\WMAD_project\urls.py
 """
 URL configuration for WMAD_project project.
 
@@ -27,5 +28,4 @@ urlpatterns = [
     path('admin-site/', include('admin_site.urls')),        # custom admin site for restaurant management
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

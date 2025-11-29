@@ -1,3 +1,4 @@
+# C:\Users\toush\Desktop\WMAD_Assignment\WMAD_project\WMAD_project\settings.py
 """
 Django settings for WMAD_project project.
 
