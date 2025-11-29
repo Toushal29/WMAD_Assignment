@@ -284,6 +284,7 @@ C:.
 3. **Database Migrations**:
 
    ```bash
+   python manage.py makemigrations
    python manage.py migrate
    ```
 
