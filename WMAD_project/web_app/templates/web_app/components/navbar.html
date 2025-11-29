@@ -4,29 +4,33 @@
 <header>
     <nav class="navbar">
         <div class="logo">
-            <a href="{% url 'home' %}">Saveur Moris</a>
+            <a href="/">Saveur Moris</a>
         </div>
+
         <div class="mainNav">
             <ul>
-                <li><a href="{% url 'home' %}">Home</a></li>
-                <li><a href="{% url 'menu' %}">Menu</a></li>
-                <li><a href="{% url 'order' %}">Order</a></li>
-                <li><a href="{% url 'reservation' %}">Reservation</a></li>
-                <li><a href="{% url 'about_contact' %}">About & Contact</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/menu/">Menu</a></li>
+                <li><a href="/order/">Order</a></li>
+                <li><a href="/reservation/">Reservation</a></li>
+                <li><a href="/about-contact/">About & Contact</a></li>
             </ul>
         </div>
+
         <div class="login-container">
             {% if user.is_authenticated %}
                 <div class="user-dropdown">
-                    <span class="username">👤 Hi, {{ user.username }}</span>
+                    <span class="username">👤 Hi, toushal</span>
                     <div class="dropdown-content">
-                        <a href="{% url 'profile' %}">Profile</a>
-                        <a href="{% url 'logout' %}">Logout</a>
+                        <a href="/profile/">Profile</a>
+                        <a href="/account/logout/">Logout</a>
                     </div>
                 </div>
             {% else %}
-                <a href="{% url 'login' %}" class="login-link">Log In</a>
+                <a href="/login/" class="login-link">Log In</a>
             {% endif %}
+
+            <button class="hamburger" id="navToggle">☰</button>
         </div>
     </nav>
 </header>

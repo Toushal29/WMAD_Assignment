@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import MenuItem
+from .models import Menu
 # Regfrom django.contrib import admin
 from .models import Special
 
 admin.site.register(Special)
 
-admin.site.register(MenuItem)
+admin.site.register(Menu)
