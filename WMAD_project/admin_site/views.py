@@ -71,6 +71,7 @@ def admin_dashboard(request):
         }
     )
 
+#RESERVATTION
 @admin_required
 def reservation_page(request):
     reservations = Reservation.objects.select_related('customer__user').all()
@@ -84,6 +85,58 @@ def reservation_page(request):
             'reservations': reservations,
         }
     )
+#Code for reservation ~~~~~~~~
+@admin_required
+def reservation_edit(request, id):
+    reservation = Reservation.objects.select_related("customer__user").filter(reservationID=id).first()
+    if not reservation:
+        messages.error(request, "Reservation not found.")
+        return redirect("admin_reservation")
+
+    return render(
+        request,
+        "admin_site/reservation_edit.html",  # optional, only if using a separate page
+        {
+            "active_tab": "reservation",
+            "admin_user": request.admin_user,
+            "reservation": reservation,
+        }
+    )
+
+
+@admin_required
+def reservation_update(request, id):
+    reservation = Reservation.objects.select_related("customer__user").filter(reservationID=id).first()
+    if not reservation:
+        messages.error(request, "Reservation not found.")
+        return redirect("admin_reservation")
+
+    if request.method == "POST":
+        reservation.reservation_date = request.POST.get("reservation_date", reservation.reservation_date)
+        reservation.reservation_time = request.POST.get("reservation_time", reservation.reservation_time)
+        reservation.party_size = request.POST.get("party_size", reservation.party_size)
+        reservation.status = request.POST.get("status", reservation.status)
+        reservation.seating_choice = request.POST.get("seating_choice", reservation.seating_choice)
+        reservation.allergy_info = request.POST.get("allergy_info", reservation.allergy_info)
+        reservation.save()
+
+        messages.success(request, " ")
+        return redirect("admin_reservation")
+
+    return redirect("admin_reservation")
+
+
+@admin_required
+def reservation_delete(request, id):
+    reservation = Reservation.objects.filter(reservationID=id).first()
+    if not reservation:
+        messages.error(request, "Reservation not found.")
+        return redirect("admin_reservation")
+
+    reservation.delete()
+    messages.success(request, " ")
+    return redirect("admin_reservation")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @admin_required
 def edit_menu_page(request):

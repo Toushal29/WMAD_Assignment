@@ -44,6 +44,17 @@ class Reservation(models.Model):
     reservation_date = models.DateField()
     reservation_time = models.TimeField()
     party_size = models.PositiveIntegerField(default=1)
+    seating_choice = models.CharField(
+        max_length=20,
+        choices=[('Indoor', 'Indoor'), ('Outdoor', 'Outdoor')],
+        default='Indoor'
+    )
+    allergy_info = models.TextField(blank=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[('pending', 'Pending'), ('confirmed', 'Confirmed'), ('cancelled', 'Cancelled')],
+        default='pending'
+    )
     status = models.CharField(
         max_length=20,
         choices=[

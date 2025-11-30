@@ -24,24 +24,28 @@
     </style>
 {% endblock %}
 
+<!-- Nilesh added this code (1)-->
+
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <!--this add the main contents to the web page.-->
 {% block content %}
     <h1>Make A Reservation</h1>
+    <p>Welcome, {{ request.user.first_name }} {{ request.user.last_name }}!</p>
     <p>Please fill in the required information below to book a table with us.</p>
     <br><br>
 
     
     <form action = "{% url 'reservation' %}" method = "post">   <!-- Here, I am using "post" instead of "get" because data is being created rather than being searched for-->
-        {% csrf_token %}     <!-- this is a django security feature-->
-            First Name: 
-            <input type = "text" value = "" name = "first_name" title = "Enter your first name" maxlength="20" size = "50" pattern = "[A-Z][a-z]+" required/>
-            
-            Last Name:
-            <input type = "text" value = "" name = "last_name" title = "Enter your last name" maxlength="20" size = "50" pattern = "[A-Z][a-z]+" required/>
+            {% csrf_token %}     <!-- this is a django security feature-->
+            Name of Reservation:
+            <!--This will dispay first name and last name but cannot change-->
+            <input type="text" name="first_name" value="{{ request.user.first_name }}" readonly/>
+            <input type="text" name="last_name" value="{{ request.user.last_name }}" readonly/>
             <br><br>
 
             Phone Number:
-            <input type = "tel" value = "" name = "phone_number" title = "Enter your phone number" maxlength="12" size = "50" required/>
+            <input type="text" name="phone_no" value="{{ request.user.phone_no }}" readonly/>
             <br><br>
 
             Party Size:
@@ -71,7 +75,7 @@
     <!--FIELD NAMES FOR DATABASE-->
     <!--first_name, last_name, phone_number, party_size, reservation_date, reservation_time, seating_choice, allergy_info-->
 
-    <!--Implementing a Whatsapp API for bonus-->
+    <!--Implementing an alternative Whatsapp contact feature-->
     <br><br>
     <p>If you don't wish to make your reservation through our website, you can always contact us through WhatsApp by using the button below</p>
     <a href="https://wa.me/23059220512?text=Hello%20I%20want%20to%20make%20a%20reservation" target="_blank">

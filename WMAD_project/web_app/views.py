@@ -11,6 +11,9 @@ from django.contrib.auth.models import User
 
 from .models import Special, MenuItem
 
+#~~~~~Nilesh added this line (1)
+from .models import Reservation
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # ===========================
 # MAIN PAGES
@@ -30,9 +33,6 @@ def menu(request):
 def order(request):
     return render(request, 'web_app/main_page/order.html')
 
-
-def reservation(request):
-    return render(request, 'web_app/main_page/reservation.html')
 
 
 def about_contact(request):
@@ -142,10 +142,39 @@ def menu(request):
 def order(request):
     return render(request, 'web_app/main_page/order.html')
 
-
+#Nilesh added this line (2) ~~~~~~~~
 def reservation(request):
-    return render(request, 'web_app/main_page/reservation.html')
+    if request.method == "POST":
+        user = request.user
 
+        # Get Customer linked to User
+        try:
+            customer = Customer.objects.get(user=user)
+        except Customer.DoesNotExist:
+            messages.error(request, "You must be a registered customer to make a reservation.")
+            return redirect('reservation')
+
+        # Get form data
+        reservation_date = request.POST.get('reservation_date')
+        reservation_time = request.POST.get('reservation_time')
+        party_size = request.POST.get('party_size')
+        seating_choice = request.POST.get('seating_choice')
+        allergy_info = request.POST.get('allergy_info')
+
+        # Save reservation
+        Reservation.objects.create(
+            customer=customer,
+            reservation_date=reservation_date,
+            reservation_time=reservation_time,
+            party_size=party_size,
+            seating_choice=seating_choice,
+            allergy_info=allergy_info,
+            status='pending'
+        )
+
+
+    return render(request, 'web_app/main_page/reservation.html')
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def about_contact(request):
     return render(request, 'web_app/main_page/about_contact.html')
