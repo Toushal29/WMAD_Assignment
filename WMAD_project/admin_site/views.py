@@ -18,6 +18,9 @@ from web_app.models import (
     OrderItem,
 )
 
+def redirect_to_reservation(request):
+    return redirect("admin_reservation")
+
 def admin_required(view_func):
     def wrapper(request, *args, **kwargs):
 
@@ -50,22 +53,12 @@ def admin_login(request):
 
         messages.error(request, "Invalid admin credentials.")
 
-    return render(request, "admin_site/login.html")
+    return redirect("admin_reservation")
+
 
 def admin_logout(request):
     logout(request)
     return redirect("admin_login")
-
-@admin_required
-def admin_dashboard(request):
-    return render(
-        request,
-        'admin_site/dashboard.html',
-        {
-            'active_tab': 'dashboard',
-            'admin_user': request.admin_user,
-        }
-    )
 
 @admin_required
 def reservation_page(request):
@@ -154,19 +147,6 @@ def edit_menu_page(request):
             'active_tab': 'edit_menu',
             'admin_user': request.admin_user,
             'menu_items': menu_items,
-        }
-    )
-
-@admin_required
-def feedback_page(request):
-    reviews = Reviews.objects.select_related('customer__user', 'menu').all()
-    return render(
-        request,
-        'admin_site/feedback.html',
-        {
-            'active_tab': 'feedback',
-            'admin_user': request.admin_user,
-            'reviews': reviews,
         }
     )
 

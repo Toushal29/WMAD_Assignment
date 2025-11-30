@@ -30,7 +30,6 @@
         </div>
         <nav class="top-nav">
             <a href="{% url 'home' %}">Back to Home</a>
-            <a href="#">Help</a>
             <a href="{% url 'logout' %}">Log Out</a>
         </nav>
     </header>
@@ -46,9 +45,6 @@
                 </li>
                 <li class="{% if section == 'reservations' %}active{% endif %}">
                     <a href="{% url 'reservations' %}">My Reservations</a>
-                </li>
-                <li class="{% if section == 'reviews' %}active{% endif %}">
-                    <a href="{% url 'reviews' %}">My Reviews</a>
                 </li>
                 <li class="{% if section == 'settings' %}active{% endif %}">
                     <a href="{% url 'settings' %}">Settings</a>

@@ -115,10 +115,6 @@ def profile_page(request):
 def settings_page(request):
     return render(request, "web_app/account/settings.html", {"section": "settings"})
 
-# REVIEWS PAGE
-def reviews_page(request):
-    return render(request, "web_app/account/reviews.html", {"section": "reviews"})
-
 # DELETE ACCOUNT
 @login_required
 def delete_account(request):

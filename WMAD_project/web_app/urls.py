@@ -27,7 +27,6 @@ urlpatterns = [
     path('profile/', views.profile_page, name='profile'),
     path('profile/settings/', views.settings_page, name='settings'),
     path('profile/my_orders/', views.account_orders, name='orders'),
-    path('profile/my_reviews/', views.reviews_page, name='reviews'),
     path('profile/my_reservations/', views.account_reservations, name='reservations'),
 
     # PASSWORD RESET

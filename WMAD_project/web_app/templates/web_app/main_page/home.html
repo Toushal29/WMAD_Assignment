@@ -19,8 +19,6 @@
 {% endblock %}
 
 {% block content %}
-
-<!-- ================= HERO ================= -->
 <section class="hero">
     <div class="hero-content">
         <h1>Saveur Moris</h1>
@@ -28,8 +26,6 @@
     </div>
 </section>
 
-
-<!-- ================= TODAY'S SPECIAL ================= -->
 <section class="special-section">
 
     <h2 class="section-heading">Today’s Special</h2>
@@ -58,43 +54,36 @@
 
 </section>
 
-
-<!-- ================= POPULAR DISHES ================= -->
 <section class="popular-section">
     <h2 class="section-heading">Popular Dishes</h2>
 
     <div class="popular-row">
 
         <div class="pop-card">
-            <img src="{% static 'web_app/images/roti.jpg' %}">
+            <img src="{% static 'web_app/images/farata_curry.png' %}">
             <p>Farata & Curry</p>
         </div>
 
         <div class="pop-card">
-            <img src="{% static 'web_app/images/noodles.jpg' %}">
+            <img src="{% static 'web_app/images/mine_frite.png' %}">
             <p>Mine Frite</p>
         </div>
 
         <div class="pop-card">
-            <img src="{% static 'web_app/images/curry.jpg' %}">
+            <img src="{% static 'web_app/images/chicken_curry.png' %}">
             <p>Chicken Curry</p>
         </div>
 
     </div>
 </section>
 
-
-<!-- ================= TESTIMONIAL ================= -->
 <section class="testimonial-section">
     <p class="quote">“Delicious food, warm atmosphere. Always coming back!”</p>
     <span class="quote-author">— A Happy Customer</span>
 </section>
 
-
-<!-- ================= CTA ================= -->
 <section class="cta-section">
     <h2>Ready to Order?</h2>
     <a href="{% url 'order' %}" class="cta-btn">Start Your Order</a>
 </section>
-
 {% endblock %}
