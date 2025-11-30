@@ -1,0 +1,139 @@
+body {
+    overflow: hidden;
+}
+
+.reservation-container {
+    width: 80%;
+    max-width: 800px;
+    margin: 40px auto 80px auto;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 16px;
+    color: white;
+    backdrop-filter: blur(4px);
+}
+
+.reservation-container h1 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.reservation-container p {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 18px;
+}
+
+.reservation-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.r-flex-row {
+    width: 97.5%;
+    display: flex;
+    gap: 50px;
+    justify-content: space-between;
+}
+
+.r-flex-item {
+    width: 100%;
+}
+
+.reservation-form label {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.reservation-form input,
+.reservation-form textarea {
+    width: 97%;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.reservation-form input[readonly] {
+    background: #e0e0e0;
+    cursor: not-allowed;
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.reservation-btn {
+    margin-top: 10px;
+    background: #e0a300;
+    color: black;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.reservation-btn:hover {
+    background: #ffbf00;
+}
+
+.whatsapp-container {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.whatsapp-btn {
+    background: #25D366;
+    color: white;
+    padding: 12px;
+    font-size: 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.whatsapp-btn:hover {
+    background: #18a64b;
+}
+
+.login-prompt {
+    text-align: center;
+    margin: 25px 0;
+}
+
+.login-btn {
+    background: #e0a300;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 18px;
+    color: black;
+    font-weight: bold;
+}
+
+.login-btn:hover {
+    background: #ffbf00;
+}
+
+.reservation-info {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 15px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .r-flex-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    body {
+        overflow: auto;
+    }
+}

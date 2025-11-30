@@ -4,34 +4,14 @@
 {% block title %}Orders{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" type="text/css" href="{% static 'admin_site/css/orders.css' %}">
+<link rel="stylesheet" href="{% static 'admin_site/css/orders.css' %}">
 {% endblock %}
 
 {% block content %}
 
-<h1 class="title">Dashboard – ORDERS</h1>
+<h1 class="page-title">Orders</h1>
 
-<!-- Summary Cards -->
-<div class="summary-container">
-
-    <div class="card">
-        <h2>{{ total_orders }}</h2>
-        <p>Total Orders</p>
-    </div>
-
-    <div class="card">
-        <h2>{{ total_delivered }}</h2>
-        <p>Total Delivered</p>
-    </div>
-
-    <div class="card">
-        <h2>{{ total_cancelled }}</h2>
-        <p>Total Cancelled</p>
-    </div>
-
-</div>
-
-<!-- Filter Section -->
+<!-- FILTERS -->
 <form method="GET" class="filter-bar">
     <label>From:
         <input type="date" name="start" value="{{ start }}">
@@ -53,70 +33,79 @@
     <button type="submit" class="filter-btn">Apply</button>
 </form>
 
-<!-- Orders List -->
-<div class="order-list">
-    {% for order in orders %}
-    <div class="order-card">
-
-         
-        
-        <div class="left">
-            <p class="oid">OrderId: {{ order.orderid }}</p>
-            <br>
-            <p class="oname">customerUserName: {{ order.customer }}</p>
-            
-            <br>
-             <p class="ophone">PhoneNum: {{ order.phone}}</p>
-            
-            <br>
-            <p class="oaddress">Address: {{ order.address}}</p>
-
-            
-        </div>
-        
-        <div class="middle">
-            <table class="items-table">
-             <thead>
-            <tr>
-             <th>Item Name</th>
-             <th>Quantity</th>
-            </tr>
-             </thead>
-            <tbody>
-              {% for item in order.items %}
-               <tr>
-                <td>   {{ item.name }}</td>
-                <td>{{ item.quantity }}</td>
-              </tr>
-              {% endfor %}
-             </tbody>
-            </table>
-        </div>
-
-        <div class="right">
-            <p class="date">{{ order.date }}</p>
-            <p class="amount">Rs {{ order.total }}</p>
-
-            <p class="status {{ order.status }}">
-                {{ order.status|title }}
-            </p>
-
-            {% if order.status == "pending" %}
-            <div class="actions">
-                <button onclick="completeOrder('{{ order.orderid }}')" class="success">Complete</button>
-                <button onclick="cancelOrder('{{ order.orderid }}')" class="danger">Cancel</button>
-            </div>
-            {% endif %}
-        </div>
-
-    </div>
-    {% endfor %}
+<!-- SUMMARY ROW -->
+<div class="summary-row">
+    <p><strong>Total:</strong> {{ total_orders }}</p>
+    <p><strong>Completed:</strong> {{ total_delivered }}</p>
+    <p><strong>Cancelled:</strong> {{ total_cancelled }}</p>
 </div>
+
+<!-- TABLE -->
+<table class="orders-table">
+    <tr>
+        <th>ID</th>
+        <th>Customer</th>
+        <th>Phone</th>
+        <th>Order Type</th>
+        <th>Address</th>
+        <th>Date</th>
+        <th>Total</th>
+        <th>Status</th>
+        <th>Items</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for o in orders %}
+    <tr>
+        <td>{{ o.orderID }}</td>
+        <td>{{ o.customer }}</td>
+        <td>{{ o.phone }}</td>
+
+        <td>
+            {% if o.address == "Sur place" %}
+                Pickup / Dine-in
+            {% else %}
+                Delivery
+            {% endif %}
+        </td>
+
+        <td>
+            {% if o.address == "Sur place" %}
+                -
+            {% else %}
+                {{ o.address }}
+            {% endif %}
+        </td>
+
+        <td>{{ o.date }}</td>
+        <td>Rs {{ o.total }}</td>
+
+        <td>
+            <span class="status-box {{ o.status }}">{{ o.status|title }}</span>
+        </td>
+
+        <td>
+            {% for item in o.items %}
+                {{ item.name }} (x{{ item.quantity }}) <br>
+            {% endfor %}
+        </td>
+
+        <td>
+            {% if o.status == "pending" %}
+                <button class="btn btn-complete" onclick="completeOrder('{{ o.orderID }}')">Complete</button>
+                <button class="btn btn-cancel" onclick="cancelOrder('{{ o.orderID }}')">Cancel</button>
+            {% else %}
+                -
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
 
 <script>
 function csrf() {
     return document.cookie.split("; ")
-        .find(function(r) { return r.startsWith("csrftoken="); })
+        .find(r => r.startsWith("csrftoken="))
         ?.split("=")[1];
 }
 
@@ -125,9 +114,7 @@ function completeOrder(id) {
         method: "POST",
         headers: { "X-CSRFToken": csrf() },
         body: new URLSearchParams({ order_id: id })
-    }).then(function() {
-        location.reload();
-    });
+    }).then(() => location.reload());
 }
 
 function cancelOrder(id) {
@@ -135,9 +122,7 @@ function cancelOrder(id) {
         method: "POST",
         headers: { "X-CSRFToken": csrf() },
         body: new URLSearchParams({ order_id: id })
-    }).then(function() {
-        location.reload();
-    });
+    }).then(() => location.reload());
 }
 </script>
 

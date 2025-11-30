@@ -115,6 +115,12 @@ li {
     transform: scale(1.1);
 }
 
+.admin-back-btn {
+    background-color: white;
+    border-radius: 5px;
+    width: 50px;
+}
+
 .dropdown-content {
     visibility: hidden;
     opacity: 0;
@@ -151,6 +157,118 @@ li {
     transform: translateY(0);
 }
 
+.cart-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.cart-nav-btn {
+    font-size: 30px;
+    color: white;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 2px 8px;
+    transition: transform .2s ease;
+}
+
+.cart-nav-btn:hover {
+    transform: scale(1.2);
+}
+
+.cart-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: red;
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 50%;
+    font-weight: bold;
+    display: none;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.cart-dropdown {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    width: 320px;
+    max-height: 460px;
+    background: rgb(145 145 145 / 75%);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 15px;
+    display: none;
+    overflow-y: auto;
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.35);
+    z-index: 2000;
+}
+
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+#cart-items {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#cart-items td {
+    padding: 8px 4px;
+    border-bottom: 1px solid rgba(0,0,0,0.15);
+    font-size: 15px;
+    color: #222;
+}
+
+#cart-items td button {
+    background: red;
+    color: white;
+    border: none;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#cart-total {
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: right;
+    font-size: 17px;
+}
+
+.clear-cart-btn,
+.checkout-btn {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+
+    background: black;
+    color: white;
+    border: none;
+    border-radius: 8px;
+
+    cursor: pointer;
+    transition: background-color .3s;
+}
+
+.clear-cart-btn:hover,
+.checkout-btn:hover {
+    background: #333;
+}
+
 .hamburger {
     background: rgba(255,255,255,0.15);
     border: 1px solid rgba(255,255,255,0.2);
@@ -176,13 +294,14 @@ li {
 .hamburger.active span:nth-child(1) {
     transform: translateY(8px) rotate(45deg);
 }
+
 .hamburger.active span:nth-child(2) {
     opacity: 0;
 }
+
 .hamburger.active span:nth-child(3) {
     transform: translateY(-8px) rotate(-45deg);
 }
-
 
 @media (max-width: 900px) {
 

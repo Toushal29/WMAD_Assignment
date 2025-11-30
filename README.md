@@ -59,7 +59,7 @@ C:.
 │   │   urls.py
 │   │   views.py
 │   │   __init__.py
-│   │   
+│   │
 │   ├───migrations
 │   │   │   __init__.py
 │   │   │
@@ -70,6 +70,7 @@ C:.
 │   │   └───admin_site
 │   │       └───css
 │   │               admin_navbar.css
+│   │               orders.css
 │   │
 │   ├───templates
 │   │   └───admin_site
@@ -118,23 +119,8 @@ C:.
 │   └───__pycache__
 │
 ├───media
-│   │   bolrenverse.jpg
-│   │   bolrenverse_L9QrCwa.jpg
-│   │   briani_ljWupWj.jpg
-│   │   caripoulet.jpg
-│   │   caripoulet_3C7RcMv.jpg
-│   │   halimAgneau.jpg
-│   │   kebab.jpg
-│   │   kebab_pcxgvuB.jpg
-│   │   riz_Frite.jpg
-│   │   salmipoulet.jpg
-│   │   salmipoulet_ylGTltx.jpg
-│   │
 │   └───menu_images
-│           briani_ljWupWj.jpg
-│           halimAgneau.jpg
-│           mine_frite.jpg
-│           riz_Frite.jpg
+│           briani.jpg
 │
 ├───web_app
 │   │   admin.py
@@ -151,16 +137,32 @@ C:.
 │   │   │   __init__.py
 │   │   │
 │   │   └───__pycache__
-│   │           0001_initial.cpython-313.pyc
-│   │           __init__.cpython-313.pyc
 │   │
 │   ├───static
+│   │   ├───menu_images
+│   │   │       bk_img6.png
+│   │   │       food1.webp
+│   │   │       food10.webp
+│   │   │       food11.webp
+│   │   │       food11_egr8qdf.webp
+│   │   │       food2.jpg
+│   │   │       food3.webp
+│   │   │       food5.webp
+│   │   │       food6.webp
+│   │   │       food7.webp
+│   │   │       food8.webp
+│   │   │       food9.jpg
+│   │   │
 │   │   └───web_app
 │   │       ├───css
 │   │       │       about_contact.css
 │   │       │       footer.css
+│   │       │       home.css
 │   │       │       log_in.css
+│   │       │       menu.css
+│   │       │       my_orders.css
 │   │       │       navbar.css
+│   │       │       order.css
 │   │       │       password_reset.css
 │   │       │       privacy_policy.css
 │   │       │       profile.css
@@ -170,9 +172,19 @@ C:.
 │   │       │       biryani.jpg
 │   │       │       bk_img2.png
 │   │       │       bk_img3.png
-│   │       │       bk_img4.png
 │   │       │       bk_img5.png
 │   │       │       bk_img6.png
+│   │       │       food1.webp
+│   │       │       food10.webp
+│   │       │       food11.webp
+│   │       │       food2.jpg
+│   │       │       food3.webp
+│   │       │       food4.webp
+│   │       │       food5.webp
+│   │       │       food6.webp
+│   │       │       food7.webp
+│   │       │       food8.webp
+│   │       │       food9.jpg
 │   │       │       instagramIcon.png
 │   │       │       login.png
 │   │       │       logo.png
@@ -182,6 +194,8 @@ C:.
 │   │       │
 │   │       └───js
 │   │               login.js
+│   │               my_orders.js
+│   │               order.js
 │   │               signup.js
 │   │
 │   ├───templates
@@ -216,6 +230,7 @@ C:.
 │   │       │       base.html
 │   │       │       home.html
 │   │       │       menu.html
+│   │       │       my_orders.html
 │   │       │       order.html
 │   │       │       reservation.html
 │   │       │

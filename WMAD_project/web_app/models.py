@@ -1,15 +1,10 @@
-# C:\Users\toush\Desktop\WMAD_Assignment\WMAD_project\web_app\models.py
-
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
-# ============================
-# CUSTOM USER
-# ============================
-
+# Custom user model with phone number and role
 class Users(AbstractUser):
     phone_no = models.CharField(max_length=20, blank=True, null=True)
     role = models.CharField(
@@ -22,6 +17,7 @@ class Users(AbstractUser):
         return self.username
 
 
+# Admin profile linked to Users
 class Admin(models.Model):
     user = models.OneToOneField(Users, on_delete=models.CASCADE, primary_key=True)
 
@@ -29,6 +25,7 @@ class Admin(models.Model):
         return self.user.username
 
 
+# Customer profile linked to Users
 class Customer(models.Model):
     user = models.OneToOneField(Users, on_delete=models.CASCADE, primary_key=True)
     address = models.CharField(max_length=255)
@@ -37,10 +34,7 @@ class Customer(models.Model):
         return self.user.username
 
 
-# ============================
-# MENU + SPECIALS
-# ============================
-
+# Menu items displayed on the site
 class Menu(models.Model):
     menuID = models.AutoField(primary_key=True)
     menuName = models.CharField(max_length=150)
@@ -52,6 +46,7 @@ class Menu(models.Model):
         return self.menuName
 
 
+# Special promotions with availability and pricing
 class Special(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
@@ -64,16 +59,19 @@ class Special(models.Model):
         return self.name
 
 
-# ============================
-# RESERVATION
-# ============================
-
+# Reservation system for customers
 class Reservation(models.Model):
     reservationID = models.AutoField(primary_key=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     reservation_date = models.DateField()
     reservation_time = models.TimeField()
     party_size = models.PositiveIntegerField(default=1)
+    seating_choice = models.CharField(
+        max_length=20,
+        choices=[('Indoor', 'Indoor'), ('Outdoor', 'Outdoor')],
+        default='Indoor'
+    )
+    allergy_info = models.TextField(blank=True)
     status = models.CharField(
         max_length=20,
         choices=[('pending', 'Pending'), ('confirmed', 'Confirmed'), ('cancelled', 'Cancelled')],
@@ -81,13 +79,10 @@ class Reservation(models.Model):
     )
 
     def __str__(self):
-        return f"{self.customer.user.username} - {self.reservation_date}"
+        return f"{self.customer.user.username} - {self.reservation_date} {self.reservation_time}"
 
 
-# ============================
-# CART SYSTEM
-# ============================
-
+# Customer's shopping cart
 class Cart(models.Model):
     user = models.OneToOneField(Users, on_delete=models.CASCADE)
 
@@ -95,6 +90,7 @@ class Cart(models.Model):
         return sum(item.subtotal for item in self.cartitem_set.all())
 
 
+# Items inside the cart
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
@@ -106,39 +102,21 @@ class CartItem(models.Model):
         return self.unit_price * self.quantity
 
 
-# ============================
-# ORDER SYSTEM
-# ============================
-
+# Order details made by customers
 class Order(models.Model):
-
-    STATUS_CHOICES = [
-        ("pending", "Pending"),
-        ("completed", "Completed"),
-        ("cancelled", "Cancelled"),
-    ]
-
     orderID = models.AutoField(primary_key=True)
-    customer = models.ForeignKey(Users, on_delete=models.CASCADE)
-
-    # new field added
-    order_type = models.CharField(max_length=20, default="pickup")
-
-    # FIX: deliveryaddress should allow blank for dine-in/pickup
-    deliveryaddress = models.CharField(max_length=255, blank=True, null=True)
-
-    totalamount = models.DecimalField(max_digits=10, decimal_places=2)
-
-    # Existing
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     order_date = models.DateTimeField(auto_now_add=True)
-
-    # NEW FIELD: order_time (admin panel expects this)
-    order_time = models.TimeField(auto_now_add=True)
-
-    # NEW FIELD: status (admin panel uses this everywhere)
+    order_type = models.CharField(
+        max_length=20,
+        choices=[('delivery', 'Delivery'), ('pickup', 'Pickup'), ('dinein', 'Dine-In')],
+        default='pickup'
+    )
+    deliveryaddress = models.CharField(max_length=255, blank=True, null=True)
+    totalamount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(
         max_length=20,
-        choices=STATUS_CHOICES,
+        choices=[("pending", "Pending"), ("completed", "Completed"), ("cancelled", "Cancelled")],
         default="pending"
     )
 
@@ -146,7 +124,7 @@ class Order(models.Model):
         return f"Order #{self.orderID}"
 
 
-
+# Individual items inside each order
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
@@ -166,18 +144,12 @@ class OrderItem(models.Model):
         return f"{self.menu.menuName} x {self.quantity}"
 
 
-# ============================
-# REVIEWS
-# ============================
-
+# Reviews for restaurant or menu items
 class Reviews(models.Model):
     review_id = models.AutoField(primary_key=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE, blank=True, null=True)
-
-    rating = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(5)]
-    )
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     comment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

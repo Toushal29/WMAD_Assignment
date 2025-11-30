@@ -2,39 +2,34 @@
 {% block title %}My Orders{% endblock %}
 
 {% block content %}
-    <h2>My Orders</h2>
+<h2>My Orders</h2>
 
-    <div class="scroll-section">
-        <!-- example order cards -->
+<div class="scroll-section">
+    {% if orders %}
+        {% for o in orders %}
         <div class="order-card">
-            <h4>Order #1001</h4>
-            <p>Date: 2025-11-12</p>
-            <p>Total: Rs 560</p>
-            <p>Status: <span class="status delivered">Delivered</span></p>
-        </div>
+            <h4>Order #{{ o.orderID }}</h4>
+            <p>Date: {{ o.order_date|date:"Y-m-d H:i" }}</p>
+            <p>Total: Rs {{ o.totalamount }}</p>
 
-        <div class="order-card">
-            <h4>Order #1002</h4>
-            <p>Date: 2025-11-05</p>
-            <p>Total: Rs 380</p>
-            <p>Status: <span class="status pending">Pending</span></p>
-        </div>
+            <p>Status:
+                <span class="status 
+                    {% if o.status == 'completed' %}delivered
+                    {% elif o.status == 'pending' %}pending
+                    {% else %}cancelled{% endif %}
+                ">
+                    {{ o.status|title }}
+                </span>
+            </p>
 
-        <div class="order-card">
-            <h4>Order #1003</h4>
-            <p>Date: 2025-10-29</p>
-            <p>Total: Rs 740</p>
-            <p>Status: <span class="status cancelled">Cancelled</span></p>
-        </div>
-
-        <!-- dummy entries for scroll testing -->
-        {% for i in "1234567890" %}
-        <div class="order-card">
-            <h4>Order #{{ i }}00</h4>
-            <p>Date: 2025-11-01</p>
-            <p>Total: Rs 500</p>
-            <p>Status: <span class="status delivered">Delivered</span></p>
+            <h5>Items:</h5>
+            {% for item in o.orderitem_set.all %}
+                <p>- {{ item.menu.menuName }} (x{{ item.quantity }})</p>
+            {% endfor %}
         </div>
         {% endfor %}
-    </div>
+    {% else %}
+        <p>No orders yet.</p>
+    {% endif %}
+</div>
 {% endblock %}

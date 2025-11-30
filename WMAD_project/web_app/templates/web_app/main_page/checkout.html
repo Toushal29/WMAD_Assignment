@@ -1,0 +1,88 @@
+{% extends 'web_app/main_page/base.html' %}
+{% load static %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'web_app/css/order.css' %}">
+<style>
+.checkout-box {
+    max-width: 600px;
+    margin: 40px auto;
+    background: rgba(0,0,0,0.5);
+    padding: 25px;
+    border-radius: 12px;
+}
+.checkout-box h1 {
+    color: #FFD700;
+    margin-bottom: 20px;
+}
+.checkout-box input,
+.checkout-box select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="checkout-box">
+
+<h1>Finalize Your Order</h1>
+
+<h2>Your Items</h2>
+<ul>
+{% for item in items %}
+    <li>{{ item.menu.menuName }} × {{ item.quantity }} — Rs {{ item.subtotal }}</li>
+{% endfor %}
+</ul>
+
+<h2>Total: Rs {{ total }}</h2>
+
+<label>Order Type</label>
+<select id="delivery_mode">
+    <option value="">Select Option</option>
+    <option value="delivery">Delivery</option>
+    <option value="pickup">Pickup</option>
+    <option value="dinein">Dine-In</option>
+</select>
+
+<div id="delivery_box" style="display:none;">
+    <label>Delivery Address</label>
+    <input type="text" id="delivery_address">
+</div>
+
+<button class="primary action-btn" onclick="confirmFinalOrder()">Confirm Order</button>
+
+</div>
+
+<script>
+document.getElementById("delivery_mode").addEventListener("change", ()=>{
+    document.getElementById("delivery_box").style.display =
+        (document.getElementById("delivery_mode").value === "delivery") ? "block" : "none";
+});
+
+function confirmFinalOrder() {
+    let mode = document.getElementById("delivery_mode").value;
+    let address = document.getElementById("delivery_address").value;
+
+    let data = new FormData();
+    data.append("delivery_mode", mode);
+    data.append("delivery_address", address);
+
+    fetch("/ajax/confirm-order/", {
+        method:"POST",
+        body:data,
+        headers:{ "X-CSRFToken": document.cookie.split("=")[1] }
+    })
+    .then(r=>r.json())
+    .then(res=>{
+        if(res.success) window.location.href = res.redirect;
+    });
+}
+</script>
+
+{% endblock %}

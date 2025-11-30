@@ -1,17 +1,18 @@
 # this will ensure that only authenticated admin users can access the admin site views and not login to regular site views
+from django.utils.deprecation import MiddlewareMixin
 
-from django.conf import settings
+class AdminSiteSessionMiddleware(MiddlewareMixin):
 
-class AdminSiteSessionMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
+    def process_response(self, request, response):
 
-    def __call__(self, request):
-
-        # If the request is for admin-site, use custom cookie name
+        # admin-site uses separate cookie
         if request.path.startswith("/admin-site/"):
-            settings.SESSION_COOKIE_NAME = "admin_sessionid"
-        else:
-            settings.SESSION_COOKIE_NAME = "sessionid"
+            response.set_cookie(
+                "admin_sessionid",
+                request.session.session_key,
+                max_age=60 * 60 * 24 * 7,  # 7 days
+                httponly=True,
+                samesite="Lax"
+            )
 
-        return self.get_response(request)
+        return response

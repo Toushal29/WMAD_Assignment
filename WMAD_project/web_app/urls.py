@@ -1,31 +1,35 @@
-# C:\Users\toush\Desktop\WMAD_Assignment\WMAD_project\web_app\urls.py
-
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
+
     # MAIN PAGES
     path('', views.home, name='home'),
     path('menu/', views.menu, name='menu'),
     path('order/', views.order, name='order'),
-    path('reservation/', views.reservation, name='reservation'),
+    path('checkout/', views.checkout, name='checkout'),
     path('about-contact/', views.about_contact, name='about_contact'),
+    path('reservation/', views.reservation, name='reservation'),
     path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
-    # SIMPLE AUTH (entry folder)
-    path('login/', views.user_login, name='simple_login'),
-    path('signup/', views.user_signup, name='simple_signup'),
-    # ACCOUNT (Django Auth Forms)
+
+    # SIMPLE LOGIN/SIGNUP
+    path('login/', views.login_view, name='simple_login'),
+    path('signup/', views.signup, name='simple_signup'),
+
+    # ACCOUNT LINKS
     path('account/login/', views.login_view, name='login'),
     path('account/signup/', views.signup, name='signup'),
-
-    path('profile/', views.profile_page, name='profile'),
-    path('profile/settings/', views.settings_page, name='settings'),
-    path('profile/my_orders/', views.orders_page, name='orders'),
-    path('profile/my_reviews/', views.reviews_page, name='reviews'),
-
     path('account/logout/', views.logout_view, name='logout'),
     path('account/delete/', views.delete_account, name='delete_account'),
+
+    # PROFILE SECTIONS
+    path('profile/', views.profile_page, name='profile'),
+    path('profile/settings/', views.settings_page, name='settings'),
+    path('profile/my_orders/', views.account_orders, name='orders'),
+    path('profile/my_reviews/', views.reviews_page, name='reviews'),
+    path('profile/my_reservations/', views.account_reservations, name='reservations'),
+
     # PASSWORD RESET
     path(
         'account/reset-password/',
@@ -63,6 +67,7 @@ urlpatterns = [
         ),
         name='custom_reset_complete'
     ),
+
     # PASSWORD CHANGE
     path(
         'account/change-password/',
@@ -80,7 +85,8 @@ urlpatterns = [
         ),
         name='custom_change_password_done'
     ),
-    # AJAX / CART / ORDER SYSTEM
+
+    # AJAX CART / ORDER API
     path('ajax/load-more/', views.load_more_menu, name='load_more'),
     path('ajax/add-to-cart/', views.add_to_cart, name='add_to_cart'),
     path('ajax/get-cart/', views.get_cart_items, name='get_cart'),
@@ -88,6 +94,7 @@ urlpatterns = [
     path('ajax/clear-cart/', views.clear_cart, name='clear_cart'),
     path('ajax/confirm-order/', views.confirm_order, name='confirm_order'),
 
+    # MY ORDERS PAGE
     path('my-orders/', views.my_orders, name='my_orders'),
     path('cancel-order/<int:orderid>/', views.cancel_order, name='cancel_order'),
 ]

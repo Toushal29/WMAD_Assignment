@@ -18,7 +18,13 @@
         </div>
 
         <div class="login-container">
-            <button id="cart-toggle" class="cart-nav-btn">🛒</button>
+
+            <!-- PERMANENT CART ICON -->
+            <div class="cart-wrapper">
+                <button id="cart-toggle" class="cart-nav-btn">🛒</button>
+                <span id="cart-count" class="cart-count">0</span>
+            </div>
+
             {% if user.is_authenticated %}
                 <div class="user-dropdown">
                     <span class="username">👤 Hi, {{ user.username }}</span>
@@ -27,10 +33,32 @@
                         <a href="/account/logout/">Logout</a>
                     </div>
                 </div>
+
+                {% if "admin_" in user.username %}
+                    <a href="/admin-site/" class="admin-back-btn">Admin Panel</a>
+                {% endif %}
             {% else %}
                 <a href="/login/" class="login-link">Log In</a>
             {% endif %}
+
             <button class="hamburger" id="navToggle">☰</button>
         </div>
     </nav>
+
+    <!-- UNIVERSAL CART DROPDOWN -->
+    <div id="cart-dropdown" class="cart-dropdown">
+        <div class="cart-header">
+            <h3>My Cart</h3>
+            <button id="close-cart" class="close-btn">×</button>
+        </div>
+
+        <table id="cart-items">
+            <tbody></tbody>
+        </table>
+
+        <p id="cart-total"></p>
+
+        <button id="refresh-cart" class="clear-cart-btn">Clear Cart</button>
+        <button id="checkout-btn" class="checkout-btn">Checkout</button>
+    </div>
 </header>

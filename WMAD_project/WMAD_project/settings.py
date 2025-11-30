@@ -190,10 +190,12 @@ MAINTENANCE_ALERT_EMAILS = [            # list of emails to notify when maintena
 # Custom User Model Setting
 AUTH_USER_MODEL = 'web_app.Users'
 
-ADMIN_SITE_SESSION_COOKIE_NAME = "admin_sessionid"  # Custom session cookie name for admin site
-
 SESSION_SAVE_EVERY_REQUEST = True
 
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7  # 7 days
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
