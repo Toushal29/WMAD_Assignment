@@ -59,5 +59,17 @@
         </section>
     </main>
     {% include 'web_app/components/footer.html' %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const btn = document.getElementById("navToggle");
+            const nav = document.querySelector(".mainNav");
+
+            btn.addEventListener("click", () => {
+                btn.classList.toggle("active");
+                nav.classList.toggle("active");
+            });
+        });
+    </script>
 </body>
 </html>

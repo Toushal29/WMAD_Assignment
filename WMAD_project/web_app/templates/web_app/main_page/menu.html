@@ -5,184 +5,82 @@
 
 {% block extra_css %}
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="{% static 'web_app/css/menu.css' %}">
 <style>
+    * { text-decoration: none; margin: 0; padding: 0; }
     body {
         font-family: 'Poppins', sans-serif;
         color: #fff;
-        background: #111;
-    }
-
-    h1 {
-        text-align: center;
-        padding: 3rem 0 2rem;
-        color: #FFD700;
-        font-family: 'Playfair Display', serif;
-        font-size: 3rem;
-        letter-spacing: 1px;
-    }
-
-    .menu-section {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 3rem;
-        padding: 3rem 2rem;
-        min-height: 50vh; /* ensures first section occupies half screen */
-    }
-
-    .menu-item {
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(6px);
-        border-radius: 25px;
+        background-image: url("{% static 'web_app/images/bk_img6.png' %}");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        min-height: 100vh;
+        margin: 0;
         overflow: hidden;
-        text-align: center;
-        padding: 2rem 1.5rem;
-        width: 100%;
-        max-width: 300px;
-        transition: transform 0.4s ease, box-shadow 0.4s ease;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-
-        opacity: 0; /* hidden initially */
-        transform: translateY(20px);
-    }
-
-    .menu-item.show {
-        opacity: 1;
-        transform: translateY(0);
-        transition: all 0.8s ease;
-    }
-
-    .menu-item:hover {
-        transform: scale(1.03);
-        box-shadow: 0 12px 30px rgba(255, 193, 7, 0.4);
-    }
-
-    .menu-item img.menu-image {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-        border-radius: 15px;
-        filter: brightness(65%);
-        transition: filter 0.4s ease;
-        margin-bottom: 1rem;
-    }
-
-    .menu-item:hover img.menu-image {
-        filter: brightness(75%);
-    }
-
-    .menu-item h3 {
-        font-family: 'Playfair Display', serif;
-        font-size: 1.9rem;
-        color: #FFD700;
-        margin: 0.8rem 0;
-    }
-
-    .menu-item p {
-        font-size: 1rem;
-        color: #f5f5f5;
-        margin: 0.4rem 0;
-    }
-
-    .menu-item .price {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: #ffb300;
-        margin-top: 0.5rem;
-    }
-
-    .btn-order {
-        margin-top: 1rem;
-        background: linear-gradient(135deg, #ffb300, #ff9500);
-        color: #000;
-        padding: 10px 25px;
-        border-radius: 50px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(255, 179, 0, 0.3);
-        display: inline-block;
-        text-decoration: none;
-    }
-
-    .btn-order:hover {
-        background: linear-gradient(135deg, #ffc947, #ffb300);
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(255, 179, 0, 0.4);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .menu-item img.menu-image {
-            height: 180px;
-        }
-
-        .menu-item h3 {
-            font-size: 1.6rem;
-        }
-
-        .menu-item p {
-            font-size: 0.95rem;
-        }
-
-        .menu-section {
-            gap: 2rem;
-            padding: 2rem 1rem;
-        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<h1>Our Menu</h1>
+<h1 class="menu-title">Our Menu</h1>
 
-{# First 4 items in top half #}
-<div class="menu-section">
-    {% for item in items|slice:":4" %}
-        <div class="menu-item">
-            {% if item.image %}
-                <img src="{{ item.image.url }}" alt="{{ item.name }}" class="menu-image">
+<div class="menu-container">
+    <div class="menu-grid">
+        {% for item in items %}
+        <div class="menu-card"
+            data-name="{{ item.menuName }}"
+            data-description="{{ item.description }}"
+            data-price="{{ item.price }}"
+            data-image="{{ item.image_url.url }}">
+            {% if item.image_url %}
+            <img src="{{ item.image_url.url }}" class="menu-image" alt="{{ item.menuName }}">
             {% endif %}
-            <h3>{{ item.name }}</h3>
-            <p>{{ item.description }}</p>
+            <h3>{{ item.menuName }}</h3>
+            <p>{{ item.description|truncatechars:60 }}</p>
             <p class="price">Rs {{ item.price }}</p>
-            <a href="{% url 'order' %}" class="btn-order">Order Now</a>
         </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 </div>
 
-{# Remaining items in bottom half #}
-<div class="menu-section">
-    {% for item in items|slice:"4:" %}
-        <div class="menu-item">
-            {% if item.image %}
-                <img src="{{ item.image.url }}" alt="{{ item.name }}" class="menu-image">
-            {% endif %}
-            <h3>{{ item.name }}</h3>
-            <p>{{ item.description }}</p>
-            <p class="price">Rs {{ item.price }}</p>
-            <a href="{% url 'order' %}" class="btn-order">Order Now</a>
-        </div>
-    {% endfor %}
+<div class="global-order-btn-container">
+    <a href="{% url 'order' %}" class="global-order-btn">Order Now</a>
 </div>
 
-<!-- Scroll-triggered animation JS -->
+<div class="modal-overlay" id="modal">
+    <div class="modal-box">
+        <span class="modal-close">&times;</span>
+        <img id="modal-img">
+        <h2 id="modal-name"></h2>
+        <p id="modal-description"></p>
+        <p id="modal-price"></p>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const items = document.querySelectorAll('.menu-item');
+    const cards = document.querySelectorAll('.menu-card');
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modal-img');
+    const modalName = document.getElementById('modal-name');
+    const modalDesc = document.getElementById('modal-description');
+    const modalPrice = document.getElementById('modal-price');
+    const modalClose = document.querySelector('.modal-close');
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if(entry.isIntersecting) {
-                entry.target.classList.add('show');
-                observer.unobserve(entry.target); // animate only once
-            }
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            modalImg.src = card.dataset.image;
+            modalName.textContent = card.dataset.name;
+            modalDesc.textContent = card.dataset.description;
+            modalPrice.textContent = "Rs " + card.dataset.price;
+            modal.style.display = 'flex';
         });
-    }, { threshold: 0.1 });
+    });
 
-    items.forEach(item => observer.observe(item));
+    modalClose.onclick = () => modal.style.display = 'none';
+    modal.onclick = (e) => { if(e.target === modal) modal.style.display = 'none'; };
 });
 </script>
+
 {% endblock %}

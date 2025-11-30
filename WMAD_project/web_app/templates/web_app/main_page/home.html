@@ -1,190 +1,89 @@
 {% extends 'web_app/main_page/base.html' %}
 {% load static %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Home — Saveur Moris{% endblock %}
 
 {% block extra_css %}
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'web_app/css/home.css' %}">
 
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        text-decoration: none;
-    }
-
     body {
-        background: #111;
-        font-family: 'Poppins', sans-serif;
-        color: #fff;
-        overflow-x: hidden;
-    }
-
-    h1 {
-        text-align: center;
-        padding: 2rem 0 1rem;
-        color: #FFD700;
-        font-family: 'Playfair Display', serif;
-        font-size: 2.8rem;
-        letter-spacing: 1px;
-    }
-
-    /* === Specials Section === */
-    .specials-section {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 80px 20px;
-    }
-
-    .special-card {
-        position: relative;
-        width: 85%;
-        max-width: 950px;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
-        transform: scale(1);
-        transition: transform 0.4s ease, box-shadow 0.4s ease;
-    }
-
-    .special-card:hover {
-        transform: scale(1.02);
-        box-shadow: 0 12px 30px rgba(255, 193, 7, 0.3);
-    }
-
-    .special-card img {
-        width: 100%;
-        height: auto;
-        display: block;
-        filter: brightness(60%);
-        transition: filter 0.4s ease;
-    }
-
-    .special-card:hover img {
-        filter: brightness(70%);
-    }
-
-    .special-info {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        color: #fff;
-        background: rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(2px);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 30px;
-        animation: fadeIn 1.4s ease-in-out;
-    }
-
-    .special-info h2 {
-        font-family: 'Playfair Display', serif;
-        font-size: 2.2rem;
-        color: #FFD700;
-        margin-bottom: 8px;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-    }
-
-    .special-info h3 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 15px;
-        color: #fff;
-    }
-
-    .special-info p {
-        font-size: 1.1rem;
-        color: #f5f5f5;
-        margin-bottom: 6px;
-    }
-
-    .price {
-        margin-top: 10px;
-        font-size: 1.3rem;
-        color: #ffb300;
-        font-weight: 600;
-    }
-
-    .btn-order {
-        margin-top: 20px;
-        background: linear-gradient(135deg, #ffb300, #ff9500);
-        color: #000;
-        padding: 12px 32px;
-        border-radius: 50px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(255, 179, 0, 0.3);
-    }
-
-    .btn-order:hover {
-        background: linear-gradient(135deg, #ffc947, #ffb300);
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(255, 179, 0, 0.4);
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .special-info h3 {
-            font-size: 2rem;
-        }
-        .special-info p {
-            font-size: 1rem;
-        }
+        background-image: url("{% static 'web_app/images/bk_img6.png' %}");
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        color: #ffffff;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-    <h1>Home</h1>
+<section class="hero">
+    <div class="hero-content">
+        <h1>Saveur Moris</h1>
+        <p>Authentic Mauritian cuisine crafted with passion.</p>
+    </div>
+</section>
 
-    {% if special %}
-    <section class="specials-section">
-        <div class="special-card">
-            <img src="{{ special.image.url }}" alt="{{ special.name }}">
+<section class="special-section">
+
+    <h2 class="section-heading">Today’s Special</h2>
+
+    <div class="special-card">
+        {% if special %}
+            <img src="{{ special.image.url }}" alt="">
             <div class="special-info">
-                <h2>Our Specials</h2>
                 <h3>{{ special.name }}</h3>
                 <p>{{ special.description }}</p>
-                <p>Available: {{ special.available_days }}</p>
-                <p class="price">Rs {{ special.price }}</p>
-                <a href="{% url 'order' %}" class="btn-order">Order Now</a>
+                <span>{{ special.available_days }}</span>
+                <strong>Rs {{ special.price }}</strong>
+                <a href="{% url 'order' %}" class="order-btn">Order Now</a>
             </div>
-        </div>
-    </section>
-    {% else %}
-    <section class="specials-section">
-        <div class="special-card">
-            <img src="{% static 'web_app/images/biryani.jpg' %}" alt="Chicken Biryani">
+        {% else %}
+            <img src="{% static 'web_app/images/biryani.jpg' %}">
             <div class="special-info">
-                <h2>Our Specials</h2>
                 <h3>Chicken Biryani</h3>
-                <p>Fragrant basmati rice cooked with tender chicken and aromatic spices.</p>
-                <p>Available: Monday – Sunday</p>
-                <p class="price">Rs 250</p>
-                <a href="{% url 'order' %}" class="btn-order">Order Now</a>
+                <p>Fragrant rice cooked with tender chicken and spices.</p>
+                <span>Available Daily</span>
+                <strong>Rs 250</strong>
+                <a href="{% url 'order' %}" class="order-btn">Order Now</a>
             </div>
+        {% endif %}
+    </div>
+
+</section>
+
+<section class="popular-section">
+    <h2 class="section-heading">Popular Dishes</h2>
+
+    <div class="popular-row">
+
+        <div class="pop-card">
+            <img src="{% static 'web_app/images/farata_curry.png' %}">
+            <p>Farata & Curry</p>
         </div>
-    </section>
-    {% endif %}
+
+        <div class="pop-card">
+            <img src="{% static 'web_app/images/mine_frite.png' %}">
+            <p>Mine Frite</p>
+        </div>
+
+        <div class="pop-card">
+            <img src="{% static 'web_app/images/chicken_curry.png' %}">
+            <p>Chicken Curry</p>
+        </div>
+
+    </div>
+</section>
+
+<section class="testimonial-section">
+    <p class="quote">“Delicious food, warm atmosphere. Always coming back!”</p>
+    <span class="quote-author">— A Happy Customer</span>
+</section>
+
+<section class="cta-section">
+    <h2>Ready to Order?</h2>
+    <a href="{% url 'order' %}" class="cta-btn">Start Your Order</a>
+</section>
 {% endblock %}

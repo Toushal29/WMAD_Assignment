@@ -186,25 +186,6 @@ header {
     text-decoration: underline;
 }
 
-.about-contact-page .navbar {
-    background-color: rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(6px);
-    transition: 500ms;
-}
-
-.about-contact-page .navbar:hover {
-    transition: 500ms;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(6px);
-}
-
-.about-contact-page .navbar a:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    padding: 10px 20px;
-    border-radius: 25px;
-    color: white;
-}
-
 @keyframes fadeUp {
     0% {
         opacity: 0;
@@ -288,4 +269,8 @@ header {
     position: static;
     background-color: rgb(0, 0, 0);
     backdrop-filter: blur(4px);
+}
+
+.about-contact-page .navbar {
+    background-color: rgba(0, 0, 0, 0.4);
 }

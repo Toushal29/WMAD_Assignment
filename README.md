@@ -47,9 +47,9 @@
 C:.
 │   control_panel.log
 │   db.sqlite3
-│   debug.log
 │   manage.py
-│
+│   menu_items
+│   
 ├───admin_site
 │   │   admin.py
 │   │   apps.py
@@ -64,16 +64,14 @@ C:.
 │   │   │   __init__.py
 │   │   │
 │   │   └───__pycache__
-│   │           __init__.cpython-312.pyc
 │   │           __init__.cpython-313.pyc
 │   │
 │   ├───static
 │   │   └───admin_site
-│   │       ├───css
-│   │       │       admin_navbar.css
-│   │       │
-│   │       ├───images
-│   │       └───js
+│   │       └───css
+│   │               admin_navbar.css
+│   │               orders.css
+│   │
 │   ├───templates
 │   │   └───admin_site
 │   │           base_admin.html
@@ -87,20 +85,6 @@ C:.
 │   │           reservation.html
 │   │
 │   └───__pycache__
-│           admin.cpython-312.pyc
-│           admin.cpython-313.pyc
-│           apps.cpython-312.pyc
-│           apps.cpython-313.pyc
-│           middleware.cpython-312.pyc
-│           middleware.cpython-313.pyc
-│           models.cpython-312.pyc
-│           models.cpython-313.pyc
-│           urls.cpython-312.pyc
-│           urls.cpython-313.pyc
-│           views.cpython-312.pyc
-│           views.cpython-313.pyc
-│           __init__.cpython-312.pyc
-│           __init__.cpython-313.pyc
 │
 ├───control_panel
 │   │   admin.py
@@ -116,7 +100,6 @@ C:.
 │   │   │   __init__.py
 │   │   │
 │   │   └───__pycache__
-│   │           __init__.cpython-312.pyc
 │   │           __init__.cpython-313.pyc
 │   │
 │   ├───static
@@ -134,20 +117,10 @@ C:.
 │   │           logs.html
 │   │
 │   └───__pycache__
-│           admin.cpython-312.pyc
-│           admin.cpython-313.pyc
-│           apps.cpython-312.pyc
-│           apps.cpython-313.pyc
-│           middleware.cpython-312.pyc
-│           middleware.cpython-313.pyc
-│           models.cpython-312.pyc
-│           models.cpython-313.pyc
-│           urls.cpython-312.pyc
-│           urls.cpython-313.pyc
-│           views.cpython-312.pyc
-│           views.cpython-313.pyc
-│           __init__.cpython-312.pyc
-│           __init__.cpython-313.pyc
+│
+├───media
+│   └───menu_images
+│           briani.jpg
 │
 ├───web_app
 │   │   admin.py
@@ -164,39 +137,71 @@ C:.
 │   │   │   __init__.py
 │   │   │
 │   │   └───__pycache__
-│   │           0001_initial.cpython-312.pyc
-│   │           0001_initial.cpython-313.pyc
-│   │           __init__.cpython-312.pyc
-│   │           __init__.cpython-313.pyc
 │   │
 │   ├───static
+│   │   ├───menu_images
+│   │   │       bk_img6.png
+│   │   │       food1.webp
+│   │   │       food10.webp
+│   │   │       food11.webp
+│   │   │       food11_egr8qdf.webp
+│   │   │       food2.jpg
+│   │   │       food3.webp
+│   │   │       food5.webp
+│   │   │       food6.webp
+│   │   │       food7.webp
+│   │   │       food8.webp
+│   │   │       food9.jpg
+│   │   │
 │   │   └───web_app
 │   │       ├───css
 │   │       │       about_contact.css
 │   │       │       footer.css
+│   │       │       home.css
 │   │       │       log_in.css
+│   │       │       menu.css
+│   │       │       my_orders.css
 │   │       │       navbar.css
+│   │       │       order.css
 │   │       │       password_reset.css
 │   │       │       privacy_policy.css
 │   │       │       profile.css
 │   │       │       signup.css
 │   │       │
 │   │       ├───images
+│   │       │       biryani.jpg
 │   │       │       bk_img2.png
 │   │       │       bk_img3.png
-│   │       │       bk_img4.png
 │   │       │       bk_img5.png
 │   │       │       bk_img6.png
+│   │       │       food1.webp
+│   │       │       food10.webp
+│   │       │       food11.webp
+│   │       │       food2.jpg
+│   │       │       food3.webp
+│   │       │       food4.webp
+│   │       │       food5.webp
+│   │       │       food6.webp
+│   │       │       food7.webp
+│   │       │       food8.webp
+│   │       │       food9.jpg
+│   │       │       instagramIcon.png
 │   │       │       login.png
 │   │       │       logo.png
 │   │       │       min_apollo.png
+│   │       │       twitterIcon.png
+│   │       │       whatsAppIcon.png
 │   │       │
 │   │       └───js
 │   │               login.js
+│   │               my_orders.js
+│   │               order.js
 │   │               signup.js
 │   │
 │   ├───templates
 │   │   ├───registration
+│   │   │       custom_change_password.html
+│   │   │       custom_change_password_done.html
 │   │   │       custom_reset_complete.html
 │   │   │       custom_reset_confirm.html
 │   │   │       custom_reset_email.html
@@ -210,6 +215,7 @@ C:.
 │   │   └───web_app
 │   │       ├───account
 │   │       │       base_account.html
+│   │       │       confirm_delete.html
 │   │       │       orders.html
 │   │       │       profile.html
 │   │       │       reviews.html
@@ -224,6 +230,7 @@ C:.
 │   │       │       base.html
 │   │       │       home.html
 │   │       │       menu.html
+│   │       │       my_orders.html
 │   │       │       order.html
 │   │       │       reservation.html
 │   │       │
@@ -231,37 +238,16 @@ C:.
 │   │               privacy_policy.html
 │   │
 │   └───__pycache__
-│           admin.cpython-312.pyc
-│           admin.cpython-313.pyc
-│           apps.cpython-312.pyc
-│           apps.cpython-313.pyc
-│           forms.cpython-312.pyc
-│           forms.cpython-313.pyc
-│           models.cpython-312.pyc
-│           models.cpython-313.pyc
-│           urls.cpython-312.pyc
-│           urls.cpython-313.pyc
-│           views.cpython-312.pyc
-│           views.cpython-313.pyc
-│           __init__.cpython-312.pyc
-│           __init__.cpython-313.pyc
 │
 └───WMAD_project
     │   asgi.py
+    │   models.py
     │   settings.py
     │   urls.py
     │   wsgi.py
     │   __init__.py
     │
     └───__pycache__
-            settings.cpython-312.pyc
-            settings.cpython-313.pyc
-            urls.cpython-312.pyc
-            urls.cpython-313.pyc
-            wsgi.cpython-312.pyc
-            wsgi.cpython-313.pyc
-            __init__.cpython-312.pyc
-            __init__.cpython-313.pyc
 ```
 
 ## Development Setup
