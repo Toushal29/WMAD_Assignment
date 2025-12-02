@@ -98,5 +98,13 @@ function getCSRFToken() {
         ?.split("=")[1];
 }
 
+function changeQty(btn, val) {
+    let input = btn.parentNode.querySelector(".quantity");
+    let num = parseInt(input.value) + val;
+    input.value = Math.max(1, num);
+    console.log("Button clicked!", val, "New value:", input.value);
+}
+
+
 /* INITIAL CART LOAD */
 refreshCart();
