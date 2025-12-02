@@ -10,7 +10,7 @@
     <h1>Reset Your Password</h1>
 </header>
 <main class="container">
-    <p>Enter your email address and we’ll send you a reset link.</p>
+    <p>Enter your email address and we'll send you a reset link.</p>
     <form method="post">
         {% csrf_token %}
         {{ form.non_field_errors }}
