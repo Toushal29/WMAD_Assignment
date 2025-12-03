@@ -239,7 +239,7 @@ def confirm_order(request):
 
     cart.cartitem_set.all().delete()
 
-    return JsonResponse({"success": True, "redirect": "/profile/my_orders/"})
+    return JsonResponse({"success": True, "redirect": "/my-orders/"})
 
 # MY ORDERS
 @login_required
