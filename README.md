@@ -1,3 +1,85 @@
+# Team members
+| Team Name          | ID      |
+|--------------------|---------|
+| Toushal Sampat     | 2413826 |
+| Nilesh Khoosee     | 2413908 |
+| Hayilsing Nemchand | 2412971 |
+| Methilesh Ramsahye | 2413415 |
+| Isha Narain        | 2413288 |
+
+# Contribution
+## To be marked individually
+
+| Frontend (user view) |                                   |
+|----------------------|-----------------------------------|
+| Toushal              | Base template                     |
+|                      | Navbar                            |
+|                      | footer                            |
+|                      | About-Contact Us                  |
+|                      | Privacy Policy                    |
+|                      | Login                             |
+|                      | Signup                            |
+|                      | Reset password                    |
+|                      | User profile Management Page      |
+|                      |                                   |
+| Isha                 | Home                              |
+|                      | Menu                              |
+|                      |                                   |
+| Methilesh            | Order                             |
+|                      |                                   |
+| Nilesh               | Reservation - login v/s no login  |
+|                      |                                   |
+|                      |                                   |
+
+| Frontend (admin view - admin site) |                         |
+|------------------------------------|-------------------------|
+| Toushal                            | Base Template + Navbar  |
+|                                    | Customer Details Page   |
+|                                    |                         |
+| Nilesh                             | Reservation page        |
+|                                    |                         |
+| Isha                               | Edit Menu Page          |
+|                                    |                         |
+| Methilesh                          | Order Page              |
+
+| Frontend (customer view - web app) |                             |
+|------------------------------------|-----------------------------|
+| Toushal                            | Base template + navigation  |
+|                                    | User personal details       |
+|                                    | User reservation details    |
+|                                    | User order details          |
+|                                    | User Settings               |
+
+
+| Backend (main page - web app) |                                      |
+|-------------------------------|--------------------------------------|
+| Hayilsing                     | Database                             |
+|                               | reset user password                  |
+|                               |                                      |
+| Hayilsing + Isha              | Signup                               |
+|                               | Login                                |
+|                               |                                      |
+| Methilesh                     | Add/remove menu to cart + checkout   |
+|                               |                                      |
+| Nilesh                        | Reservation - save data to database  |
+
+| Backend (admin site) |                                                             |
+|----------------------|-------------------------------------------------------------|
+| Toushal              | Customer details - get/search + view/update/delete user     |
+|                      |                                                             |
+| Nilesh               | Reservation details - get/search + view/update reservation  |
+|                      |                                                             |
+| Methilesh            | Order details - get/search + view/update orders             |
+|                      |                                                             |
+| Isha                 | Edit Menu - get/search + add/update/delete menu             |
+
+| Backend (customer profile - web app) |                                                          |
+|--------------------------------------|----------------------------------------------------------|
+| Toushal                              | Get + display all details associated to that login user  |
+|                                      | Update + save details associated to that login user      |
+|                                      | Delete associated login user                             |
+|                                      | Change password associated to that login user            |
+
 # Context File for WebRestaurant Project
 
 ## Project Overview
@@ -10,36 +92,6 @@
 - **Database**: SQLite3 (default)
 - **Frontend**: HTML templates with integrated static files (CSS/JS)
 - **Project Structure**: Multi-app Django project with separate apps for web interface and control panel
-
-### Core Apps
-
-1. **web_app**: Main restaurant website interface
-
-   - Home page
-   - Menu display
-   - Order placement
-   - Reservation system
-   - Login/Signup
-   - About/Contact pages
-   - Privacy policy
-
-2. **control_panel**: Administrative control panel
-   - Dashboard with server status
-   - Maintenance mode toggle
-   - Log viewing functionality
-
-## Key Features
-
-### Maintenance Mode
-
-- Custom middleware allows toggling the entire site into maintenance mode
-- When enabled, customers see a maintenance page while control panel remains accessible
-- Toggle functionality available through the control panel dashboard
-
-### Logging
-
-- Debug logging configured to write to `debug.log` file
-- Captures Django-level debug information for troubleshooting
 
 ## Project Structure
 
@@ -64,7 +116,6 @@ C:.
 │   │   │   __init__.py
 │   │   │
 │   │   └───__pycache__
-│   │           __init__.cpython-313.pyc
 │   │
 │   ├───static
 │   │   └───admin_site
@@ -78,7 +129,6 @@ C:.
 │   │           customer_details.html
 │   │           dashboard.html
 │   │           edit_menu.html
-│   │           edit_price.html
 │   │           feedback.html
 │   │           login.html
 │   │           orders.html
@@ -100,7 +150,6 @@ C:.
 │   │   │   __init__.py
 │   │   │
 │   │   └───__pycache__
-│   │           __init__.cpython-313.pyc
 │   │
 │   ├───static
 │   │   └───control_panel
@@ -120,7 +169,11 @@ C:.
 │
 ├───media
 │   └───menu_images
+│           bolrenverse.jpg
 │           briani.jpg
+│           briani_hmpKdxd.jpg
+│           briani_MLlGnDy.jpg
+│           caripoulet.jpg
 │
 ├───web_app
 │   │   admin.py
@@ -166,6 +219,7 @@ C:.
 │   │       │       password_reset.css
 │   │       │       privacy_policy.css
 │   │       │       profile.css
+│   │       │       reservation.css
 │   │       │       signup.css
 │   │       │
 │   │       ├───images
@@ -174,27 +228,18 @@ C:.
 │   │       │       bk_img3.png
 │   │       │       bk_img5.png
 │   │       │       bk_img6.png
-│   │       │       food1.webp
-│   │       │       food10.webp
-│   │       │       food11.webp
-│   │       │       food2.jpg
-│   │       │       food3.webp
-│   │       │       food4.webp
-│   │       │       food5.webp
-│   │       │       food6.webp
-│   │       │       food7.webp
-│   │       │       food8.webp
-│   │       │       food9.jpg
+│   │       │       chicken_curry.png
+│   │       │       farata_curry.png
 │   │       │       instagramIcon.png
 │   │       │       login.png
 │   │       │       logo.png
+│   │       │       mine_frite.png
 │   │       │       min_apollo.png
 │   │       │       twitterIcon.png
 │   │       │       whatsAppIcon.png
 │   │       │
 │   │       └───js
 │   │               login.js
-│   │               my_orders.js
 │   │               order.js
 │   │               signup.js
 │   │
@@ -218,6 +263,7 @@ C:.
 │   │       │       confirm_delete.html
 │   │       │       orders.html
 │   │       │       profile.html
+│   │       │       reservations.html
 │   │       │       reviews.html
 │   │       │       settings.html
 │   │       │
@@ -228,6 +274,7 @@ C:.
 │   │       ├───main_page
 │   │       │       about_contact.html
 │   │       │       base.html
+│   │       │       checkout.html
 │   │       │       home.html
 │   │       │       menu.html
 │   │       │       my_orders.html
@@ -268,7 +315,7 @@ C:.
    ```
 
 3. **Database Migrations**:
-
+   *Only to run if **db.sqlite3** file not present*
    ```bash
    python manage.py makemigrations
    python manage.py migrate
@@ -279,98 +326,3 @@ C:.
    python manage.py runserver
    ```
    Visit `http://127.0.0.1:8000/` to access the application.
-
-### Key Commands
-
-- **Create migrations**: `python manage.py makemigrations`
-- **Apply migrations**: `python manage.py migrate`
-- **Run server**: `python manage.py runserver`
-- **Collect static files**: `python manage.py collectstatic`
-
-## Development Conventions
-
-### Project Workflow
-
-1. Switch to development branch: `git checkout development`
-2. Create feature branch: `git checkout -b feature/<featureName>`
-3. Make changes
-4. If installing new packages: `pip install package-name` then `pip freeze > requirements.txt`
-5. If modifying models: `python manage.py makemigrations` then `python manage.py migrate`
-6. Commit and push: `git add .` → `git commit -m "message"` → `git push origin feature/<featureName>`
-7. Create pull request from feature branch to development
-8. After merge: Sync with development branch
-
-### Code Structure
-
-- Separate apps for different functionality (web_app vs control_panel)
-- Template structure: `app_name/templates/app_name/page.html`
-- Static files: `app_name/static/app_name/`
-- URL routing configured via `urls.py` files in each app
-
-## Configuration Details
-
-### Settings
-
-- Debug mode: Enabled (`DEBUG = True`)
-- Allowed hosts: `['*']` (not production-ready)
-- Static files: Located at `web_app/static/`
-- Database: SQLite3 (`db.sqlite3`)
-- Custom maintenance mode setting: `MAINTENANCE_MODE = False`
-
-### Middleware
-
-- Custom `MaintenanceMiddleware` handles site-wide maintenance mode
-- Standard Django security and session middleware included
-
-### URLs
-
-- Main website accessible at root path (`/`)
-- Control panel accessible at `/control/`
-- Admin interface at `/admin/`
-
-## Important Files & Locations
-
-- **Settings**: `WMAD_project/settings.py` - Core Django configuration
-- **Main URLs**: `WMAD_project/urls.py` - Root URL routing
-- **Middleware**: `control_panel/middleware.py` - Maintenance mode logic
-- **Control Panel Views**: `control_panel/views.py` - Dashboard and maintenance toggle
-- **Web App Views**: `web_app/views.py` - Main site page handlers
-- **Requirements**: `requirements.txt` - Python dependencies
-- **Log File**: `debug.log` - Debug information (created when application runs)
-
-## Special Features
-
-### Maintenance Mode Implementation
-
-1. Toggle accessible via control panel at `/control/maintenance/toggle/`
-2. Configurable via `MAINTENANCE_MODE` setting in `settings.py`
-3. Custom middleware renders maintenance page to customers when enabled
-4. Control panel (`/control/`) remains accessible during maintenance
-
-### Dashboard Functionality
-
-- Shows server status
-- Displays restaurant name ("Saveur Moris")
-- Shows maintenance mode status
-- Displays recent logs (last 50 lines from debug.log)
-
-## Testing & Quality Assurance
-
-The project includes Django's standard testing framework. Tests would typically be added to the `tests.py` files in each app. For now, there are placeholder test files in both apps.
-
-## Security Considerations
-
-- The project uses Django's built-in security middleware
-- Secret key is currently using a default development key and should be changed for production
-- Maintenance mode provides a way to take the site offline for updates
-- Static files configuration follows Django best practices
-
-## Future Enhancement Areas
-
-Potential areas for improvement:
-
-- Production security settings (proper SECRET_KEY, allowed hosts, etc.)
-- Database configuration for production environments
-- Enhanced logging configuration
-- Additional model fields for restaurant functionality
-- Authentication and authorization features
