@@ -256,29 +256,29 @@ C:.
 
 1. **Virtual Environment**:
 
-   ```bash
-   python -m venv .venv
-   .\.venv\Scripts\activate  # Windows
-   ```
+```bash
+python -m venv .venv
+.\.venv\Scripts\activate  # Windows
+```
 
 2. **Install Dependencies**:
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+pip install -r requirements.txt
+```
 
 3. **Database Migrations**:
 
-   ```bash
-   python manage.py makemigrations
-   python manage.py migrate
-   ```
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
 
 4. **Run Development Server**:
-   ```bash
-   python manage.py runserver
-   ```
-   Visit `http://127.0.0.1:8000/` to access the application.
+```bash
+python manage.py runserver
+```
+Visit `http://127.0.0.1:8000/` to access the application.
 
 ### Key Commands
 

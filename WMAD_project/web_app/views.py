@@ -1,3 +1,5 @@
+# C:\Users\...\WMAD_Assignment\WMAD_project\web_app\views.py
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout

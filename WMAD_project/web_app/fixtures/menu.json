@@ -1,0 +1,32 @@
+[
+    {
+        "model": "web_app.menu",
+        "pk": 1,
+        "fields": {
+        "menuName": "Chicken Biryani",
+        "description": "Traditional Mauritian biryani with spices and basmati rice",
+        "price": "250.00",
+        "image_url": "menu_images/briyani.jpg"
+        }
+    },
+    {
+        "model": "web_app.menu",
+        "pk": 2,
+        "fields": {
+        "menuName": "Bol Renverse",
+        "description": "Rice bowl with chicken, vegetables and fried egg",
+        "price": "180.00",
+        "image_url": "menu_images/bolrenverse.jpg"
+        }
+    },
+    {
+        "model": "web_app.menu",
+        "pk": 3,
+        "fields": {
+        "menuName": "Cari Poulet",
+        "description": "Rice bowl with chicken curry",
+        "price": "150.00",
+        "image_url": "menu_images/caripoulet.jpg"
+        }
+    }
+]

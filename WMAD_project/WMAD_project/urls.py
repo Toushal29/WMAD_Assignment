@@ -1,4 +1,5 @@
-# C:\Users\toush\Desktop\WMAD_Assignment\WMAD_project\WMAD_project\urls.py
+# C:\Users\...\WMAD_Assignment\WMAD_project\WMAD_project\urls.py
+
 """
 URL configuration for WMAD_project project.
 
