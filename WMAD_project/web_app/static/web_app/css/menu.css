@@ -1,10 +1,10 @@
-.menu-title {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+h1 {
+    justify-content: center;
+    font-size: 2.5rem;
     text-align: center;
-    font-family: 'Playfair Display', serif;
-    color: #FFD700;
-    font-size: 2.2rem;
+    margin: 10px 0px 20px 0px;
+    color: #ffffff;
+    text-decoration: underline;
 }
 
 .menu-container {
@@ -40,11 +40,14 @@
 }
 
 .menu-card {
-    background: rgba(255, 255, 255, 0.18);
-    border-radius: 14px;
-    padding: 1rem;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.25);
+    padding: .5rem;
     text-align: center;
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(5px);
     box-shadow: 0 4px 16px rgba(0,0,0,0.25);
     display: flex;
     flex-direction: column;
@@ -54,13 +57,17 @@
 }
 
 .menu-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     filter: brightness(110%);
     
 }
 
 
 .menu-image {
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.5);
     width: 100%;
     height: 180px;
     object-fit: cover;
@@ -69,19 +76,17 @@
 
 .menu-card h3 {
     color: #FFD700;
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
+    font-size: 1.25rem;
 }
 
 .menu-card p {
-    color: #e5e5e5;
-    font-size: 0.95rem;
+    color: #ffffff;
+    font-size: 1rem;
 }
 
 .price {
-    color: #ffb300;
-    font-size: 1.25rem;
     font-weight: bold;
+    text-decoration: underline;
     margin-top: 0.4rem;
 }
 
@@ -122,8 +127,11 @@
     width: 90%;
     max-width: 450px;
     background: rgba(30,30,30,0.95);
-    border-radius: 16px;
-    padding: 1.5rem;
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.5);
+    padding: 1.0rem;
     text-align: center;
     color: #fff;
     box-shadow: 0 0 18px rgba(0,0,0,0.5);
@@ -131,22 +139,29 @@
 
 .modal-box img {
     width: 100%;
-    height: 220px;
+    height: 300px;
     object-fit: cover;
-    border-radius: 12px;
-    margin-bottom: 1rem;
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 0.75rem;
 }
 
 .modal-box h2 {
-    font-family: 'Playfair Display', serif;
     color: #FFD700;
-    margin-bottom: 0.5rem;
-    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
 }
 
 .modal-box p {
     margin-bottom: 0.75rem;
-    font-size: 1.05rem;
+    font-size: 1rem;
+}
+
+.modal-details {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
 }
 
 .modal-close {
@@ -155,7 +170,7 @@
     top: 10px;
     font-size: 2rem;
     cursor: pointer;
-    color: #fff;
+    color: #ffffff;
 }
 
 @media (max-width: 768px) {

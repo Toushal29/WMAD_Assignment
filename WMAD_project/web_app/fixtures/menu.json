@@ -3,30 +3,154 @@
         "model": "web_app.menu",
         "pk": 1,
         "fields": {
-        "menuName": "Chicken Biryani",
-        "description": "Traditional Mauritian biryani with spices and basmati rice",
-        "price": "250.00",
-        "image_url": "menu_images/briyani.jpg"
+            "menuName": "Bol Renverse",
+            "description": "Classic Mauritian bowl with rice, vegetables and chicken topped with fried egg.",
+            "detailed_description": "Bol Renverse is a beloved Mauritian dish that features a harmonious blend of flavors and textures. It typically consists of a bed of fragrant rice, often infused with spices, topped with a colorful array of sautéed vegetables such as carrots, peas, and bell peppers. The dish is crowned with tender pieces of chicken, which are marinated and cooked to perfection. To complete the experience, a perfectly fried egg is placed on top, adding richness and a delightful contrast to the savory components. Bol Renverse is not only a feast for the taste buds but also a visual delight, making it a popular choice among locals and visitors alike.",
+            "price": "180.00",
+            "image_url": "menu_images/bol_renverse.jpg"
         }
     },
     {
         "model": "web_app.menu",
         "pk": 2,
         "fields": {
-        "menuName": "Bol Renverse",
-        "description": "Rice bowl with chicken, vegetables and fried egg",
-        "price": "180.00",
-        "image_url": "menu_images/bolrenverse.jpg"
+            "menuName": "Boulette",
+            "description": "Traditional Mauritian dumplings served in soup or noodles.",
+            "detailed_description": "Boulette is a traditional Mauritian dish that consists of small, flavorful dumplings made from a mixture of ground meat (often chicken or fish), herbs, and spices. These dumplings are typically cooked in a savory broth, which can be enjoyed as a comforting soup or served alongside noodles for a heartier meal. The boulette itself is tender and packed with aromatic flavors, making it a beloved comfort food in Mauritian cuisine. Whether enjoyed on its own or as part of a larger meal, boulette offers a delightful combination of textures and tastes that reflect the rich culinary heritage of Mauritius.",
+            "price": "120.00",
+            "image_url": "menu_images/boulette.jpg"
         }
     },
     {
         "model": "web_app.menu",
         "pk": 3,
         "fields": {
-        "menuName": "Cari Poulet",
-        "description": "Rice bowl with chicken curry",
-        "price": "150.00",
-        "image_url": "menu_images/caripoulet.jpg"
+            "menuName": "Chicken Biryani",
+            "description": "Aromatic basmati rice cooked with chicken and traditional spices.",
+            "detailed_description": "Bol Renverse is a beloved Mauritian dish that features a harmonious blend of flavors and textures. It typically consists of a bed of fragrant rice, often infused with spices, topped with a colorful array of sautéed vegetables such as carrots, peas, and bell peppers. The dish is crowned with tender pieces of chicken, which are marinated and cooked to perfection. To complete the experience, a perfectly fried egg is placed on top, adding richness and a delightful contrast to the savory components. Bol Renverse is not only a feast for the taste buds but also a visual delight, making it a popular choice among locals and visitors alike.",
+            "price": "250.00",
+            "image_url": "menu_images/briyani.jpg"
+        }
+    },
+    {
+        "model": "web_app.menu",
+        "pk": 4,
+        "fields": {
+            "menuName": "Chicken Burger",
+            "description": "Grilled chicken burger served with fresh vegetables and sauce.",
+            "detailed_description": "Our Chicken Burger is a delicious and satisfying meal that features a juicy grilled chicken patty seasoned with a blend of herbs and spices. The patty is cooked to perfection, ensuring a tender and flavorful bite with every mouthful. It is served on a soft, toasted bun that provides the perfect balance of texture and taste. Fresh vegetables such as crisp lettuce, ripe tomatoes, and crunchy onions are added to enhance the flavor profile and provide a refreshing contrast to the savory chicken. A generous drizzle of our signature sauce ties all the elements together, creating a harmonious blend of flavors that will leave you craving for more. Whether enjoyed as a quick lunch or a hearty dinner, our Chicken Burger is sure to satisfy your hunger and delight your taste buds.",
+            "price": "150.00",
+            "image_url": "menu_images/burger_poulet.webp"
+        }
+    },
+    {
+        "model": "web_app.menu",
+        "pk": 5,
+        "fields": {
+            "menuName": "Cari Poulet",
+            "description": "Traditional Mauritian chicken curry served with rice.",
+            "detailed_description": "Cari Poulet is a traditional Mauritian dish that showcases the rich flavors of the island's culinary heritage. This hearty curry is made with tender pieces of chicken, slow-cooked in a savory sauce infused with aromatic spices and herbs. The dish is typically served over a bed of fragrant rice, creating a comforting and satisfying meal that reflects the cultural diversity of Mauritius. Whether enjoyed as a main course or as part of a larger feast, Cari Poulet offers a delightful balance of textures and tastes that will transport you to the heart of the island.",
+            "price": "190.00",
+            "image_url": "menu_images/caripoulet.jpg"
+        }
+    },
+    {
+        "model": "web_app.menu",
+        "pk": 6,
+        "fields": {
+            "menuName": "Halimi Poulet",
+            "description": "Chicken halim cooked slowly with spices and lentils.",
+            "detailed_description": "Halimi Poulet is a flavorful and comforting dish that features tender pieces of chicken cooked slowly in a rich and aromatic sauce made with lentils and a blend of spices. The slow cooking process allows the flavors to meld together, resulting in a hearty and satisfying meal that is perfect for any occasion. The dish is often served with rice or flatbread, making it a complete and delicious meal that showcases the culinary traditions of Mauritius.",
+            "price": "210.00",
+            "image_url": "menu_images/halimi_poulet.webp"
+        }
+    },
+    {
+        "model": "web_app.menu",
+        "pk": 7,
+        "fields": {
+            "menuName": "Halim Agneau",
+            "description": "Rich lamb halim cooked with lentils and aromatic spices.",
+            "detailed_description": "Halim Agneau is a delectable dish that features tender pieces of lamb cooked slowly in a flavorful sauce made with lentils and a blend of aromatic spices. The slow cooking process allows the flavors to develop and intensify, resulting in a rich and satisfying meal that is perfect for any occasion. The dish is often served with rice or flatbread, making it a complete and delicious meal that showcases the culinary traditions of Mauritius.",
+            "price": "230.00",
+            "image_url": "menu_images/halim_Agneau.jpg"
+        }
+    },
+    {
+        "model": "web_app.menu",
+        "pk": 8,
+        "fields": {
+            "menuName": "Kebab",
+            "description": "Grilled kebab served with flatbread and sauces.",
+            "detailed_description": "Our Kebab is a delicious and satisfying meal that features tender pieces of meat, marinated in a blend of herbs and spices, and grilled to perfection. The kebab is served with warm flatbread and a variety of flavorful sauces that complement the savory flavors of the meat. Whether enjoyed as a quick lunch or a hearty dinner, our Kebab offers a delightful combination of textures and tastes that will leave you craving for more.",
+            "price": "170.00",
+            "image_url": "menu_images/kebab.jpg"
+        }
+    },
+    {
+        "model": "web_app.menu",
+        "pk": 9,
+        "fields": {
+            "menuName": "Mine Bouille",
+            "description": "Mauritian noodle soup with vegetables and chicken.",
+            "detailed_description": "Mine Bouille is a comforting and flavorful Mauritian noodle soup that features tender pieces of chicken, fresh vegetables, and a savory broth. The dish is made with thin noodles that are cooked to perfection, creating a satisfying texture that complements the rich flavors of the broth. Whether enjoyed as a light meal or a hearty dinner, Mine Bouille offers a delightful combination of tastes and textures that will warm your soul and satisfy your hunger.",
+            "price": "160.00",
+            "image_url": "menu_images/mine_bouille.webp"
+        }
+    },
+    {
+        "model": "web_app.menu",
+        "pk": 10,
+        "fields": {
+            "menuName": "Mine Frite Poulet",
+            "description": "Stir-fried noodles with chicken and vegetables.",
+            "detailed_description": "Mine Frite Poulet is a delicious and satisfying dish that features stir-fried noodles cooked with tender pieces of chicken and a variety of fresh vegetables. The noodles are tossed in a savory sauce that enhances the flavors of the ingredients, creating a harmonious blend of tastes and textures. Whether enjoyed as a quick lunch or a hearty dinner, Mine Frite Poulet offers a delightful combination of flavors that will leave you craving for more.",
+            "price": "170.00",
+            "image_url": "menu_images/mine_frite_poulet.webp"
+        }
+    },
+    {
+        "model": "web_app.menu",
+        "pk": 11,
+        "fields": {
+            "menuName": "Mine Frite Veg",
+            "description": "Vegetarian stir-fried noodles with fresh vegetables.",
+            "detailed_description": "Mine Frite Veg is a delicious and satisfying vegetarian dish that features stir-fried noodles cooked with a variety of fresh vegetables. The noodles are tossed in a savory sauce that enhances the flavors of the ingredients, creating a harmonious blend of tastes and textures. Whether enjoyed as a quick lunch or a hearty dinner, Mine Frite Veg offers a delightful combination of flavors that will leave you craving for more.",
+            "price": "150.00",
+            "image_url": "menu_images/mine_frite_veg.jpg"
+        }
+    },
+    {
+        "model": "web_app.menu",
+        "pk": 12,
+        "fields": {
+            "menuName": "Vegetarian Pizza",
+            "description": "Pizza topped with fresh vegetables and cheese.",
+            "detailed_description": "Our Vegetarian Pizza is a delicious and satisfying meal that features a crispy crust topped with a generous layer of tomato sauce, melted cheese, and a variety of fresh vegetables. The combination of flavors and textures creates a delightful eating experience that is perfect for any occasion. Whether enjoyed as a quick lunch or a hearty dinner, our Vegetarian Pizza offers a delightful combination of tastes that will leave you craving for more.",
+            "price": "220.00",
+            "image_url": "menu_images/pizza_veg.webp"
+        }
+    },
+    {
+        "model": "web_app.menu",
+        "pk": 13,
+        "fields": {
+            "menuName": "Riz Frite",
+            "description": "Fried rice cooked with vegetables and egg.",
+            "detailed_description": "Riz Frite is a delicious and satisfying dish that features fried rice cooked with a variety of fresh vegetables and a perfectly cooked egg. The rice is stir-fried to perfection, creating a flavorful and aromatic meal that is perfect for any occasion. Whether enjoyed as a quick lunch or a hearty dinner, Riz Frite offers a delightful combination of tastes and textures that will leave you craving for more.",
+            "price": "160.00",
+            "image_url": "menu_images/riz_Frite.jpg"
+        }
+    },
+    {
+        "model": "web_app.menu",
+        "pk": 14,
+        "fields": {
+            "menuName": "Salmi Poulet",
+            "description": "Traditional Mauritian chicken salmi with rich gravy.",
+            "detailed_description": "Salmi Poulet is a traditional Mauritian dish that features tender pieces of chicken cooked in a rich and flavorful gravy made with a blend of aromatic spices and herbs. The slow cooking process allows the flavors to meld together, resulting in a hearty and satisfying meal that is perfect for any occasion. The dish is often served with rice or flatbread, making it a complete and delicious meal that showcases the culinary traditions of Mauritius.",
+            "price": "200.00",
+            "image_url": "menu_images/salmi_poulet.jpg"
         }
     }
 ]

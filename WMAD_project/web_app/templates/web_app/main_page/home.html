@@ -7,13 +7,16 @@
 <link rel="stylesheet" href="{% static 'web_app/css/home.css' %}">
 
 <style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
     body {
         background-image: url("{% static 'web_app/images/bk_img6.png' %}");
         background-size: cover;
         background-attachment: fixed;
         background-position: center;
         font-family: Verdana, Geneva, Tahoma, sans-serif;
-        color: #ffffff;
     }
 </style>
 {% endblock %}
@@ -27,16 +30,14 @@
 </section>
 
 <section class="special-section">
-
-    <h2 class="section-heading">Today’s Special</h2>
-
     <div class="special-card">
+        <h2 class="section-heading">Today's Special</h2>
         {% if special %}
             <img src="{{ special.image.url }}" alt="">
             <div class="special-info">
                 <h3>{{ special.name }}</h3>
                 <p>{{ special.description }}</p>
-                <span>{{ special.available_days }}</span>
+                <span>{{ special.available_days }}<span>
                 <strong>Rs {{ special.price }}</strong>
                 <a href="{% url 'order' %}" class="order-btn">Order Now</a>
             </div>

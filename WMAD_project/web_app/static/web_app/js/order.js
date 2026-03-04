@@ -100,3 +100,12 @@ function getCSRFToken() {
 
 /* INITIAL CART LOAD */
 refreshCart();
+
+// QUANTITY CHANGE
+function changeQty(btn, change) {
+    const qtyInput = btn.parentElement.querySelector(".quantity");
+    let value = parseInt(qtyInput.value) || 1;
+    value += change;
+    if (value < 1) value = 1;
+    qtyInput.value = value;
+}

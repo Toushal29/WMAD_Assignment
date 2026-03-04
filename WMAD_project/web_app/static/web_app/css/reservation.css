@@ -1,29 +1,33 @@
-body {
-    overflow: hidden;
-}
-
 .reservation-container {
     width: 80%;
     max-width: 800px;
-    margin: 40px auto 80px auto;
+    margin: 90px auto 80px auto;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.55);
-    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: 10px;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 1);
+    border-width: 1px;
     color: white;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(5px);
 }
 
-.reservation-container h1 {
+h1 {
     text-align: center;
-    font-size: 32px;
-    margin-bottom: 10px;
-    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-decoration: underline;
+    background-color: rgba(0, 0, 0, 0.35);
+    border-radius: 10px;
+    width: 60%;
+    padding: 10px 0px 10px 0px;
+    margin: 0 auto;
 }
 
 .reservation-container p {
     text-align: center;
     font-size: 16px;
-    margin-bottom: 18px;
+    margin-bottom: 20px;
 }
 
 .reservation-form {
@@ -44,8 +48,8 @@ body {
 }
 
 .reservation-form label {
+    display: flex;
     font-size: 15px;
-    font-weight: bold;
 }
 
 .reservation-form input,
@@ -56,15 +60,17 @@ body {
     border: 1px solid #ccc;
 }
 
-.reservation-form input[readonly] {
-    background: #e0e0e0;
-    cursor: not-allowed;
+.radio-group {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
-.radio-group {
+.radio-group label {
     display: flex;
-    gap: 20px;
     align-items: center;
+    cursor: pointer;
 }
 
 .reservation-btn {
@@ -81,25 +87,43 @@ body {
 
 .reservation-btn:hover {
     background: #ffbf00;
+    width: 80%;
 }
 
-.whatsapp-container {
+.whatsapp-box {
     text-align: center;
-    margin-top: 25px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.whatsapp-box p {
+    font-size: 15px;
+    color: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .whatsapp-btn {
-    background: #25D366;
-    color: white;
-    padding: 12px;
-    font-size: 18px;
-    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #25D366;
     text-decoration: none;
-    display: inline-block;
+    font-weight: 600;
+    border: 1px solid #25D366;
+    padding: 6px 15px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
 }
 
 .whatsapp-btn:hover {
-    background: #18a64b;
+    background: rgba(37, 211, 102, 0.1);
+    box-shadow: 0 0 10px rgba(37, 211, 102, 0.2);
+    transform: translateY(-1px);
 }
 
 .login-prompt {
@@ -121,19 +145,28 @@ body {
     background: #ffbf00;
 }
 
-.reservation-info {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 15px;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
     .r-flex-row {
         flex-direction: column;
-        gap: 10px;
+        gap: 5px;
     }
     body {
         overflow: auto;
+    }
+    .reservation-container {
+        width: 85%;
+        margin: 20px auto;
+    }
+    h1 {
+        text-align: center;
+        font-size: 2rem;
+        margin-bottom: 10px;
+        text-decoration: underline;
+        background-color: rgba(0, 0, 0, 0.25);
+        border-radius: 10px;
+        width: 80%;
+        padding: 10px 0px 10px 0px;
+        margin: 0 auto;
     }
 }

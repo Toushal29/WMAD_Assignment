@@ -7,23 +7,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'web_app/css/menu.css' %}">
 <style>
-    * { text-decoration: none; margin: 0; padding: 0; }
+    * {
+        text-decoration: none;
+        margin: 0;
+        padding: 0;
+    }
     body {
-        font-family: 'Poppins', sans-serif;
-        color: #fff;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
         background-image: url("{% static 'web_app/images/bk_img6.png' %}");
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;
         min-height: 100vh;
-        margin: 0;
         overflow: hidden;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<h1 class="menu-title">Our Menu</h1>
+<h1>Our Menus</h1>
 
 <div class="menu-container">
     <div class="menu-grid">
@@ -31,6 +33,7 @@
         <div class="menu-card"
             data-name="{{ item.menuName }}"
             data-description="{{ item.description }}"
+            data-details="{{ item.detailed_description }}"
             data-price="{{ item.price }}"
             data-image="{{ item.image_url.url }}">
             {% if item.image_url %}
@@ -54,6 +57,7 @@
         <img id="modal-img">
         <h2 id="modal-name"></h2>
         <p id="modal-description"></p>
+        <p id="modal-details" class="modal-details"></p>
         <p id="modal-price"></p>
     </div>
 </div>
@@ -65,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalImg = document.getElementById('modal-img');
     const modalName = document.getElementById('modal-name');
     const modalDesc = document.getElementById('modal-description');
+    const modalDetails = document.getElementById('modal-details');
     const modalPrice = document.getElementById('modal-price');
     const modalClose = document.querySelector('.modal-close');
 
@@ -73,6 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
             modalImg.src = card.dataset.image;
             modalName.textContent = card.dataset.name;
             modalDesc.textContent = card.dataset.description;
+            modalDetails.textContent = card.dataset.details;
             modalPrice.textContent = "Rs " + card.dataset.price;
             modal.style.display = 'flex';
         });
