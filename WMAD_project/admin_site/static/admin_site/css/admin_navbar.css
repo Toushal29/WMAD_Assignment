@@ -1,0 +1,54 @@
+.admin-navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: black;
+    color: white;
+    padding: 10px;
+    height: 50px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    font-family: Arial, sans-serif;
+}
+
+/* Make all 3 sections equal width → true centered navbar */
+.admin-center {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.admin-right .admin-main-btn {
+    margin-right: 15px;
+    padding: 6px 12px;
+    background-color: #222;
+    color: white;
+    border-radius: 4px;
+}
+
+.admin-right .admin-main-btn:hover {
+    background-color: #444;
+}
+
+
+/* Links */
+.admin-navbar a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+/* Active Tab */
+.admin-navbar a.active {
+    background: white;
+    color: black;
+    font-weight: bold;
+}
+
+/* Hover */
+.admin-navbar a:hover {
+    text-decoration: underline;
+}

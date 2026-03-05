@@ -1,0 +1,8 @@
+<p>Hello {{ user.get_username }},</p>
+<p>Click the link below to reset your password:</p>
+<p>
+    <a href="{{ protocol }}://{{ domain }}{% url 'custom_reset_confirm' uidb64=uid token=token %}">
+        Reset your password
+    </a>
+</p>
+<p>If you didn't request this, ignore this email.</p>

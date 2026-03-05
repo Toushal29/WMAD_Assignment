@@ -1,0 +1,54 @@
+{% extends 'web_app/account/base_account.html' %}
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+    <h2>Settings</h2>
+
+    <!-- account & security -->
+    <section class="settings-section">
+        <h3>Account & Security</h3>
+        <div class="setting-item">
+            <label>Change Password</label>
+            <a href="{% url 'custom_change_password' %}" class="btn-action">Change</a>
+        </div>
+        <!-- <div class="setting-item">
+            <label>Two-Step Verification</label>
+            <p class="note">Feature coming soon...</p>
+        </div> -->
+    </section>
+
+    <!-- display & accessibility -->
+    <section class="settings-section">
+        <h3>Display & Accessibility</h3>
+        <div class="setting-item">
+            <label>Theme Mode</label>
+            <select>
+                <option>Light Mode</option>
+                <option>Dark Mode</option>
+            </select>
+        </div>
+        <div class="setting-item">
+            <label>Language</label>
+            <select>
+                <option>English</option>
+                <option>French</option>
+                <option>Creole</option>
+            </select>
+        </div>
+    </section>
+
+    <!-- Danger Zone -->
+    <section class="settings-section danger-zone">
+        <h3>Danger Zone</h3>
+        <div class="setting-item">
+            <label>Delete My Account</label>
+            <form action="{% url 'delete_account' %}" method="GET">
+                <button class="btn-danger" type="submit">Delete</button>
+            </form>
+        </div>
+        <div class="setting-item">
+            <label>Clear Saved Data</label>
+            <button class="btn-danger">Clear</button>
+        </div>
+    </section>
+{% endblock %}

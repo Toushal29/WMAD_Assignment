@@ -1,0 +1,200 @@
+(.venv) PS C:\Users\toush\OneDrive\Repositories\WMAD_Assignment> cd .\WMAD_project\
+(.venv) PS C:\Users\toush\OneDrive\Repositories\WMAD_Assignment\WMAD_project> tree /f
+Folder PATH listing
+Volume serial number is 2C4F-4D79
+C:.
+│   control_panel.log
+│   db.sqlite3
+│   manage.py
+│   menu_items
+│   
+├───admin_site
+│   │   admin.py
+│   │   apps.py
+│   │   middleware.py
+│   │   models.py
+│   │   tests.py
+│   │   urls.py
+│   │   views.py
+│   │   __init__.py
+│   │
+│   ├───migrations
+│   │   │   __init__.py
+│   │   │
+│   │   └───__pycache__
+│   │           __init__.cpython-314.pyc
+│   │
+│   ├───static
+│   │   └───admin_site
+│   │       └───css
+│   │               admin_navbar.css
+│   │               orders.css
+│   │
+│   ├───templates
+│   │   └───admin_site
+│   │           base_admin.html
+│   │           customer_details.html
+│   │           dashboard.html
+│   │           edit_menu.html
+│   │           feedback.html
+│   │           login.html
+│   │           orders.html
+│   │           reservation.html
+│   │
+│   └───__pycache__
+│
+├───control_panel
+│   │   admin.py
+│   │   apps.py
+│   │   middleware.py
+│   │   models.py
+│   │   tests.py
+│   │   urls.py
+│   │   views.py
+│   │   __init__.py
+│   │
+│   ├───migrations
+│   │   │   __init__.py
+│   │   │
+│   │   └───__pycache__
+│   │           __init__.cpython-314.pyc
+│   │
+│   ├───static
+│   │   └───control_panel
+│   │       ├───css
+│   │       │       dashboard.css
+│   │       │
+│   │       └───images
+│   │               logo.png
+│   │
+│   ├───templates
+│   │   └───control_panel
+│   │           customer_maintenance.html
+│   │           dashboard.html
+│   │           logs.html
+│   │
+│   └───__pycache__
+│
+├───media
+│   └───menu_images
+│           bol_renverse.jpg
+│           boulette.jpg
+│           briyani.jpg
+│           burger_poulet.webp
+│           caripoulet.jpg
+│           halimi_poulet.webp
+│           halim_Agneau.jpg
+│           kebab.jpg
+│           mine_bouille.webp
+│           mine_frite_poulet.webp
+│           mine_frite_veg.jpg
+│           pizza_veg.webp
+│           riz_Frite.jpg
+│           salmi_poulet.jpg
+│
+├───web_app
+│   │   admin.py
+│   │   apps.py
+│   │   forms.py
+│   │   models.py
+│   │   tests.py
+│   │   urls.py
+│   │   views.py
+│   │   __init__.py
+│   │
+│   ├───fixtures
+│   │       menu.json
+│   │
+│   ├───migrations
+│   │   │   0001_initial.py
+│   │   │   0002_menu_detailed_description.py
+│   │   │   __init__.py
+│   │   │
+│   │   └───__pycache__
+│   │
+│   ├───static
+│   │   └───web_app
+│   │       ├───css
+│   │       │       about_contact.css
+│   │       │       footer.css
+│   │       │       home.css
+│   │       │       log_in.css
+│   │       │       menu.css
+│   │       │       my_orders.css
+│   │       │       navbar.css
+│   │       │       order.css
+│   │       │       password_reset.css
+│   │       │       privacy_policy.css
+│   │       │       profile.css
+│   │       │       reservation.css
+│   │       │       signup.css
+│   │       │
+│   │       ├───images
+│   │       │       biryani.jpg
+│   │       │       bk_img3.png
+│   │       │       bk_img5.png
+│   │       │       bk_img6.png
+│   │       │       chicken_curry.png
+│   │       │       farata_curry.png
+│   │       │       login.png
+│   │       │       logo.png
+│   │       │       mine_frite.png
+│   │       │       min_apollo.png
+│   │       │
+│   │       └───js
+│   │               login.js
+│   │               order.js
+│   │               signup.js
+│   │
+│   ├───templates
+│   │   ├───registration
+│   │   │       custom_change_password.html
+│   │   │       custom_change_password_done.html
+│   │   │       custom_reset_complete.html
+│   │   │       custom_reset_confirm.html
+│   │   │       custom_reset_email.html
+│   │   │       custom_reset_email.txt
+│   │   │       custom_reset_request.html
+│   │   │       custom_reset_sent.html
+│   │   │       custom_reset_subject.txt
+│   │   │       login.html
+│   │   │       signup.html
+│   │   │
+│   │   └───web_app
+│   │       ├───account
+│   │       │       base_account.html
+│   │       │       confirm_delete.html
+│   │       │       orders.html
+│   │       │       profile.html
+│   │       │       reservations.html
+│   │       │       reviews.html
+│   │       │       settings.html
+│   │       │
+│   │       ├───components
+│   │       │       footer.html
+│   │       │       navbar.html
+│   │       │
+│   │       ├───main_page
+│   │       │       about_contact.html
+│   │       │       base.html
+│   │       │       checkout.html
+│   │       │       home.html
+│   │       │       menu.html
+│   │       │       my_orders.html
+│   │       │       order.html
+│   │       │       reservation.html
+│   │       │
+│   │       └───other_pages
+│   │               privacy_policy.html
+│   │
+│   └───__pycache__
+│
+└───WMAD_project
+    │   asgi.py
+    │   models.py
+    │   settings.py
+    │   urls.py
+    │   wsgi.py
+    │   __init__.py
+    │
+    └───__pycache__

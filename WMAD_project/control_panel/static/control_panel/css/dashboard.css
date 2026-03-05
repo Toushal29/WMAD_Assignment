@@ -1,0 +1,148 @@
+/* CSS Variables for Cleanliness */
+:root {
+    --header-height: 80px;
+    --success-color: #28a745; /* Green for Running/Online/Inactive */
+    --danger-color: #dc3545; /* Red for Stopped/Offline/Active (Maintenance) */
+    --border-color: #ccc;
+    --bg-color: rgb(217, 227, 230);
+    --text-color: #333;
+}
+
+/* Essential Layout Reset */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-color);
+    overflow: hidden; /* Prevent main page scroll */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Styling */
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: white;
+    border-bottom: 1px solid var(--border-color);
+    height: var(--header-height);
+    box-sizing: border-box;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px; /* Minor correction: using 'px' unit */
+    margin-right: 50px;
+}
+
+h1 {
+    color: var(--text-color);
+    font-size: 1.4em;
+    margin: 0;
+}
+
+/* Main Content Area */
+.main-container {
+    flex-grow: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 0;
+}
+
+/* Top Row (Status & Toggle) */
+.status-row {
+    display: flex;
+    gap: 20px;
+}
+
+/* Status Container */
+.status-container {
+    flex: 2; /* Status takes more space */
+    background-color: white;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.status-container h2 {
+    font-size: 1.2em;
+    color: var(--text-color);
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px dotted #eee;
+}
+
+/* Maintenance Form Container */
+.maintenance-form-container {
+    flex: 1; /* Form takes less space */
+    background-color: white;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+}
+
+/* Status Tags */
+.status-tag {
+    padding: 3px 6px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Status Tag Colors */
+.running, .online, .inactive {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.stopped, .offline, .active {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+/* Button Styling */
+.toggle-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    width: 100%;
+}
+
+.toggle-button:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.toggle-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Button Specific Colors */
+/* If maintenance is inactive (ACTIVATE button shown) */
+.activate {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+/* If maintenance is active (DEACTIVATE button shown) */
+.deactivate {
+    background-color: var(--success-color);
+    color: white;
+}

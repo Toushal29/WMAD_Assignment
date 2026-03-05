@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Control Panel Logs</title>
+</head>
+<body>
+    <!-- Simple Navbar -->
+    <header style="padding: 10px; background: #eee; border-bottom: 1px solid #ccc;">
+        <a href="{% url 'dashboard' %}" style="margin-right: 20px; text-decoration: none; color: black; background-color: rgb(115, 115, 255); padding: 5px 10px; border-radius: 5px;">&larr; Back to Dashboard</a>
+        <strong>Control Panel Logs</strong>
+    </header>
+    <!-- Log Content -->
+    <main>
+        {% if logs %}
+            <pre style="white-space: pre-wrap; border: 1px solid #ccc; background: #fafafa;">
+{% for line in logs %}
+{{ line }}
+{% endfor %}
+            </pre>
+        {% else %}
+            <p>No logs available.</p>
+        {% endif %}
+    </main>
+</body>
+</html>

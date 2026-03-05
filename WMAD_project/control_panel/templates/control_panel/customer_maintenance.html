@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temporarily Closed - Savuer Moris</title>
+    <style>
+        :root {
+            --warning-color: #f39c12;
+            --text-dark: #34495e;
+            --background-light: #d9e3e6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            text-align: center;
+        }
+
+        .logo {
+            transition: 250ms;
+            width: 200px;
+            height: 200px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid var(--warning-color);
+        }
+
+        .logo:hover {
+            transition: 250ms;
+            box-shadow: 0 0 5px var(--warning-color);
+        }
+
+        .maintenance-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--text-dark);
+            font-size: 2.5em;
+            margin-bottom: 0;
+        }
+
+        .maintenance-container {
+            max-width: 600px;
+            padding: 40px;
+            margin: 20px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            /* border-top: 5px solid var(--warning-color); */
+        }
+
+        .contact-info {
+            border-top: 1px dashed #ccc;
+        }
+
+        .contact-info a {
+            color: var(--warning-color);
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="maintenance-body">
+    <header class="maintenance-header">
+        <img src="{% static 'control_panel/images/logo.png' %}" alt="Savuer Moris Logo" class="logo">
+        <h1>Savuer Moris</h1>
+    </header>
+    <main class="maintenance-container">
+        <h2>{{ status|default:"Pardon Our Appearance! 🛠️" }}</h2>
+        <p>Our restaurant website is currently undergoing **scheduled maintenance** to serve you better with exciting new features and performance improvements.</p>
+        <p>We are working quickly and should be back online soon! Please check back in a little while to view our menu and make a reservation.</p>
+    <div class="contact-info">
+            <h3>Need to contact us now?</h3>
+            <p>Email: <a href="mailto:info@yourrestaurant.com">info@yourrestaurant.com</a></p>
+            <p>Call: <a href="tel:1234567890">(123) 456-7890</a></p>
+        </div>
+    </main>
+</body>
+</html>
