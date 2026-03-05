@@ -1,3 +1,5 @@
+# C:\Users\...\WMAD_Assignment\WMAD_project\admin_site\views.py
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -268,15 +270,22 @@ def orders_page(request):
             ]
         })
 
-    return render(request, "admin_site/orders.html", {
-        "orders": data,
-        "total_orders": total_orders,
-        "total_delivered": total_completed,
-        "total_cancelled": total_cancelled,
-        "start": start or "",
-        "end": end or "",
-        "status_filter": status_filter or "",
-    })
+    return render(
+        request,
+        "admin_site/orders.html",
+        {
+            "active_tab": "orders",
+            "admin_user": request.admin_user,
+
+            "orders": data,
+            "total_orders": total_orders,
+            "total_delivered": total_completed,
+            "total_cancelled": total_cancelled,
+            "start": start or "",
+            "end": end or "",
+            "status_filter": status_filter or "",
+        }
+    )
 
 @admin_required
 @require_POST
@@ -350,3 +359,33 @@ def admin_delete_menu(request, id):
         messages.success(request, "Menu item deleted.")
 
     return redirect("admin_edit_menu")
+
+@admin_required
+def admin_reviews_page(request):
+
+    reviews = Reviews.objects.select_related(
+        "customer__user",
+        "menu"
+    ).order_by("-created_at")
+
+    return render(
+        request,
+        "admin_site/reviews.html",
+        {
+            "active_tab": "reviews",
+            "admin_user": request.admin_user,
+            "reviews": reviews
+        }
+    )
+
+
+@admin_required
+def admin_delete_review(request, id):
+
+    review = Reviews.objects.filter(review_id=id).first()
+
+    if review:
+        review.delete()
+        messages.success(request, "Review deleted.")
+
+    return redirect("admin_reviews")

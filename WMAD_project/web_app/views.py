@@ -8,10 +8,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
-from .forms import CustomUserCreationForm, ProfileUpdateForm
+from .forms import CustomUserCreationForm, ProfileUpdateForm, ReviewForm
 from .models import (
     Cart, CartItem, Order, OrderItem,
-    Menu, Special, Customer, Reservation
+    Menu, Special, Customer, Reservation, Reviews
 )
 from datetime import datetime
 
@@ -23,7 +23,18 @@ def home(request):
 # MENU
 def menu(request):
     items = Menu.objects.all()
-    return render(request, "web_app/main_page/menu.html", {"items": items})
+
+    reviews = Reviews.objects.select_related("customer", "menu")\
+        .order_by("-created_at")[:10]
+
+    return render(
+        request,
+        "web_app/main_page/menu.html",
+        {
+            "items": items,
+            "reviews": reviews
+        }
+    )
 
 # ORDER PAGE (FIXED WITH CART CHECK)
 def order(request):
@@ -283,4 +294,129 @@ def account_reservations(request):
 # ACCOUNT REVIEWS
 @login_required
 def account_reviews(request):
-    return render(request, "web_app/account/reviews.html")
+    customer = Customer.objects.get(user=request.user)
+    reviews = Reviews.objects.filter(customer=customer)\
+        .select_related("menu")\
+        .order_by("-created_at")
+
+    return render(
+        request,
+        "web_app/account/reviews.html",
+        {
+            "section": "reviews",
+            "reviews": reviews
+        }
+    )
+
+# REVIEW SUBMISSION
+@login_required
+def add_review(request, menu_id):
+    menu = get_object_or_404(Menu, pk=menu_id)
+    customer = Customer.objects.get(user=request.user)
+
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+
+        if form.is_valid():
+            rating = form.cleaned_data.get("rating")
+            comment = form.cleaned_data.get("comment", "")
+
+            Reviews.objects.update_or_create(
+                customer=customer,
+                menu=menu,
+                defaults={
+                    "rating": rating,
+                    "comment": comment
+                }
+            )
+
+            messages.success(request, "Review submitted!")
+            return redirect("menu")
+
+    return redirect("menu")
+
+@login_required
+def add_restaurant_review(request):
+    customer = Customer.objects.get(user=request.user)
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            rating = form.cleaned_data["rating"]
+            comment = form.cleaned_data.get("comment", "")
+
+            Reviews.objects.update_or_create(
+                customer=customer,
+                menu=None,
+                defaults={
+                    "rating": rating,
+                    "comment": comment
+                }
+            )
+            messages.success(request, "Restaurant review submitted!")
+    return redirect("reviews")
+
+def view_reviews(request):
+    menu_reviews = Reviews.objects.filter(menu__isnull=False)\
+        .select_related("menu", "customer")\
+        .order_by("-created_at")
+    restaurant_reviews = Reviews.objects.filter(menu__isnull=True)\
+        .select_related("customer")\
+        .order_by("-created_at")
+
+    return render(
+        request,
+        "web_app/main_page/reviews.html",
+        {
+            "menu_reviews": menu_reviews,
+            "restaurant_reviews": restaurant_reviews
+        }
+    )
+
+@login_required
+def edit_review(request, review_id):
+
+    customer = Customer.objects.get(user=request.user)
+
+    review = get_object_or_404(
+        Reviews,
+        review_id=review_id,
+        customer=customer
+    )
+
+    if request.method == "POST":
+
+        form = ReviewForm(request.POST, instance=review)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Review updated!")
+            return redirect("reviews")
+
+    else:
+        form = ReviewForm(instance=review)
+
+    return render(
+        request,
+        "web_app/account/edit_review.html",
+        {
+            "form": form,
+            "review": review
+        }
+    )
+
+@login_required
+def delete_review(request, review_id):
+
+    customer = Customer.objects.get(user=request.user)
+
+    review = get_object_or_404(
+        Reviews,
+        review_id=review_id,
+        customer=customer
+    )
+
+    review.delete()
+
+    messages.success(request, "Review deleted.")
+
+    return redirect("reviews")

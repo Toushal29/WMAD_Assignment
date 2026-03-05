@@ -1,3 +1,5 @@
+# C:\Users\...\WMAD_Assignment\WMAD_project\admin_site\urls.py
+
 from django.urls import path
 from . import views
 
@@ -28,6 +30,10 @@ urlpatterns = [
 
     # ORDER MANAGEMENT PAGE
     path('orders/', views.orders_page, name='admin_orders'),
+
+    # REVIEWS
+    path('reviews/', views.admin_reviews_page, name='admin_reviews'),
+    path('reviews/<int:id>/delete/', views.admin_delete_review, name='admin_delete_review'),
 
     # AJAX 
     path('ajax/order-complete/', views.complete_order, name='complete_order'),
