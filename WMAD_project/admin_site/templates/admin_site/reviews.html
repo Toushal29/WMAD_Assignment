@@ -1,0 +1,48 @@
+{% extends 'admin_site/base_admin.html' %}
+{% load static %}
+
+{% block title %}Reviews{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_site/css/reviews.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">Reviews</h1>
+
+<table class="reviews-table">
+    <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Menu</th>
+        <th>Rating</th>
+        <th>Comment</th>
+        <th>Date</th>
+        <th>Action</th>
+    </tr>
+    {% for r in reviews %}
+    <tr>
+        <td>{{ r.review_id }}</td>
+        <td>{{ r.customer.user.username }}</td>
+        <td>
+            {% if r.menu %}
+            {{ r.menu.menuName }}
+            {% else %}
+            Restaurant
+            {% endif %}
+        </td>
+        <td>{{ r.rating }}/5</td>
+        <td>{{ r.comment|truncatechars:80 }}</td>
+        <td>{{ r.created_at|date:"Y-m-d" }}</td>
+        <td>
+            <form method="POST" action="{% url 'admin_delete_review' r.review_id %}">
+                {% csrf_token %}
+                <button class="delete-btn">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

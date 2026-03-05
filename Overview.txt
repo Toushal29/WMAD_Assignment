@@ -17,10 +17,6 @@ d----l          3/5/2026  10:32 AM                WMAD_project
 
 
 
-(.venv) PS C:\Users\toush\OneDrive\Repositories\WMAD_Assignment> cd .\WMAD_project\
-(.venv) PS C:\Users\toush\OneDrive\Repositories\WMAD_Assignment\WMAD_project> tree /f
-Folder PATH listing
-Volume serial number is 2C4F-4D79
 C:.
 │   control_panel.log
 │   db.sqlite3
@@ -36,10 +32,10 @@ C:.
 │   │   urls.py
 │   │   views.py
 │   │   __init__.py
-│   │
+│   │   
 │   ├───migrations
 │   │   │   __init__.py
-│   │   │
+│   │   │   
 │   │   └───__pycache__
 │   │           __init__.cpython-314.pyc
 │   │
@@ -134,19 +130,28 @@ C:.
 │   ├───static
 │   │   └───web_app
 │   │       ├───css
-│   │       │       about_contact.css
-│   │       │       footer.css
-│   │       │       home.css
-│   │       │       log_in.css
-│   │       │       menu.css
-│   │       │       my_orders.css
-│   │       │       navbar.css
-│   │       │       order.css
-│   │       │       password_reset.css
-│   │       │       privacy_policy.css
-│   │       │       profile.css
-│   │       │       reservation.css
-│   │       │       signup.css
+│   │       │   │   about_contact.css
+│   │       │   │   footer.css
+│   │       │   │   home.css
+│   │       │   │   log_in.css
+│   │       │   │   menu.css
+│   │       │   │   my_orders.css
+│   │       │   │   navbar.css
+│   │       │   │   order.css
+│   │       │   │   password_reset.css
+│   │       │   │   privacy_policy.css
+│   │       │   │   profile.css
+│   │       │   │   reservation.css
+│   │       │   │   reviews.css
+│   │       │   │   signup.css
+│   │       │   │
+│   │       │   └───account
+│   │       │           layout.css
+│   │       │           orders.css
+│   │       │           profile.css
+│   │       │           reviews.css
+│   │       │           scroll.css
+│   │       │           settings.css
 │   │       │
 │   │       ├───images
 │   │       │       biryani.jpg
@@ -183,6 +188,7 @@ C:.
 │   │       ├───account
 │   │       │       base_account.html
 │   │       │       confirm_delete.html
+│   │       │       edit_review.html
 │   │       │       orders.html
 │   │       │       profile.html
 │   │       │       reservations.html
@@ -202,13 +208,14 @@ C:.
 │   │       │       my_orders.html
 │   │       │       order.html
 │   │       │       reservation.html
-│   │       │       view_reviews.html.html
+│   │       │       reviews.html
+│   │       │       view_reviews.html
 │   │       │
 │   │       └───other_pages
 │   │               privacy_policy.html
 │   │
 │   └───__pycache__
-
+|
 └───WMAD_project
     │   asgi.py
     │   models.py
