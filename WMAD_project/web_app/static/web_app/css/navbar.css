@@ -12,7 +12,7 @@
     background: linear-gradient(135deg,
             rgba(255, 255, 255, 0.15),
             rgba(255, 255, 255, 0.05));
-    backdrop-filter: blur(10px) saturate(160%);
+    backdrop-filter: blur(8px) saturate(160%);
     -webkit-backdrop-filter: blur(10px) saturate(160%);
     border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow:
@@ -20,17 +20,6 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
     z-index: 1000;
 }
-
-.navbar::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(rgba(255, 255, 255, 0.10),
-            rgba(255, 255, 255, 0));
-    pointer-events: none;
-}
-
 
 /* Logo */
 .logo a {
@@ -186,14 +175,16 @@
 .cart-nav-btn {
     font-size: 20px;
     color: white;
-    background: rgba(0, 0, 0, 0.1);
-    border: none;
+    background: rgba(0, 0, 0, 0.3);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     cursor: pointer;
-    transition: 200ms;
+    transition: 250ms;
 }
 
 .cart-nav-btn:hover {
-    transform: scale(1.05);
+    transform: scale(1.1);
     transition: 250ms;
 }
 
@@ -302,7 +293,7 @@
     background: rgba(255, 255, 255, 0.25);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 950px) {
 
     .navbar {
         flex-wrap: wrap;
