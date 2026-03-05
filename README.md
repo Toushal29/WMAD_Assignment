@@ -13,23 +13,21 @@
 | Frontend (user view) |                                   |
 |----------------------|-----------------------------------|
 | Toushal              | Base template                     |
-|                      | Navbar                            |
-|                      | footer                            |
-|                      | About-Contact Us                  |
-|                      | Privacy Policy                    |
-|                      | Login                             |
-|                      | Signup                            |
+|                      | Navbar + Footer Component         |
+|                      | About-Contact Us Page             |
+|                      | Privacy Policy Page               |
+|                      | Review Page                       |
+|                      | Login + Signup Page               |
 |                      | Reset password                    |
 |                      | User profile Management Page      |
 |                      |                                   |
-| Isha                 | Home                              |
-|                      | Menu                              |
+| Isha                 | Home Page                         |
+|                      | Menu Page                         |
 |                      |                                   |
-| Methilesh            | Order                             |
+| Methilesh            | Order Page                        |
 |                      |                                   |
 | Nilesh               | Reservation - login v/s no login  |
-|                      |                                   |
-|                      |                                   |
+
 
 | Frontend (admin view - admin site) |                         |
 |------------------------------------|-------------------------|
@@ -47,6 +45,7 @@
 | Toushal                            | Base template + navigation  |
 |                                    | User personal details       |
 |                                    | User reservation details    |
+|                                    | User Reviews                |
 |                                    | User order details          |
 |                                    | User Settings               |
 
@@ -66,6 +65,7 @@
 | Backend (admin site) |                                                             |
 |----------------------|-------------------------------------------------------------|
 | Toushal              | Customer details - get/search + view/update/delete user     |
+|                      | Review details - get + view/delete reviews                  |
 |                      |                                                             |
 | Nilesh               | Reservation details - get/search + view/update reservation  |
 |                      |                                                             |
@@ -84,11 +84,11 @@
 
 ## Project Overview
 
-**WebRestaurant** is a collaborative Django-based restaurant web application built with Django 5.2.7. The project allows users to interact with a restaurant website while providing an admin control panel with maintenance mode functionality.
+**WebRestaurant** is a collaborative Django-based restaurant web application built with Django 5.2.8. The project allows users to interact with a restaurant website while providing an admin control panel with maintenance mode functionality.
 
 ### Architecture
 
-- **Backend**: Django 5.2.7 (Python-based web framework)
+- **Backend**: Django 5.2.8 (Python-based web framework)
 - **Database**: SQLite3 (default)
 - **Frontend**: HTML templates with integrated static files (CSS/JS)
 - **Project Structure**: Multi-app Django project with separate apps for web interface and control panel
@@ -99,26 +99,28 @@
 
 1. **Virtual Environment**:
 
-   ```bash
-   python -m venv .venv
-   .\.venv\Scripts\activate  # Windows
-   ```
+```bash
+python -m venv .venv
+.\.venv\Scripts\activate  # Windows
+```
 
 2. **Install Dependencies**:
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+pip install -r requirements.txt
+```
 
 3. **Database Migrations**:
    *Only to run if **db.sqlite3** file not present*
-   ```bash
-   python manage.py makemigrations
-   python manage.py migrate
-   ```
+```bash
+cd .\WMAD_project\
+python manage.py makemigrations
+python manage.py migrate
+python manage.py loaddata menu
+```
 
 4. **Run Development Server**:
-   ```bash
-   python manage.py runserver
-   ```
-   Visit `http://127.0.0.1:8000/` to access the application.
+```bash
+python manage.py runserver
+```
+Visit `http://127.0.0.1:8000/` to access the application.
