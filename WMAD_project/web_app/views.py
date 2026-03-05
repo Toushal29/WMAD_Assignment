@@ -279,3 +279,8 @@ def account_reservations(request):
         "section": "reservations",
         "reservations": reservations
     })
+
+# ACCOUNT REVIEWS
+@login_required
+def account_reviews(request):
+    return render(request, "web_app/account/reviews.html")

@@ -26,25 +26,6 @@
 
 <h1>Place an Order</h1>
 
-<!-- Cart Dropdown (hidden initially) -->
-<div id="cart-dropdown" class="cart-dropdown">
-    <h3>Your Cart</h3>
-    <table id="cart-items" class="cart-table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Qty</th>
-                <th>Subtotal</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-    <p id="cart-total" class="cart-total">Total: Rs 0</p>
-    <button id="order-btn" class="action-btn primary">Place Order</button>
-    <button id="refresh-cart" class="action-btn danger">Clear Cart</button>
-</div>
-
 <!-- Menu -->
 <div class="menu-container">
     {% for item in items %}
@@ -62,7 +43,7 @@
     {% endfor %}
 </div>
 
-<a href="{% url 'my_orders' %}" class="my-orders-btn">My Orders</a>
+<a href="{% url 'my_orders' %}" class="my-orders-btn">View My Orders</a>
 
 <script src="{% static 'web_app/js/order.js' %}"></script>
 {% endblock %}

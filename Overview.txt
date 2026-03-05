@@ -1,7 +1,7 @@
-(.venv) PS C:\Users\Toushal\OneDrive\Repositories\WMAD_Assignment> cd .\WMAD_project\
-(.venv) PS C:\Users\Toushal\OneDrive\Repositories\WMAD_Assignment\WMAD_project> tree /f
+(.venv) PS C:\Users\toush\OneDrive\Repositories\WMAD_Assignment> cd .\WMAD_project\
+(.venv) PS C:\Users\toush\OneDrive\Repositories\WMAD_Assignment\WMAD_project> tree /f
 Folder PATH listing
-Volume serial number is F4BE-D916
+Volume serial number is 2C4F-4D79
 C:.
 │   control_panel.log
 │   db.sqlite3
@@ -42,7 +42,7 @@ C:.
 │   │           reservation.html
 │   │
 │   └───__pycache__
-|
+│
 ├───control_panel
 │   │   admin.py
 │   │   apps.py
@@ -77,11 +77,20 @@ C:.
 │
 ├───media
 │   └───menu_images
-│           bolrenverse.jpg
-│           briani.jpg
-│           briani_hmpKdxd.jpg
-│           briani_MLlGnDy.jpg
+│           bol_renverse.jpg
+│           boulette.jpg
+│           briyani.jpg
+│           burger_poulet.webp
 │           caripoulet.jpg
+│           halimi_poulet.webp
+│           halim_Agneau.jpg
+│           kebab.jpg
+│           mine_bouille.webp
+│           mine_frite_poulet.webp
+│           mine_frite_veg.jpg
+│           pizza_veg.webp
+│           riz_Frite.jpg
+│           salmi_poulet.jpg
 │
 ├───web_app
 │   │   admin.py
@@ -93,27 +102,17 @@ C:.
 │   │   views.py
 │   │   __init__.py
 │   │
+│   ├───fixtures
+│   │       menu.json
+│   │
 │   ├───migrations
 │   │   │   0001_initial.py
+│   │   │   0002_menu_detailed_description.py
 │   │   │   __init__.py
 │   │   │
 │   │   └───__pycache__
 │   │
 │   ├───static
-│   │   ├───menu_images
-│   │   │       bk_img6.png
-│   │   │       food1.webp
-│   │   │       food10.webp
-│   │   │       food11.webp
-│   │   │       food11_egr8qdf.webp
-│   │   │       food2.jpg
-│   │   │       food3.webp
-│   │   │       food5.webp
-│   │   │       food6.webp
-│   │   │       food7.webp
-│   │   │       food8.webp
-│   │   │       food9.jpg
-│   │   │
 │   │   └───web_app
 │   │       ├───css
 │   │       │       about_contact.css
@@ -132,19 +131,15 @@ C:.
 │   │       │
 │   │       ├───images
 │   │       │       biryani.jpg
-│   │       │       bk_img2.png
 │   │       │       bk_img3.png
 │   │       │       bk_img5.png
 │   │       │       bk_img6.png
 │   │       │       chicken_curry.png
 │   │       │       farata_curry.png
-│   │       │       instagramIcon.png
 │   │       │       login.png
 │   │       │       logo.png
 │   │       │       mine_frite.png
 │   │       │       min_apollo.png
-│   │       │       twitterIcon.png
-│   │       │       whatsAppIcon.png
 │   │       │
 │   │       └───js
 │   │               login.js
@@ -203,5 +198,3 @@ C:.
     │   __init__.py
     │
     └───__pycache__
-
-(.venv) PS C:\Users\Toushal\OneDrive\Repositories\WMAD_Assignment\WMAD_project> 

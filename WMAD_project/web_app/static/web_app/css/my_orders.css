@@ -1,18 +1,7 @@
 h1 {
-    font-family: "Playfair Display", serif;
-    margin-bottom: 20px;
-}
-
-.table-container {
-    width: 95%;
-    max-width: 1200px;
-    margin: auto;
-    max-height: 65vh;
-    overflow-y: auto;
-    background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(6px);
-    padding: 15px;
-    border-radius: 12px;
+    justify-content: center;
+    text-align: center;
+    margin: 10px auto 10px;
 }
 
 .table-container::-webkit-scrollbar {
@@ -25,9 +14,10 @@ h1 {
 }
 
 .orders-table {
-    width: 100%;
+    width: 90%;
     border-collapse: collapse;
     background: rgba(255,255,255,0.1);
+    margin: auto;
 }
 
 .orders-table th,

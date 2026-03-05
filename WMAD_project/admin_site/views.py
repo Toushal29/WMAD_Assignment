@@ -312,6 +312,7 @@ def admin_add_menu(request):
         Menu.objects.create(
             menuName=request.POST.get("menuName"),
             description=request.POST.get("description"),
+            detailed_description=request.POST.get("detailed_description"),
             price=request.POST.get("price"),
             image_url=request.FILES.get("image_url"),
         )
@@ -330,6 +331,7 @@ def admin_update_menu(request, id):
         item.menuName = request.POST.get("menuName", item.menuName)
         item.description = request.POST.get("description", item.description)
         item.price = request.POST.get("price", item.price)
+        item.detailed_description = request.POST.get("detailed_description",item.detailed_description)
 
         if request.FILES.get("image_url"):
             item.image_url = request.FILES["image_url"]

@@ -30,6 +30,7 @@ urlpatterns = [
     path('profile/settings/', views.settings_page, name='settings'),
     path('profile/my_orders/', views.account_orders, name='orders'),
     path('profile/my_reservations/', views.account_reservations, name='reservations'),
+    path('profile/my_reviews/', views.account_reviews, name='reviews'),
 
     # PASSWORD RESET
     path(
