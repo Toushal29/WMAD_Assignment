@@ -1,1 +1,0 @@
-# C:\Users\toush\Desktop\WMAD_Assignment\WMAD_project\WMAD_project\models.py
