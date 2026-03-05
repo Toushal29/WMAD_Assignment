@@ -15,6 +15,10 @@ urlpatterns = [
     path('reservation/', views.reservation, name='reservation'),
     path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
 
+    # PUBLIC REVIEWS
+    path("reviews/", views.view_reviews, name="reviews"),
+    path("review/restaurant/add/", views.add_restaurant_review, name="add_restaurant_review"),
+
     # SIMPLE LOGIN/SIGNUP
     path('login/', views.login_view, name='simple_login'),
     path('signup/', views.signup, name='simple_signup'),
@@ -30,7 +34,7 @@ urlpatterns = [
     path('profile/settings/', views.settings_page, name='settings'),
     path('profile/my_orders/', views.account_orders, name='orders'),
     path('profile/my_reservations/', views.account_reservations, name='reservations'),
-    path('profile/my_reviews/', views.account_reviews, name='reviews'),
+    path('profile/my_reviews/', views.account_reviews, name='account_reviews'),
 
     # PASSWORD RESET
     path(
@@ -99,4 +103,11 @@ urlpatterns = [
     # MY ORDERS PAGE
     path('my-orders/', views.my_orders, name='my_orders'),
     path('cancel-order/<int:orderid>/', views.cancel_order, name='cancel_order'),
+
+    # REVIEWS
+    path("review/add/<int:menu_id>/", views.add_review, name="add_review"),
+
+    # EDIT / DELETE
+    path("review/edit/<int:review_id>/", views.edit_review, name="edit_review"),
+    path("review/delete/<int:review_id>/", views.delete_review, name="delete_review"),
 ]

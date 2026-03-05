@@ -173,6 +173,64 @@ h1 {
     color: #ffffff;
 }
 
+.submit-review{
+
+margin-top:8px;
+
+padding:8px 18px;
+
+border:none;
+
+border-radius:20px;
+
+background:#ffa200;
+
+cursor:pointer;
+
+}
+
+.review-open-btn{
+
+margin-top:8px;
+
+padding:6px 14px;
+
+border:none;
+
+border-radius:20px;
+
+background:#FFD700;
+
+color:#000;
+
+font-weight:600;
+
+cursor:pointer;
+
+}
+
+.review-open-btn:hover{
+
+background:#ffb300;
+
+}
+
+#review-modal .modal-box{
+    background: white;
+    color: black;
+    max-width: 350px;
+}
+
+#review-modal textarea,
+#review-modal select{
+    width: 100%;
+    margin: 5px 0;
+}
+
+#review-modal button{
+    margin-top: 8px;
+}
+
 @media (max-width: 768px) {
     .menu-container {
         height: calc(100vh - 260px);

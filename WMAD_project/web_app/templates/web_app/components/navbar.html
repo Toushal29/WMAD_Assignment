@@ -12,6 +12,7 @@
                 <li><a href="/menu/">Menu</a></li>
                 <li><a href="/order/">Order</a></li>
                 <li><a href="/reservation/">Reservation</a></li>
+                <li><a href="/reviews/">Reviews</a></li>
                 <li><a href="/about-contact/">About & Contact</a></li>
             </ul>
         </div>
@@ -24,19 +25,19 @@
             </div>
 
             {% if user.is_authenticated %}
-                <div class="user-dropdown">
-                    <span class="username">👤 Hi, {{ user.username }}</span>
-                    <div class="dropdown-content">
-                        {% if "admin_" in user.username %}
-                            <a href="/admin-site/">Admin Panel</a>
-                        {% else %}
-                            <a href="/profile/">Profile</a>
-                        {% endif %}
-                        <a href="/account/logout/">Logout</a>
-                    </div>
+            <div class="user-dropdown">
+                <span class="username">👤 Hi, {{ user.username }}</span>
+                <div class="dropdown-content">
+                    {% if "admin_" in user.username %}
+                    <a href="/admin-site/">Admin Panel</a>
+                    {% else %}
+                    <a href="/profile/">Profile</a>
+                    {% endif %}
+                    <a href="/account/logout/">Logout</a>
                 </div>
+            </div>
             {% else %}
-                <a href="/login/" class="login-link">Log In</a>
+            <a href="/login/" class="login-link">Log In</a>
             {% endif %}
 
             <button class="hamburger" id="navToggle">☰</button>

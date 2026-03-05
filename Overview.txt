@@ -1,3 +1,22 @@
+(.venv) PS C:\Users\toush\OneDrive\Repositories\WMAD_Assignment> ls
+
+
+    Directory: C:\Users\toush\OneDrive\Repositories\WMAD_Assignment
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----l          3/5/2026  10:40 AM                .git
+d----l          3/4/2026   8:57 PM                .venv
+d----l          3/5/2026  10:32 AM                images
+d----l          3/5/2026  10:32 AM                WMAD_project
+-a---l          3/4/2026  10:39 AM            273 .gitignore
+-a---l          3/5/2026  10:18 AM           6203 Overview.txt
+-a---l          3/5/2026  10:40 AM          11831 README.md
+-a---l          3/4/2026  10:39 AM            164 requirements.txt
+
+
+
 (.venv) PS C:\Users\toush\OneDrive\Repositories\WMAD_Assignment> cd .\WMAD_project\
 (.venv) PS C:\Users\toush\OneDrive\Repositories\WMAD_Assignment\WMAD_project> tree /f
 Folder PATH listing
@@ -183,12 +202,13 @@ C:.
 │   │       │       my_orders.html
 │   │       │       order.html
 │   │       │       reservation.html
+│   │       │       view_reviews.html.html
 │   │       │
 │   │       └───other_pages
 │   │               privacy_policy.html
 │   │
 │   └───__pycache__
-│
+
 └───WMAD_project
     │   asgi.py
     │   models.py
