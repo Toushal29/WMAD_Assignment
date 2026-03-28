@@ -1,6 +1,7 @@
 # Team members
+
 | Team Name          | ID      |
-|--------------------|---------|
+| ------------------ | ------- |
 | Toushal Sampat     | 2413826 |
 | Nilesh Khoosee     | 2413908 |
 | Hayilsing Nemchand | 2412971 |
@@ -8,77 +9,32 @@
 | Isha Narain        | 2413288 |
 
 # Contribution
+
 ## To be marked individually
 
-| Frontend (user view) |                                   |
-|----------------------|-----------------------------------|
-| Toushal              | Base template                     |
-|                      | Navbar + Footer Component         |
-|                      | About-Contact Us Page             |
-|                      | Privacy Policy Page               |
-|                      | Review Page                       |
-|                      | Login + Signup Page               |
-|                      | Reset password                    |
-|                      | User profile Management Page      |
-|                      |                                   |
-| Isha                 | Home Page                         |
-|                      | Menu Page                         |
-|                      |                                   |
-| Methilesh            | Order Page                        |
-|                      |                                   |
-| Nilesh               | Reservation - login v/s no login  |
-
-
-| Frontend (admin view - admin site) |                         |
-|------------------------------------|-------------------------|
-| Toushal                            | Base Template + Navbar  |
-|                                    | Customer Details Page   |
-|                                    |                         |
-| Nilesh                             | Reservation page        |
-|                                    |                         |
-| Isha                               | Edit Menu Page          |
-|                                    |                         |
-| Methilesh                          | Order Page              |
-
-| Frontend (customer view - web app) |                             |
-|------------------------------------|-----------------------------|
-| Toushal                            | Base template + navigation  |
-|                                    | User personal details       |
-|                                    | User reservation details    |
-|                                    | User Reviews                |
-|                                    | User order details          |
-|                                    | User Settings               |
-
-
-| Backend (main page - web app) |                                      |
-|-------------------------------|--------------------------------------|
-| Hayilsing                     | Database                             |
-|                               | reset user password                  |
-|                               |                                      |
-| Hayilsing + Isha              | Signup                               |
-|                               | Login                                |
-|                               |                                      |
-| Methilesh                     | Add/remove menu to cart + checkout   |
-|                               |                                      |
-| Nilesh                        | Reservation - save data to database  |
-
-| Backend (admin site) |                                                             |
-|----------------------|-------------------------------------------------------------|
-| Toushal              | Customer details - get/search + view/update/delete user     |
-|                      | Review details - get + view/delete reviews                  |
-|                      |                                                             |
-| Nilesh               | Reservation details - get/search + view/update reservation  |
-|                      |                                                             |
-| Methilesh            | Order details - get/search + view/update orders             |
-|                      |                                                             |
-| Isha                 | Edit Menu - get/search + add/update/delete menu             |
-
-| Backend (customer profile - web app) |                                                          |
-|--------------------------------------|----------------------------------------------------------|
-| Toushal                              | Get + display all details associated to that login user  |
-|                                      | Update + save details associated to that login user      |
-|                                      | Delete associated login user                             |
-|                                      | Change password associated to that login user            |
+|               |                                  |                                        |                                        |                                     |                                                            |                                                         |
+| ------------- | -------------------------------- | -------------------------------------- | -------------------------------------- | ----------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------- |
+|               | **Frontend (user view)**         | **Frontend (customer view - web app)** | **Frontend (admin view - admin site)** | **Backend (main page - web app)**   | **Backend (admin site)**                                   | **Backend (customer profile - web app)**                |
+| **Toushal**   | Base template                    | Base template + navigation             | Base Template + Navbar                 |                                     | Customer details - get/search + view/update/delete user    | Get + display all details associated to that login user |
+|               | Navbar + Footer Component        | User personal details                  | Customer Details Page                  |                                     | Review details - get + view/delete reviews                 | Update + save details associated to that login user     |
+|               | About-Contact Us Page            | User reservation details               |                                        |                                     |                                                            | Delete associated login user                            |
+|               | Privacy Policy Page              | User Reviews                           |                                        |                                     |                                                            | Change password associated to that login user           |
+|               | Review Page                      | User order details                     |                                        |                                     |                                                            |                                                         |
+|               | Login + Signup Page              | User Settings                          |                                        |                                     |                                                            |                                                         |
+|               | Reset password                   |                                        |                                        |                                     |                                                            |                                                         |
+|               | User profile Management Page     |                                        |                                        |                                     |                                                            |                                                         |
+|               |                                  |                                        |                                        |                                     |                                                            |                                                         |
+| **Isha**      | Home Page                        |                                        | Edit Menu Page                         | Signup                              | Edit Menu - get/search + add/update/delete menu            |                                                         |
+|               | Menu Page                        |                                        |                                        | Login                               |                                                            |                                                         |
+|               |                                  |                                        |                                        |                                     |                                                            |                                                         |
+| **Methilesh** | Order Page                       |                                        | Order Page                             | Add/remove menu to cart + checkout  | Order details - get/search + view/update orders            |                                                         |
+|               |                                  |                                        |                                        |                                     |                                                            |                                                         |
+| **Nilesh**    | Reservation - login v/s no login |                                        | Reservation page                       | Reservation - save data to database | Reservation details - get/search + view/update reservation |                                                         |
+|               |                                  |                                        |                                        |                                     |                                                            |                                                         |
+| **Hayilsing** |                                  |                                        |                                        | Database                            |                                                            |                                                         |
+|               |                                  |                                        |                                        | reset user password                 |                                                            |                                                         |
+|               |                                  |                                        |                                        | Signup                              |                                                            |                                                         |
+|               |                                  |                                        |                                        | Login                               |                                                            |                                                         |
 
 # Context File for WebRestaurant Project
 
@@ -111,7 +67,8 @@ pip install -r requirements.txt
 ```
 
 3. **Database Migrations**:
-   *Only to run if **db.sqlite3** file not present*
+   _Only to run if **db.sqlite3** file not present_
+
 ```bash
 cd .\WMAD_project\
 python manage.py makemigrations
@@ -120,7 +77,9 @@ python manage.py loaddata menu
 ```
 
 4. **Run Development Server**:
+
 ```bash
 python manage.py runserver
 ```
+
 Visit `http://127.0.0.1:8000/` to access the application.
