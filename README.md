@@ -40,14 +40,14 @@
 
 ## Project Overview
 
-**WebRestaurant** is a collaborative Django-based restaurant web application built with Django 5.2.8. The project allows users to interact with a restaurant website while providing an admin control panel with maintenance mode functionality.
+**WebRestaurant** is a collaborative Django-based restaurant web application built with Django 5.2.8. The project allows users to interact with the restaurant website and includes a custom admin site for restaurant management.
 
 ### Architecture
 
 - **Backend**: Django 5.2.8 (Python-based web framework)
 - **Database**: SQLite3 (default)
 - **Frontend**: HTML templates with integrated static files (CSS/JS)
-- **Project Structure**: Multi-app Django project with separate apps for web interface and control panel
+- **Project Structure**: Multi-app Django project with separate apps for the customer-facing site and the custom admin site
 
 ## Development Setup
 

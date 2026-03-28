@@ -12,7 +12,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-import os
 from pathlib import Path
 
 
@@ -42,12 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'web_app',
-    'control_panel',
     'admin_site',
 ]
-
-# 2024-06 Addition: Maintenance Mode Setting
-MAINTENANCE_MODE = False                # Set to True to enable maintenance mode
 
 # 2024-06 Addition: Middleware for Maintenance Mode Handling
 MIDDLEWARE = [
@@ -58,8 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'control_panel.middleware.MaintenanceMiddleware',               # Custom middleware for maintenance mode
-    'admin_site.middleware.AdminSiteSessionMiddleware',                 # Custom middleware for admin session handling
+    'admin_site.middleware.AdminSiteSessionMiddleware',
 ]
 
 ROOT_URLCONF = 'WMAD_project.urls'
@@ -133,7 +127,6 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "web_app" / "static",
     BASE_DIR / "admin_site" / "static",
-    BASE_DIR / "control_panel" / "static",
 ]
 
 MEDIA_URL = '/media/'
@@ -148,45 +141,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Redirect URLs after login/logout
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
-
-# Logging Configuration for Control Panel
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-
-    'formatters': {
-        'control_panel_format': {
-            'format': '[{asctime}] {message}',
-            'style': '{',
-        },
-    },
-
-    'handlers': {
-        'control_panel_file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'control_panel.log'),
-            'formatter': 'control_panel_format',
-        },
-    },
-
-    'loggers': {
-        'control_panel': {
-            'handlers': ['control_panel_file'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-    },
-}
-
-
-# Super maintenance mode password (for future use)
-SUPER_MAINTENANCE_PASSWORD = "super_secret_key2025"
-
-MAINTENANCE_ALERT_EMAILS = [            # list of emails to notify when maintenance mode is toggled
-    "toushal37@gmail.com",
-    # "owner2@example.com",
-]
 
 # Custom User Model Setting
 AUTH_USER_MODEL = 'web_app.Users'
