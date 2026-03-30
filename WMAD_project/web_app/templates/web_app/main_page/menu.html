@@ -1,0 +1,148 @@
+{% extends 'web_app/main_page/base.html' %}
+{% load static %}
+
+{% block title %}Menu{% endblock %}
+
+{% block extra_css %}
+<link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap"
+    rel="stylesheet">
+<link rel="stylesheet" href="{% static 'web_app/css/menu.css' %}">
+<style>
+    * {
+        text-decoration: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        background-image: url("{% static 'web_app/images/bk_img6.png' %}");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Our Menus</h1>
+
+<div class="menu-container">
+    <div class="menu-grid">
+        {% for item in items %}
+        <div class="menu-card" data-id="{{ item.menuID }}" data-name="{{ item.menuName }}"
+            data-description="{{ item.description }}" data-details="{{ item.detailed_description }}"
+            data-price="{{ item.price }}" data-image="{{ item.image_url.url }}">
+            <img src="{{ item.image_url.url }}" class="menu-image">
+            <h3>{{ item.menuName }}</h3>
+            <p>{{ item.description|truncatechars:60 }}</p>
+            <p class="price">Rs {{ item.price }}</p>
+            {% if user.is_authenticated %}
+            <button class="review-open-btn" data-menu="{{ item.menuID }}">
+                Write Review
+            </button>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="global-order-btn-container">
+    <a href="{% url 'order' %}" class="global-order-btn">Order Now</a>
+</div>
+
+<div class="modal-overlay" id="modal">
+    <div class="modal-box">
+        <span class="modal-close">&times;</span>
+        <img id="modal-img">
+        <h2 id="modal-name"></h2>
+        <p id="modal-description"></p>
+        <p id="modal-details" class="modal-details"></p>
+        <p id="modal-price"></p>
+    </div>
+</div>
+
+<div class="modal-overlay" id="review-modal">
+    <div class="modal-box">
+        <span class="review-close">&times;</span>
+        <h2>Write Review</h2>
+        <form method="POST" id="review-form">
+            {% csrf_token %}
+            <input type="hidden" name="menu_id" id="review-menu-id">
+            <label>Rating</label>
+            <select name="rating" required>
+                <option value="5">⭐⭐⭐⭐⭐</option>
+                <option value="4">⭐⭐⭐⭐</option>
+                <option value="3">⭐⭐⭐</option>
+                <option value="2">⭐⭐</option>
+                <option value="1">⭐</option>
+            </select>
+            <label>Comment</label>
+            <textarea name="comment" placeholder="Write your review..." rows="3"></textarea>
+            <button type="submit" class="submit-review">
+                Submit Review
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cards = document.querySelectorAll('.menu-card');
+        const modal = document.getElementById('modal');
+        const modalImg = document.getElementById('modal-img');
+        const modalName = document.getElementById('modal-name');
+        const modalDesc = document.getElementById('modal-description');
+        const modalDetails = document.getElementById('modal-details');
+        const modalPrice = document.getElementById('modal-price');
+        const modalClose = document.querySelector('#modal .modal-close');
+        const reviewButtons = document.querySelectorAll('.review-open-btn');
+        const reviewModal = document.getElementById('review-modal');
+        const reviewClose = document.querySelector('.review-close');
+        const reviewMenuId = document.getElementById('review-menu-id');
+        const reviewForm = document.getElementById('review-form');
+
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                modalImg.src = card.dataset.image;
+                modalName.textContent = card.dataset.name;
+                modalDesc.textContent = card.dataset.description;
+                modalDetails.textContent = card.dataset.details;
+                modalPrice.textContent = "Rs " + card.dataset.price;
+                modal.style.display = 'flex';
+            });
+        });
+
+        reviewButtons.forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const menuId = this.dataset.menu;
+
+                reviewMenuId.value = menuId;
+                reviewForm.action = `/review/add/${menuId}/`;
+                reviewModal.style.display = 'flex';
+            });
+        });
+
+        modalClose.onclick = () => modal.style.display = 'none';
+        reviewClose.onclick = () => reviewModal.style.display = 'none';
+
+        /* close when clicking outside the modal */
+        modal.onclick = (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+        reviewModal.onclick = (e) => {
+            if (e.target === reviewModal) {
+                reviewModal.style.display = 'none';
+            }
+        };
+    });
+</script>
+
+{% endblock %}

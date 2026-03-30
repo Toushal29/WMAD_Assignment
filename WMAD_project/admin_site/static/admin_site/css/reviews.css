@@ -1,0 +1,35 @@
+.page-title {
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+/* TABLE */
+.reviews-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.reviews-table th,
+.reviews-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+.reviews-table th {
+    background: #f0f0f0;
+}
+
+/* DELETE BUTTON */
+.delete-btn {
+    padding: 6px 10px;
+    border: none;
+    background: #d32f2f;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: #b71c1c;
+}

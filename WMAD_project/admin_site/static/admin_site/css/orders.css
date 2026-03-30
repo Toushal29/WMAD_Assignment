@@ -1,0 +1,86 @@
+.page-title {
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+/* FILTER BAR */
+.filter-bar {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.filter-bar label {
+    font-weight: bold;
+}
+
+.filter-btn {
+    padding: 6px 12px;
+    border: none;
+    background: black;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* SUMMARY ROW */
+.summary-row {
+    margin-bottom: 15px;
+    display: flex;
+    gap: 25px;
+    font-size: 16px;
+}
+
+/* TABLE */
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.orders-table th,
+.orders-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+.orders-table th {
+    background: #f0f0f0;
+    font-weight: bold;
+}
+
+.status-box {
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: white;
+    font-size: 14px;
+}
+
+.pending {
+    background: #ff9800;
+}
+.completed {
+    background: #4CAF50;
+}
+.cancelled {
+    background: #d32f2f;
+}
+
+/* BUTTONS */
+.btn {
+    padding: 6px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.btn-complete {
+    background: #4CAF50;
+    color: white;
+}
+
+.btn-cancel {
+    background: #d32f2f;
+    color: white;
+}
