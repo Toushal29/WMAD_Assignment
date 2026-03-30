@@ -1,0 +1,37 @@
+{% extends 'web_app/account/base_account.html' %}
+{% block title %}My Reservations{% endblock %}
+
+{% block content %}
+<h2>My Reservations</h2>
+
+<div class="scroll-section">
+    {% if reservations %}
+        {% for r in reservations %}
+        <div class="order-card">
+            <h4>Reservation #{{ r.reservationID }}</h4>
+
+            <p>Date: {{ r.reservation_date }}</p>
+            <p>Time: {{ r.reservation_time }}</p>
+            <p>Party Size: {{ r.party_size }}</p>
+
+            <p>Seating: {{ r.seating_choice }}</p>
+            {% if r.allergy_info %}
+                <p>Allergy Info: {{ r.allergy_info }}</p>
+            {% endif %}
+
+            <p>Status:
+                <span class="status 
+                    {% if r.status == 'confirmed' %}delivered
+                    {% elif r.status == 'pending' %}pending
+                    {% else %}cancelled{% endif %}
+                ">
+                    {{ r.status|title }}
+                </span>
+            </p>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No reservations yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

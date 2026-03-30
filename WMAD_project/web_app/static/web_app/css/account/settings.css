@@ -1,0 +1,64 @@
+/* Settings page */
+
+.settings-section {
+    margin-bottom: 30px;
+}
+
+.settings-section h3 {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    background-color: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 10px 15px;
+}
+
+.setting-item label {
+    font-weight: 600;
+}
+
+.setting-item select {
+    padding: 6px 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.btn-action {
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 12px;
+}
+
+.btn-action:hover {
+    background-color: #555;
+}
+
+.danger-zone h3 {
+    color: #a30000;
+}
+
+.btn-danger {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 12px;
+}
+
+.btn-danger:hover {
+    background-color: #d60000;
+}
+
+.note {
+    color: #888;
+    font-size: 0.9rem;
+}

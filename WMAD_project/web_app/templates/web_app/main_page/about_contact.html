@@ -7,8 +7,22 @@
     <title>About Us & Contact Us | Saveur Moris</title>
     
     <link rel="stylesheet" href="{% static 'web_app/css/navbar.css' %}">
-    
     <link rel="stylesheet" href="{% static 'web_app/css/about_contact.css' %}">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            color: white;
+            overflow-x: hidden;
+        }
+
+    </style>
 </head>
 <body class="about-contact-page">
     {% include 'web_app/components/navbar.html' %}
@@ -59,5 +73,17 @@
         </section>
     </main>
     {% include 'web_app/components/footer.html' %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const btn = document.getElementById("navToggle");
+            const nav = document.querySelector(".mainNav");
+
+            btn.addEventListener("click", () => {
+                btn.classList.toggle("active");
+                nav.classList.toggle("active");
+            });
+        });
+    </script>
 </body>
 </html>
