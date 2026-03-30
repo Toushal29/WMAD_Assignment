@@ -1,0 +1,101 @@
+/* Account layout */
+.topbar {
+    background-color: wheat;
+    border-bottom: 1px solid #ddd;
+    padding: 5px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.logo img {
+    border: 1px solid black;
+    height: 60px;
+    border-radius: 10px;
+}
+
+.logo h3 {
+    margin-left: 10px;
+    padding-top: 20px;
+}
+
+.top-nav a {
+    text-decoration: none;
+    color: #333;
+    margin-left: 20px;
+    font-size: 0.95rem;
+}
+
+.top-nav a:hover {
+    text-decoration: underline;
+}
+
+.account-container {
+    display: flex;
+    height: calc(100vh - 90px);
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: beige;
+    border-right: 1px solid #ddd;
+    padding: 30px 20px;
+}
+
+.sidebar h3 {
+    margin-bottom: 20px;
+    color: #444;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar li {
+    margin-bottom: 15px;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    padding: 8px 10px;
+    border-radius: 5px;
+}
+
+.sidebar a:hover,
+.sidebar .active a {
+    background-color: #333;
+    color: white;
+}
+
+.container {
+    flex: 1;
+    margin: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.content {
+    margin: 10px;
+    width: 100%;
+    max-width: 750px;
+}
+
+.content h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}

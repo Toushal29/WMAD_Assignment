@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,17 +23,21 @@
             <span>{{ admin_user.username }}</span>
         </div>
         <div class="admin-center">
-            <a href="{% url 'admin_reservation' %}" class="{% if active_tab == 'reservation' %}active{% endif %}">Reservation</a>
-            <a href="{% url 'admin_edit_menu' %}" class="{% if active_tab == 'edit_menu' %}active{% endif %}">Edit Menu</a>
-            <a href="{% url 'admin_feedback' %}" class="{% if active_tab == 'feedback' %}active{% endif %}">Customer Feedback</a>
-            <a href="{% url 'admin_customer_details' %}" class="{% if active_tab == 'customer_details' %}active{% endif %}">Customer Details</a>
-            <a href="{% url 'admin_edit_price' %}" class="{% if active_tab == 'edit_price' %}active{% endif %}">Edit Price</a>
+            <a href="{% url 'admin_reservation' %}"
+                class="{% if active_tab == 'reservation' %}active{% endif %}">Reservation</a>
+            <a href="{% url 'admin_edit_menu' %}" class="{% if active_tab == 'edit_menu' %}active{% endif %}">Edit
+                Menu</a>
+            <a href="{% url 'admin_customer_details' %}"
+                class="{% if active_tab == 'customer_details' %}active{% endif %}">Customer Details</a>
             <a href="{% url 'admin_orders' %}" class="{% if active_tab == 'orders' %}active{% endif %}">Orders</a>
+            <a href="{% url 'admin_reviews' %}" class="{% if active_tab == 'reviews' %}active{% endif %}">
+                Reviews
+            </a>
         </div>
         <div class="admin-right">
+            <a href="/" class="admin-main-btn">Main Site</a>
             <a href="{% url 'admin_logout' %}">Sign Out</a>
         </div>
-
     </div>
 
     <!-- main content goes there -->
@@ -43,4 +48,5 @@
     </div>
 
 </body>
+
 </html>

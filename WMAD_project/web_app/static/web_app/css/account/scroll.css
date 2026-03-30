@@ -1,0 +1,16 @@
+/* Scroll section for orders, reservations, reviews */
+
+.scroll-section {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.scroll-section::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scroll-section::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 4px;
+}

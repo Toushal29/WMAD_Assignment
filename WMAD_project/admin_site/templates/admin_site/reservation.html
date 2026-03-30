@@ -140,7 +140,12 @@
                 <input type="text" name="allergy_info" value="{{ r.allergy_info }}"><br><br>
 
                 <label>Status:</label>
-                <input type="text" name="status" value="{{ r.status }}"><br><br>
+                <select name="status">
+                    <option value="pending" {% if r.status == "pending" %}selected{% endif %}>Pending</option>
+                    <option value="confirmed" {% if r.status == "confirmed" %}selected{% endif %}>Confirmed</option>
+                    <option value="cancelled" {% if r.status == "cancelled" %}selected{% endif %}>Cancelled</option>
+                </select>
+                <br><br>
 
                 <button type="submit" style="padding:10px; background:black; color:white;">Save Changes</button>
                 <button type="button" onclick="closeEditModal('{{ r.reservationID }}')" style="padding:10px;">Cancel</button>

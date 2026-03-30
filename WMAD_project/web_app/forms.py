@@ -1,6 +1,8 @@
+# C:\Users\...\WMAD_Assignment\WMAD_project\web_app\forms.py
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Users, Customer
+from .models import Users, Customer, Reviews
 
 # SIGNUP FORM
 class CustomUserCreationForm(UserCreationForm):
@@ -81,3 +83,27 @@ class ProfileUpdateForm(forms.ModelForm):
             defaults={'address': address}
         )
         return user
+
+
+class ReviewForm(forms.ModelForm):
+    comment = forms.CharField(
+        widget=forms.Textarea(attrs={
+            "rows": 3,
+            "placeholder": "Write your review..."
+        }),
+        max_length=500,
+        required=False
+    )
+
+    class Meta:
+        model = Reviews
+        fields = ["rating", "comment"]
+        widgets = {
+            "rating": forms.NumberInput(attrs={
+                "min": 1,
+                "max": 5
+            }),
+        }
+
+    def clean_comment(self):
+        return self.cleaned_data.get("comment", "").strip()

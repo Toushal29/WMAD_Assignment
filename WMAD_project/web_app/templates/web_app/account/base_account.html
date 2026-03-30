@@ -1,11 +1,17 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My Account{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'web_app/css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'web_app/css/account/layout.css' %}">
+    <link rel="stylesheet" href="{% static 'web_app/css/account/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'web_app/css/account/settings.css' %}">
+    <link rel="stylesheet" href="{% static 'web_app/css/account/scroll.css' %}">
+    <link rel="stylesheet" href="{% static 'web_app/css/account/orders.css' %}">
+    <link rel="stylesheet" href="{% static 'web_app/css/account/reviews.css' %}">
     {% block extra_css %}{% endblock %}
     <style>
         * {
@@ -22,6 +28,7 @@
         }
     </style>
 </head>
+
 <body>
     <header class="topbar">
         <div class="logo">
@@ -30,7 +37,6 @@
         </div>
         <nav class="top-nav">
             <a href="{% url 'home' %}">Back to Home</a>
-            <a href="#">Help</a>
             <a href="{% url 'logout' %}">Log Out</a>
         </nav>
     </header>
@@ -45,7 +51,10 @@
                     <a href="{% url 'orders' %}">My Orders</a>
                 </li>
                 <li class="{% if section == 'reviews' %}active{% endif %}">
-                    <a href="{% url 'reviews' %}">My Reviews</a>
+                    <a href="{% url 'account_reviews' %}">My Reviews</a>
+                </li>
+                <li class="{% if section == 'reservations' %}active{% endif %}">
+                    <a href="{% url 'reservations' %}">My Reservations</a>
                 </li>
                 <li class="{% if section == 'settings' %}active{% endif %}">
                     <a href="{% url 'settings' %}">Settings</a>
@@ -65,4 +74,5 @@
 
     {% block extra_js %}{% endblock %}
 </body>
+
 </html>
