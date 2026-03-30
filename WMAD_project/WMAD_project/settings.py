@@ -1,3 +1,5 @@
+# C:\Users\...\WMAD_Assignment\WMAD_project\WMAD_project\settings.py
+
 """
 Django settings for WMAD_project project.
 
@@ -10,8 +12,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-import os
 from pathlib import Path
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,12 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'web_app',
-    'control_panel',
     'admin_site',
 ]
-
-# 2024-06 Addition: Maintenance Mode Setting
-MAINTENANCE_MODE = False                # Set to True to enable maintenance mode
 
 # 2024-06 Addition: Middleware for Maintenance Mode Handling
 MIDDLEWARE = [
@@ -55,8 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'control_panel.middleware.MaintenanceMiddleware',               # Custom middleware for maintenance mode
-    'admin_site.middleware.AdminSiteSessionMiddleware',                 # Custom middleware for admin session handling
+    'admin_site.middleware.AdminSiteSessionMiddleware',
 ]
 
 ROOT_URLCONF = 'WMAD_project.urls'
@@ -127,7 +124,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = []
+STATICFILES_DIRS = [
+    BASE_DIR / "web_app" / "static",
+    BASE_DIR / "admin_site" / "static",
+]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -142,48 +142,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 
-# Logging Configuration for Control Panel
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-
-    'formatters': {
-        'control_panel_format': {
-            'format': '[{asctime}] {message}',
-            'style': '{',
-        },
-    },
-
-    'handlers': {
-        'control_panel_file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'control_panel.log'),
-            'formatter': 'control_panel_format',
-        },
-    },
-
-    'loggers': {
-        'control_panel': {
-            'handlers': ['control_panel_file'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-    },
-}
-
-
-# Super maintenance mode password (for future use)
-SUPER_MAINTENANCE_PASSWORD = "super_secret_key2025"
-
-MAINTENANCE_ALERT_EMAILS = [            # list of emails to notify when maintenance mode is toggled
-    "toushal37@gmail.com",
-    # "owner2@example.com",
-]
-
 # Custom User Model Setting
 AUTH_USER_MODEL = 'web_app.Users'
 
-ADMIN_SITE_SESSION_COOKIE_NAME = "admin_sessionid"  # Custom session cookie name for admin site
-
 SESSION_SAVE_EVERY_REQUEST = True
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7  # 7 days
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False

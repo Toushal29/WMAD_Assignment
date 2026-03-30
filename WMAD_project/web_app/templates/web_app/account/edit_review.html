@@ -1,0 +1,30 @@
+{% extends "web_app/account/base_account.html" %}
+
+{% block title %}Edit Review{% endblock %}
+
+{% block content %}
+
+<h2>Edit Review</h2>
+
+<div class="review-card">
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Rating</label>
+        {{ form.rating }}
+
+        <label>Comment</label>
+        {{ form.comment }}
+
+        <br><br>
+
+        <button type="submit">
+            Update Review
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

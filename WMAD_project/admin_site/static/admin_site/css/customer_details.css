@@ -1,0 +1,60 @@
+/* Table styling */
+.customer-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.customer-table th,
+.customer-table td {
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+.customer-table th {
+    background: #f0f0f0;
+}
+
+/* MODAL */
+.modal-overlay {
+    position: fixed;
+    display: none;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-box {
+    width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-close {
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.modal-section {
+    margin-top: 15px;
+    padding: 10px;
+    background: #fafafa;
+    border-radius: 6px;
+}
+
+.modal-section h3 {
+    margin-top: 0;
+}

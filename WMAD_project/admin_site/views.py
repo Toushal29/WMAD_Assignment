@@ -1,12 +1,13 @@
+# C:\Users\...\WMAD_Assignment\WMAD_project\admin_site\views.py
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.urls import reverse
 from django.http import JsonResponse
 from django.db import models
-
 from django.views.decorators.http import require_POST
+from functools import wraps
 
 from web_app.models import (
     Users,
@@ -17,67 +18,44 @@ from web_app.models import (
     Reviews,
     Cart,
     CartItem,
-    OrderContain,
+    OrderItem,
 )
+
+def redirect_to_reservation(request):
+    return redirect("admin_dashboard")
+
+def admin_dashboard(request):
+    return redirect("admin_reservation")
+
 def admin_required(view_func):
+    @wraps(view_func)
     def wrapper(request, *args, **kwargs):
 
-        # Admin must be logged in using Django's auth system
+        # must be logged in
         if not request.user.is_authenticated:
-            return redirect("admin_login")
+            return redirect("login")
 
-        # Admin must have admin role or be superuser
-        if not (request.user.role == "admin" or request.user.is_superuser):
-            return redirect("admin_login")
+        # must be admin role OR superuser
+        if request.user.role != "admin" and not request.user.is_superuser:
+            return redirect("login")
 
-        request.admin_user = request.user  # attach logged admin user
-
+        request.admin_user = request.user
         return view_func(request, *args, **kwargs)
 
     return wrapper
 
-
+# Admin login redirect login
 def admin_login(request):
-    if request.method == 'POST':
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        user = authenticate(request, username=username, password=password)
+    return redirect("login")
 
-        if user and (user.role == "admin" or user.is_superuser):
-            # Use Django's built-in session
-            login(request, user)
-
-            # Keep admin logged in for 7 days
-            request.session.set_expiry(86400 * 7)
-
-            return redirect("admin_dashboard")
-        
-        messages.error(request, "Invalid admin credentials")
-    return render(request, "admin_site/login.html")
-
-
+# Logout redirect home page
 def admin_logout(request):
-    # Clear only the admin session, NOT the customer session
     logout(request)
-    return redirect("admin_login")
-
-
-
-@admin_required
-def admin_dashboard(request):
-    return render(
-        request, 
-        'admin_site/dashboard.html', 
-        {
-            'active_tab': 'dashboard',
-            'admin_user': request.admin_user,
-        }
-    )
+    return redirect("home")
 
 @admin_required
 def reservation_page(request):
     reservations = Reservation.objects.select_related('customer__user').all()
-
     return render(
         request,
         'admin_site/reservation.html',
@@ -89,9 +67,72 @@ def reservation_page(request):
     )
 
 @admin_required
+def reservation_edit(request, id):
+    reservation = Reservation.objects.select_related("customer__user").filter(reservationID=id).first()
+
+    if not reservation:
+        messages.error(request, "Reservation not found.")
+        return redirect("admin_reservation")
+
+    return render(
+        request,
+        "admin_site/reservation_edit.html",
+        {
+            "active_tab": "reservation",
+            "admin_user": request.admin_user,
+            "reservation": reservation,
+        }
+    )
+
+@admin_required
+def reservation_update(request, id):
+    reservation = Reservation.objects.select_related("customer__user").filter(reservationID=id).first()
+
+    if not reservation:
+        messages.error(request, "Reservation not found.")
+        return redirect("admin_reservation")
+
+    if request.method == "POST":
+
+        if request.POST.get("reservation_date"):
+            reservation.reservation_date = request.POST["reservation_date"]
+
+        if request.POST.get("reservation_time"):
+            reservation.reservation_time = request.POST["reservation_time"]
+
+        if request.POST.get("party_size"):
+            reservation.party_size = request.POST["party_size"]
+
+        if request.POST.get("status"):
+            reservation.status = request.POST["status"]
+
+        if request.POST.get("seating_choice"):
+            reservation.seating_choice = request.POST["seating_choice"]
+
+        if request.POST.get("allergy_info"):
+            reservation.allergy_info = request.POST["allergy_info"]
+
+        reservation.save()
+        messages.success(request, "Reservation updated.")
+        return redirect("admin_reservation")
+
+    return redirect("admin_reservation")
+
+@admin_required
+def reservation_delete(request, id):
+    reservation = Reservation.objects.filter(reservationID=id).first()
+
+    if not reservation:
+        messages.error(request, "Reservation not found.")
+        return redirect("admin_reservation")
+
+    reservation.delete()
+    messages.success(request, "Reservation deleted.")
+    return redirect("admin_reservation")
+
+@admin_required
 def edit_menu_page(request):
     menu_items = Menu.objects.all()
-
     return render(
         request,
         'admin_site/edit_menu.html',
@@ -103,42 +144,7 @@ def edit_menu_page(request):
     )
 
 @admin_required
-def feedback_page(request):
-    reviews = Reviews.objects.select_related(
-        'customer__user', 'menu'
-    ).all()
-
-    return render(
-        request,
-        'admin_site/feedback.html',
-        {
-            'active_tab': 'feedback',
-            'admin_user': request.admin_user,
-            'reviews': reviews,
-        }
-    )
-
-@admin_required
-def edit_price_page(request):
-    menu_items = Menu.objects.all()
-
-    return render(
-        request,
-        'admin_site/edit_price.html',
-        {
-            'active_tab': 'edit_price',
-            'admin_user': request.admin_user,
-            'menu_items': menu_items,
-        }
-    )
-
-
-@admin_required
 def customer_edit(request, id):
-    """
-    Loads a customer record so the admin can edit it.
-    (Used for modal-based editing.)
-    """
     customer = Customer.objects.select_related("user").filter(user_id=id).first()
 
     if not customer:
@@ -147,7 +153,7 @@ def customer_edit(request, id):
 
     return render(
         request,
-        "admin_site/customer_edit.html",   # only needed if you use a page version
+        "admin_site/customer_edit.html",
         {
             "active_tab": "customer_details",
             "admin_user": request.admin_user,
@@ -155,12 +161,8 @@ def customer_edit(request, id):
         }
     )
 
-
 @admin_required
 def customer_update(request, id):
-    """
-    Receives POST request from edit modal and updates the database.
-    """
     customer = Customer.objects.select_related("user").filter(user_id=id).first()
 
     if not customer:
@@ -182,7 +184,6 @@ def customer_update(request, id):
         messages.success(request, "Customer updated successfully.")
         return redirect("admin_customer_details")
 
-    # fallback (should not really be hit)
     return redirect("admin_customer_details")
 
 @admin_required
@@ -193,31 +194,27 @@ def customer_delete(request, id):
         messages.error(request, "Customer not found.")
         return redirect("admin_customer_details")
 
-    # Delete both Customer and User
     user = customer.user
     user.delete()
 
     messages.success(request, "Customer deleted successfully.")
     return redirect("admin_customer_details")
 
-
 @admin_required
 def customer_details_page(request):
-
     search = request.GET.get("search", "").strip()
 
-    # If admin types something in search bar
     if search:
         customers = Customer.objects.select_related('user').filter(
-            models.Q(user__first_name__icontains=search) |
-            models.Q(user__last_name__icontains=search) |
-            models.Q(user__email__icontains=search) |
-            models.Q(user__username__icontains=search) |
-            models.Q(user__phone_no__icontains=search) |
-            models.Q(address__icontains=search)
+            models.Q(user__first_name__icontains=search)
+            | models.Q(user__last_name__icontains=search)
+            | models.Q(user__email__icontains=search)
+            | models.Q(user__username__icontains=search)
+            | models.Q(user__phone_no__icontains=search)
+            | models.Q(address__icontains=search)
         )
     else:
-        customers = Customer.objects.select_related('user').all().order_by('-user_id')  # newest first
+        customers = Customer.objects.select_related('user').all().order_by('-user_id')
 
     return render(
         request,
@@ -230,18 +227,13 @@ def customer_details_page(request):
         }
     )
 
-
-
 @admin_required
 def orders_page(request):
-    # Date filtering 
     start = request.GET.get("start")
     end = request.GET.get("end")
-    
-    #status filtering 
     status_filter = request.GET.get("status")
 
-    orders = Order.objects.all()
+    orders = Order.objects.select_related("customer__user").order_by("-order_date")
 
     if start and end:
         orders = orders.filter(order_date__range=[start, end])
@@ -249,67 +241,63 @@ def orders_page(request):
     if status_filter in ["pending", "completed", "cancelled"]:
         orders = orders.filter(status=status_filter)
 
-    orders = orders.order_by('-order_date', '-order_time')
-
-    # --- Summary Cards ---
     total_orders = orders.count()
-    total_delivered = orders.filter(status="completed").count()
+    total_completed = orders.filter(status="completed").count()
     total_cancelled = orders.filter(status="cancelled").count()
 
-    # --- Order List ---
     data = []
-    for o in orders.select_related("customer"):
-        profile = getattr(o.customer, "customerprofile", None)
-
+    for o in orders:
         data.append({
-            "orderid": o.orderid,
-            "customer": o.customer.username,
-            
-            "address": "Sur place" if o.ordertype in ["pickup", "dinein"] else o.deliveryaddress,
-
-            "date": o.order_date,
+            "orderID": o.orderID,
+            "customer": o.customer.user.username,
+            "phone": o.customer.user.phone_no or "N/A",
+            "address": "Sur place" if o.order_type in ["pickup", "dinein"] else o.deliveryaddress,
+            "date": o.order_date.strftime("%Y-%m-%d %H:%M"),
             "total": o.totalamount,
             "status": o.status,
-            "phone" :o.customer.phone_no or "None",
-            "items": [{"name": item.menu.menuName,"quantity": item.quantity,}for item in o.ordercontain_set.all() ]
-
+            "items": [
+                {"name": item.menu.menuName, "quantity": item.quantity}
+                for item in o.orderitem_set.all()
+            ]
         })
 
-    return render(request, "admin_site/orders.html", {
-        "orders": data,
-        "total_orders": total_orders,
-        "total_delivered": total_delivered,
-        "total_cancelled": total_cancelled,
-        "start": start or "",
-        "end": end or "",
-        "status_filter": status_filter or "",
-    }) 
+    return render(
+        request,
+        "admin_site/orders.html",
+        {
+            "active_tab": "orders",
+            "admin_user": request.admin_user,
 
+            "orders": data,
+            "total_orders": total_orders,
+            "total_delivered": total_completed,
+            "total_cancelled": total_cancelled,
+            "start": start or "",
+            "end": end or "",
+            "status_filter": status_filter or "",
+        }
+    )
 
 @admin_required
 @require_POST
 def complete_order(request):
     order_id = request.POST.get("order_id")
-    if not order_id:
-        return JsonResponse({"success": False, "error": "No order_id provided"})
 
-    try:
-        order = Order.objects.get(orderid=order_id)
-        order.status = "completed"
-        order.save()
-        return JsonResponse({"success": True})
-    except Order.DoesNotExist:
+    order = Order.objects.filter(orderID=order_id).first()
+    if not order:
         return JsonResponse({"success": False, "error": "Order not found"})
-    
-    
+
+    order.status = "completed"
+    order.save()
+
+    return JsonResponse({"success": True})
+
 @admin_required
 @require_POST
 def admin_cancel_order(request):
-    orderid = request.POST.get("order_id")
-    if not orderid:
-        return JsonResponse({"success": False})
+    order_id = request.POST.get("order_id")
 
-    order = Order.objects.filter(orderid=orderid).first()
+    order = Order.objects.filter(orderID=order_id).first()
     if not order:
         return JsonResponse({"success": False})
 
@@ -318,3 +306,77 @@ def admin_cancel_order(request):
 
     return JsonResponse({"success": True})
 
+@admin_required
+def admin_add_menu(request):
+    if request.method == "POST":
+        Menu.objects.create(
+            menuName=request.POST.get("menuName"),
+            description=request.POST.get("description"),
+            detailed_description=request.POST.get("detailed_description"),
+            price=request.POST.get("price"),
+            image_url=request.FILES.get("image_url"),
+        )
+        messages.success(request, "Menu item added.")
+    return redirect("admin_edit_menu")
+
+@admin_required
+def admin_update_menu(request, id):
+    item = Menu.objects.filter(menuID=id).first()
+
+    if not item:
+        messages.error(request, "Menu item not found.")
+        return redirect("admin_edit_menu")
+
+    if request.method == "POST":
+        item.menuName = request.POST.get("menuName", item.menuName)
+        item.description = request.POST.get("description", item.description)
+        item.price = request.POST.get("price", item.price)
+        item.detailed_description = request.POST.get("detailed_description",item.detailed_description)
+
+        if request.FILES.get("image_url"):
+            item.image_url = request.FILES["image_url"]
+
+        item.save()
+        messages.success(request, "Menu updated successfully.")
+
+    return redirect("admin_edit_menu")
+
+@admin_required
+def admin_delete_menu(request, id):
+    item = Menu.objects.filter(menuID=id).first()
+
+    if item:
+        item.delete()
+        messages.success(request, "Menu item deleted.")
+
+    return redirect("admin_edit_menu")
+
+@admin_required
+def admin_reviews_page(request):
+
+    reviews = Reviews.objects.select_related(
+        "customer__user",
+        "menu"
+    ).order_by("-created_at")
+
+    return render(
+        request,
+        "admin_site/reviews.html",
+        {
+            "active_tab": "reviews",
+            "admin_user": request.admin_user,
+            "reviews": reviews
+        }
+    )
+
+
+@admin_required
+def admin_delete_review(request, id):
+
+    review = Reviews.objects.filter(review_id=id).first()
+
+    if review:
+        review.delete()
+        messages.success(request, "Review deleted.")
+
+    return redirect("admin_reviews")

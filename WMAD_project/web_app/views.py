@@ -1,250 +1,243 @@
-from django.shortcuts import render, redirect
-from .forms import CustomUserCreationForm
+# C:\Users\...\WMAD_Assignment\WMAD_project\web_app\views.py
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import ProfileUpdateForm
-from .models import Customer
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
-from django.shortcuts import redirect, get_object_or_404
+from .forms import CustomUserCreationForm, ProfileUpdateForm, ReviewForm
+from .models import (
+    Cart, CartItem, Order, OrderItem,
+    Menu, Special, Customer, Reservation, Reviews
+)
+from datetime import datetime
 
-from .models import Cart, CartItem, Order, OrderContain, Menu
 
+def get_customer_or_redirect(request, redirect_name="home"):
+    customer = Customer.objects.filter(user=request.user).first()
+    if customer:
+        return customer, None
 
+    messages.error(request, "Customer profile not found for this account.")
+    return None, redirect(redirect_name)
+
+# HOME
 def home(request):
-    return render(request, 'web_app/main_page/home.html')
+    special = Special.objects.filter(is_active=True).first()
+    return render(request, "web_app/main_page/home.html", {"special": special})
 
+# MENU
 def menu(request):
-    return render(request, 'web_app/main_page/menu.html')
+    items = Menu.objects.all()
 
+    reviews = Reviews.objects.select_related("customer", "menu")\
+        .order_by("-created_at")[:10]
+
+    return render(
+        request,
+        "web_app/main_page/menu.html",
+        {
+            "items": items,
+            "reviews": reviews
+        }
+    )
+
+# ORDER PAGE (FIXED WITH CART CHECK)
 def order(request):
-    return render(request, 'web_app/main_page/order.html')
+    items = Menu.objects.all()
+    total_menu_count = Menu.objects.count()
 
-def reservation(request):
-    return render(request, 'web_app/main_page/reservation.html')
+    # NEW: Check if cart has items
+    if request.user.is_authenticated:
+        cart = Cart.objects.filter(user=request.user).first()
+        cart_has_items = cart and cart.cartitem_set.exists()
+    else:
+        cart_has_items = False
 
+    return render(request, "web_app/main_page/order.html", {
+        "items": items,
+        "total_items": total_menu_count,
+        "cart_has_items": cart_has_items,  # ADDED
+    })
+
+# CHECKOUT PAGE
+@login_required
+def checkout(request):
+    cart, _ = Cart.objects.get_or_create(user=request.user)
+    items = cart.cartitem_set.all()
+    total = cart.total_amount()
+
+    return render(request, "web_app/main_page/checkout.html", {
+        "items": items,
+        "total": total
+    })
+
+# ABOUT & CONTACT
 def about_contact(request):
-    return render(request, 'web_app/main_page/about_contact.html')
+    return render(request, "web_app/main_page/about_contact.html")
 
+# PRIVACY PAGE
 def privacy_policy(request):
-    return render(request, 'web_app/other_pages/privacy_policy.html')
+    return render(request, "web_app/other_pages/privacy_policy.html")
 
+# SIGNUP
 def signup(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('login')
+            return redirect("login")
     else:
         form = CustomUserCreationForm()
+    return render(request, "registration/signup.html", {"form": form})
 
-    return render(request, 'registration/signup.html', {'form': form})
+# LOGIN
+def login_view(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = authenticate(
+                request,
+                username=form.cleaned_data["username"],
+                password=form.cleaned_data["password"]
+            )
+            if user:
+                login(request, user)
+                request.session.set_expiry(604800)
 
+                # redirect admin to admin panel
+                if user.role == "admin" or user.is_superuser:
+                    return redirect("/admin-site/")
 
+                return redirect("home")
+    else:
+        form = AuthenticationForm()
+    return render(request, "registration/login.html", {"form": form})
+
+# LOGOUT
+def logout_view(request):
+    logout(request)
+    return redirect("home")
+
+# PROFILE
+@login_required
 def profile_page(request):
     user = request.user
-    # Redirect if not logged in
-    if not user.is_authenticated:
-        return redirect('login')
-    if request.method == 'POST':
+    if request.method == "POST":
         form = ProfileUpdateForm(request.POST, user=user, instance=user)
         if form.is_valid():
             form.save()
-            # Update Customer address separately
-            address = form.cleaned_data.get('address')
-            customer, created = Customer.objects.get_or_create(user=user)
-            customer.address = address
+            customer, _ = Customer.objects.get_or_create(user=user)
+            customer.address = form.cleaned_data.get("address")
             customer.save()
-            return redirect('profile')  # reload updated page
+            return redirect("profile")
     else:
         form = ProfileUpdateForm(user=user, instance=user)
-    return render(request, 'web_app/account/profile.html', {
-        'section': 'profile',
-        'form': form
-    })
+    return render(request, "web_app/account/profile.html", {"section": "profile", "form": form})
 
+# SETTINGS
+@login_required
 def settings_page(request):
-    return render(request, 'web_app/account/settings.html', {'section': 'settings'})
+    return render(request, "web_app/account/settings.html", {"section": "settings"})
 
-def orders_page(request):
-    return render(request, 'web_app/account/orders.html', {'section': 'orders'})
-
-def reviews_page(request):
-    return render(request, 'web_app/account/reviews.html', {'section': 'reviews'})
-
-
-def login_view(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-
-            user = authenticate(request, username=username, password=password)
-
-            if user is not None:
-                login(request, user)
-                return redirect('home')
-    else:
-        form = AuthenticationForm()
-
-    return render(request, 'registration/login.html', {'form': form})
-
-
-def logout_view(request):
-    logout(request)
-    return redirect('home')
-
-
+# DELETE ACCOUNT
 @login_required
 def delete_account(request):
-    user = request.user
-
-    if request.method == 'POST':
-        # Delete user and linked Customer record
-        user.delete()
-
+    if request.method == "POST":
+        request.user.delete()
         logout(request)
-        messages.success(request, "Your account has been deleted.")
-        return redirect('home')
+        return redirect("home")
+    return render(request, "web_app/account/confirm_delete.html")
 
-    return render(request, 'web_app/account/confirm_delete.html')
+# RESERVATION PAGE
+def reservation(request):
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            messages.error(request, "You must be logged in.")
+            return redirect("login")
 
+        customer = Customer.objects.filter(user=request.user).first()
+        if not customer:
+            messages.error(request, "Customer data missing.")
+            return redirect("reservation")
 
+        Reservation.objects.create(
+            customer=customer,
+            reservation_date=request.POST.get("reservation_date"),
+            reservation_time=request.POST.get("reservation_time"),
+            party_size=request.POST.get("party_size"),
+            seating_choice=request.POST.get("seating_choice"),
+            allergy_info=request.POST.get("allergy_info"),
+            status="pending"
+        )
+        messages.success(request, "Reservation submitted.")
+        return redirect("reservation")
 
-#order  page logic
-# web_app/views.py
+    return render(request, "web_app/main_page/reservation.html")
 
-
-# order PAGE (load first 8 items)
-
-def order(request):
-    items = Menu.objects.all()[:8]
-    total_menu_count = Menu.objects.count()
-    return render(request, 'web_app/main_page/order.html', {
-        "items": items,
-        "total_items": total_menu_count,
-    })
-
-
-
-# load more items
-
+# LOAD MORE (AJAX)
 def load_more_menu(request):
     offset = int(request.GET.get("offset", 0))
     limit = 8
-    items = list(Menu.objects.all()[offset:offset + limit].values())
-
+    items = list(Menu.objects.all()[offset:offset+limit].values())
     return JsonResponse({"items": items})
 
-
-
-# add to cart
-
-
+# ADD TO CART
 @login_required
+@require_POST
 def add_to_cart(request):
-
-    menu_id = request.POST.get("menu_id")
-    if not menu_id or not menu_id.isdigit():
-      return JsonResponse({"error": "Invalid menu id"}, status=400)
-    
+    menu_id = request.POST["menu_id"]
     qty = int(request.POST.get("quantity", 1))
-    if qty < 1:
-      return JsonResponse({"error": "Invalid quantity"}, status=400)
-    if request.method == "POST":
-        menu_id = request.POST.get("menu_id")
-        qty = int(request.POST.get("quantity", 1))
 
-        menu_item = get_object_or_404(Menu, menuID=menu_id)
+    item = get_object_or_404(Menu, pk=menu_id)
+    cart, _ = Cart.objects.get_or_create(user=request.user)
 
-        
-        cart, created = Cart.objects.get_or_create(user=request.user)
+    cart_item, created = CartItem.objects.get_or_create(
+        cart=cart, menu=item, defaults={"quantity": qty, "unit_price": item.price}
+    )
+    if not created:
+        cart_item.quantity += qty
+        cart_item.save()
 
-        cart_item, created = CartItem.objects.get_or_create(
-            cart=cart,
-            menu=menu_item,
-            defaults={"quantity": qty, "unit_price": menu_item.price}
-        )
+    return JsonResponse({"message": "Added"})
 
-        if not created:
-            cart_item.quantity += qty
-            cart_item.save()
-
-        return JsonResponse({"message": "Added to cart!"})
-
-    return JsonResponse({"error": "Invalid request"}, status=400)
-
-
-
-# get cartitem,js refresh)
-
+# GET CART
+@login_required
 def get_cart_items(request):
-    cart, created = Cart.objects.get_or_create(user=request.user)
-
+    cart, _ = Cart.objects.get_or_create(user=request.user)
     items = [{
-        "menuID": ci.menu.menuID,       
-        "name": ci.menu.menuName,       
-        
-       
+        "menuID": ci.menu.menuID,
+        "name": ci.menu.menuName,
         "qty": ci.quantity,
-        "subtotal": float(ci.subtotal()),
+        "subtotal": float(ci.subtotal)
     } for ci in cart.cartitem_set.all()]
-
     return JsonResponse({"items": items})
 
-
-#orderdelete
-
-
-
+# REMOVE FROM CART
 @login_required
 @require_POST
 def remove_from_cart(request):
-    menu_id = request.POST.get("menu_id")
-    if not menu_id:
-        return JsonResponse({"error": "menu_id required"}, status=400)
+    cart = Cart.objects.filter(user=request.user).first()
+    if not cart:
+        return JsonResponse({"message": "removed"})
 
-    try:
-        cart = Cart.objects.get(user=request.user)
-    except Cart.DoesNotExist:
-        return JsonResponse({"error": "Cart not found"}, status=404)
+    item = cart.cartitem_set.filter(menu__menuID=request.POST["menu_id"]).first()
+    if item:
+        item.delete()
+    return JsonResponse({"message": "removed"})
 
-    cart_item = cart.cartitem_set.filter(menu__menuID=menu_id).first()
-    if not cart_item:
-        return JsonResponse({"error": "Item not found"}, status=404)
-
-    cart_item.delete()
-    return JsonResponse({"message": "Item removed"})
-
-
-# views.py
-
-#forclearingcart
-
-
-
+# CLEAR CART
 @login_required
 @require_POST
 def clear_cart(request):
-    # Get or create the user's cart
-    cart, created = Cart.objects.get_or_create(user=request.user)
-
-    # Delete all CartItems linked to this cart
+    cart, _ = Cart.objects.get_or_create(user=request.user)
     cart.cartitem_set.all().delete()
+    return JsonResponse({"message": "cleared"})
 
-    return JsonResponse({"message": "Cart cleared"})
-
-
-
-
-
-
+# CONFIRM ORDER
 @login_required
 @require_POST
 def confirm_order(request):
@@ -252,64 +245,222 @@ def confirm_order(request):
     items = cart.cartitem_set.all()
 
     if not items.exists():
-        return JsonResponse({"error": "Cart is empty. Cannot place order."}, status=400)
+        return JsonResponse({"error": "empty"}, status=400)
 
-    delivery_mode = request.POST.get("delivery_mode", "")
-    if delivery_mode == "pickup":   
-       delivery_address = "NONE"
-    elif delivery_mode == "dinein":
-        delivery_address = "NONE"
+    mode = request.POST.get("delivery_mode", "")
+    address = request.POST.get("delivery_address", "")
 
-    elif delivery_mode == "":   
-       
-       return JsonResponse({"error": "Please enter an order option."}, status=400)
-    
-    else:
-        delivery_address = request.POST.get("delivery_address", "").strip()
-    
-    
-    
-    
-    
-        
-
-    
+    customer = Customer.objects.filter(user=request.user).first()
+    if not customer:
+        return JsonResponse({"error": "customer_missing"}, status=400)
 
     order = Order.objects.create(
-        customer=request.user,
+        customer=customer,
         totalamount=cart.total_amount(),
-        ordertype=delivery_mode,
-        deliveryaddress=delivery_address,
-        
+        order_type=mode,
+        deliveryaddress=address,
+        status="pending",
     )
 
-    for item in items:
-        OrderContain.objects.create(
+    for it in items:
+        OrderItem.objects.create(
             order=order,
-            menu=item.menu,
-            quantity=item.quantity,
-            unitprice=item.unit_price
+            menu=it.menu,
+            quantity=it.quantity,
+            unit_price=it.unit_price,
         )
 
-    items.delete()
-    return JsonResponse({"message": "Order confirmed"})
+    cart.cartitem_set.all().delete()
 
+    return JsonResponse({"success": True, "redirect": "/profile/my_orders/"})
 
-@login_required(login_url='login')
+# MY ORDERS
+@login_required
 def my_orders(request):
-    orders = Order.objects.filter(customer=request.user).order_by('-order_date', '-order_time')
+    customer, missing_response = get_customer_or_redirect(request, "home")
+    if missing_response:
+        return missing_response
+
+    orders = Order.objects.filter(customer=customer).order_by("-order_date")
     return render(request, "web_app/main_page/my_orders.html", {"orders": orders})
 
-
-@login_required()
+# CANCEL ORDER
+@login_required
 @require_POST
 def cancel_order(request, orderid):
-    order = get_object_or_404(Order, orderid=orderid, customer=request.user)
-    if order.status == "completed":
-        return JsonResponse({"error": "Completed orders cannot be cancelled."}, status=400)
-    
-    order.status = "cancelled"  
-    order.save()
-    return redirect("my_orders")
- 
+    customer, missing_response = get_customer_or_redirect(request, "my_orders")
+    if missing_response:
+        return missing_response
 
+    order = get_object_or_404(Order, orderID=orderid, customer=customer)
+
+    if order.status != "completed":
+        order.status = "cancelled"
+        order.save()
+
+    return redirect("my_orders")
+
+# ACCOUNT ORDERS
+@login_required
+def account_orders(request):
+    customer, missing_response = get_customer_or_redirect(request, "home")
+    if missing_response:
+        return missing_response
+
+    orders = Order.objects.filter(customer=customer).order_by("-order_date")
+    return render(request, "web_app/account/orders.html", {"section": "orders", "orders": orders})
+
+# ACCOUNT RESERVATIONS
+@login_required
+def account_reservations(request):
+    customer, missing_response = get_customer_or_redirect(request, "home")
+    if missing_response:
+        return missing_response
+
+    reservations = Reservation.objects.filter(customer=customer).order_by("-reservation_date")
+    return render(request, "web_app/account/reservations.html", {
+        "section": "reservations",
+        "reservations": reservations
+    })
+
+# ACCOUNT REVIEWS
+@login_required
+def account_reviews(request):
+    customer, missing_response = get_customer_or_redirect(request, "home")
+    if missing_response:
+        return missing_response
+
+    reviews = Reviews.objects.filter(customer=customer)\
+        .select_related("menu")\
+        .order_by("-created_at")
+
+    return render(
+        request,
+        "web_app/account/reviews.html",
+        {
+            "section": "reviews",
+            "reviews": reviews
+        }
+    )
+
+# REVIEW SUBMISSION
+@login_required
+def add_review(request, menu_id):
+    menu = get_object_or_404(Menu, pk=menu_id)
+    customer, missing_response = get_customer_or_redirect(request, "menu")
+    if missing_response:
+        return missing_response
+
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+
+        if form.is_valid():
+            rating = form.cleaned_data.get("rating")
+            comment = form.cleaned_data.get("comment", "")
+
+            Reviews.objects.update_or_create(
+                customer=customer,
+                menu=menu,
+                defaults={
+                    "rating": rating,
+                    "comment": comment
+                }
+            )
+
+            messages.success(request, "Review submitted!")
+            return redirect("menu")
+
+    return redirect("menu")
+
+@login_required
+def add_restaurant_review(request):
+    customer, missing_response = get_customer_or_redirect(request, "reviews")
+    if missing_response:
+        return missing_response
+
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            rating = form.cleaned_data["rating"]
+            comment = form.cleaned_data.get("comment", "")
+
+            Reviews.objects.update_or_create(
+                customer=customer,
+                menu=None,
+                defaults={
+                    "rating": rating,
+                    "comment": comment
+                }
+            )
+            messages.success(request, "Restaurant review submitted!")
+    return redirect("reviews")
+
+def view_reviews(request):
+    menu_reviews = Reviews.objects.filter(menu__isnull=False)\
+        .select_related("menu", "customer")\
+        .order_by("-created_at")
+    restaurant_reviews = Reviews.objects.filter(menu__isnull=True)\
+        .select_related("customer")\
+        .order_by("-created_at")
+
+    return render(
+        request,
+        "web_app/main_page/reviews.html",
+        {
+            "menu_reviews": menu_reviews,
+            "restaurant_reviews": restaurant_reviews
+        }
+    )
+
+@login_required
+def edit_review(request, review_id):
+
+    customer, missing_response = get_customer_or_redirect(request, "reviews")
+    if missing_response:
+        return missing_response
+
+    review = get_object_or_404(
+        Reviews,
+        review_id=review_id,
+        customer=customer
+    )
+
+    if request.method == "POST":
+
+        form = ReviewForm(request.POST, instance=review)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Review updated!")
+            return redirect("reviews")
+
+    else:
+        form = ReviewForm(instance=review)
+
+    return render(
+        request,
+        "web_app/account/edit_review.html",
+        {
+            "form": form,
+            "review": review
+        }
+    )
+
+@login_required
+def delete_review(request, review_id):
+
+    customer, missing_response = get_customer_or_redirect(request, "reviews")
+    if missing_response:
+        return missing_response
+
+    review = get_object_or_404(
+        Reviews,
+        review_id=review_id,
+        customer=customer
+    )
+
+    review.delete()
+
+    messages.success(request, "Review deleted.")
+
+    return redirect("reviews")

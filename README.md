@@ -1,389 +1,108 @@
-# Context File for WebRestaurant Project
+# Team members
 
-## Project Overview
+| Team Name          | ID      |
+| ------------------ | ------- |
+| Toushal Sampat     | 2413826 |
+| Nilesh Khoosee     | 2413908 |
+| Hayilsing Nemchand | 2412971 |
+| Methilesh Ramsahye | 2413415 |
+| Isha Narain        | 2413288 |
 
-**WebRestaurant** is a collaborative Django-based restaurant web application built with Django 5.2.7. The project allows users to interact with a restaurant website while providing an admin control panel with maintenance mode functionality.
+# Contribution
 
-### Architecture
+## To be marked individually
 
-- **Backend**: Django 5.2.7 (Python-based web framework)
-- **Database**: SQLite3 (default)
-- **Frontend**: HTML templates with integrated static files (CSS/JS)
-- **Project Structure**: Multi-app Django project with separate apps for web interface and control panel
+|               |                                  |                                        |                                        |                                     |                                                            |                                                         |
+| ------------- | -------------------------------- | -------------------------------------- | -------------------------------------- | ----------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------- |
+|               | **Frontend (user view)**         | **Frontend (customer view - web app)** | **Frontend (admin view - admin site)** | **Backend (main page - web app)**   | **Backend (admin site)**                                   | **Backend (customer profile - web app)**                |
+| **Toushal**   | Base template                    | Base template + navigation             | Base Template + Navbar                 |                                     | Customer details - get/search + view/update/delete user    | Get + display all details associated to that login user |
+|               | Navbar + Footer Component        | User personal details                  | Customer Details Page                  |                                     | Review details - get + view/delete reviews                 | Update + save details associated to that login user     |
+|               | About-Contact Us Page            | User reservation details               |                                        |                                     |                                                            | Delete associated login user                            |
+|               | Privacy Policy Page              | User Reviews                           |                                        |                                     |                                                            | Change password associated to that login user           |
+|               | Review Page                      | User order details                     |                                        |                                     |                                                            |                                                         |
+|               | Login + Signup Page              | User Settings                          |                                        |                                     |                                                            |                                                         |
+|               | Reset password                   |                                        |                                        |                                     |                                                            |                                                         |
+|               | User profile Management Page     |                                        |                                        |                                     |                                                            |                                                         |
+|               |                                  |                                        |                                        |                                     |                                                            |                                                         |
+| **Isha**      | Home Page                        |                                        | Edit Menu Page                         | Signup                              | Edit Menu - get/search + add/update/delete menu            |                                                         |
+|               | Menu Page                        |                                        |                                        | Login                               |                                                            |                                                         |
+|               |                                  |                                        |                                        |                                     |                                                            |                                                         |
+| **Methilesh** | Order Page                       |                                        | Order Page                             | Add/remove menu to cart + checkout  | Order details - get/search + view/update orders            |                                                         |
+|               |                                  |                                        |                                        |                                     |                                                            |                                                         |
+| **Nilesh**    | Reservation - login v/s no login |                                        | Reservation page                       | Reservation - save data to database | Reservation details - get/search + view/update reservation |                                                         |
+|               |                                  |                                        |                                        |                                     |                                                            |                                                         |
+| **Hayilsing** |                                  |                                        |                                        | Database                            |                                                            |                                                         |
+|               |                                  |                                        |                                        | reset user password                 |                                                            |                                                         |
+|               |                                  |                                        |                                        | Signup                              |                                                            |                                                         |
+|               |                                  |                                        |                                        | Login                               |                                                            |                                                         |
 
-### Core Apps
+---
 
-1. **web_app**: Main restaurant website interface
-
-   - Home page
-   - Menu display
-   - Order placement
-   - Reservation system
-   - Login/Signup
-   - About/Contact pages
-   - Privacy policy
-
-2. **control_panel**: Administrative control panel
-   - Dashboard with server status
-   - Maintenance mode toggle
-   - Log viewing functionality
-
-## Key Features
-
-### Maintenance Mode
-
-- Custom middleware allows toggling the entire site into maintenance mode
-- When enabled, customers see a maintenance page while control panel remains accessible
-- Toggle functionality available through the control panel dashboard
-
-### Logging
-
-- Debug logging configured to write to `debug.log` file
-- Captures Django-level debug information for troubleshooting
-
-## Project Structure
-
-```
-C:.
-│   control_panel.log
-│   db.sqlite3
-│   debug.log
-│   manage.py
-│
-├───admin_site
-│   │   admin.py
-│   │   apps.py
-│   │   middleware.py
-│   │   models.py
-│   │   tests.py
-│   │   urls.py
-│   │   views.py
-│   │   __init__.py
-│   │
-│   ├───migrations
-│   │   │   __init__.py
-│   │   │
-│   │   └───__pycache__
-│   │           __init__.cpython-312.pyc
-│   │           __init__.cpython-313.pyc
-│   │
-│   ├───static
-│   │   └───admin_site
-│   │       ├───css
-│   │       │       admin_navbar.css
-│   │       │
-│   │       ├───images
-│   │       └───js
-│   ├───templates
-│   │   └───admin_site
-│   │           base_admin.html
-│   │           customer_details.html
-│   │           dashboard.html
-│   │           edit_menu.html
-│   │           edit_price.html
-│   │           feedback.html
-│   │           login.html
-│   │           orders.html
-│   │           reservation.html
-│   │
-│   └───__pycache__
-│           admin.cpython-312.pyc
-│           admin.cpython-313.pyc
-│           apps.cpython-312.pyc
-│           apps.cpython-313.pyc
-│           middleware.cpython-312.pyc
-│           middleware.cpython-313.pyc
-│           models.cpython-312.pyc
-│           models.cpython-313.pyc
-│           urls.cpython-312.pyc
-│           urls.cpython-313.pyc
-│           views.cpython-312.pyc
-│           views.cpython-313.pyc
-│           __init__.cpython-312.pyc
-│           __init__.cpython-313.pyc
-│
-├───control_panel
-│   │   admin.py
-│   │   apps.py
-│   │   middleware.py
-│   │   models.py
-│   │   tests.py
-│   │   urls.py
-│   │   views.py
-│   │   __init__.py
-│   │
-│   ├───migrations
-│   │   │   __init__.py
-│   │   │
-│   │   └───__pycache__
-│   │           __init__.cpython-312.pyc
-│   │           __init__.cpython-313.pyc
-│   │
-│   ├───static
-│   │   └───control_panel
-│   │       ├───css
-│   │       │       dashboard.css
-│   │       │
-│   │       └───images
-│   │               logo.png
-│   │
-│   ├───templates
-│   │   └───control_panel
-│   │           customer_maintenance.html
-│   │           dashboard.html
-│   │           logs.html
-│   │
-│   └───__pycache__
-│           admin.cpython-312.pyc
-│           admin.cpython-313.pyc
-│           apps.cpython-312.pyc
-│           apps.cpython-313.pyc
-│           middleware.cpython-312.pyc
-│           middleware.cpython-313.pyc
-│           models.cpython-312.pyc
-│           models.cpython-313.pyc
-│           urls.cpython-312.pyc
-│           urls.cpython-313.pyc
-│           views.cpython-312.pyc
-│           views.cpython-313.pyc
-│           __init__.cpython-312.pyc
-│           __init__.cpython-313.pyc
-│
-├───web_app
-│   │   admin.py
-│   │   apps.py
-│   │   forms.py
-│   │   models.py
-│   │   tests.py
-│   │   urls.py
-│   │   views.py
-│   │   __init__.py
-│   │
-│   ├───migrations
-│   │   │   0001_initial.py
-│   │   │   __init__.py
-│   │   │
-│   │   └───__pycache__
-│   │           0001_initial.cpython-312.pyc
-│   │           0001_initial.cpython-313.pyc
-│   │           __init__.cpython-312.pyc
-│   │           __init__.cpython-313.pyc
-│   │
-│   ├───static
-│   │   └───web_app
-│   │       ├───css
-│   │       │       about_contact.css
-│   │       │       footer.css
-│   │       │       log_in.css
-│   │       │       navbar.css
-│   │       │       password_reset.css
-│   │       │       privacy_policy.css
-│   │       │       profile.css
-│   │       │       signup.css
-│   │       │
-│   │       ├───images
-│   │       │       bk_img2.png
-│   │       │       bk_img3.png
-│   │       │       bk_img4.png
-│   │       │       bk_img5.png
-│   │       │       bk_img6.png
-│   │       │       login.png
-│   │       │       logo.png
-│   │       │       min_apollo.png
-│   │       │
-│   │       └───js
-│   │               login.js
-│   │               signup.js
-│   │
-│   ├───templates
-│   │   ├───registration
-│   │   │       custom_reset_complete.html
-│   │   │       custom_reset_confirm.html
-│   │   │       custom_reset_email.html
-│   │   │       custom_reset_email.txt
-│   │   │       custom_reset_request.html
-│   │   │       custom_reset_sent.html
-│   │   │       custom_reset_subject.txt
-│   │   │       login.html
-│   │   │       signup.html
-│   │   │
-│   │   └───web_app
-│   │       ├───account
-│   │       │       base_account.html
-│   │       │       orders.html
-│   │       │       profile.html
-│   │       │       reviews.html
-│   │       │       settings.html
-│   │       │
-│   │       ├───components
-│   │       │       footer.html
-│   │       │       navbar.html
-│   │       │
-│   │       ├───main_page
-│   │       │       about_contact.html
-│   │       │       base.html
-│   │       │       home.html
-│   │       │       menu.html
-│   │       │       order.html
-│   │       │       reservation.html
-│   │       │
-│   │       └───other_pages
-│   │               privacy_policy.html
-│   │
-│   └───__pycache__
-│           admin.cpython-312.pyc
-│           admin.cpython-313.pyc
-│           apps.cpython-312.pyc
-│           apps.cpython-313.pyc
-│           forms.cpython-312.pyc
-│           forms.cpython-313.pyc
-│           models.cpython-312.pyc
-│           models.cpython-313.pyc
-│           urls.cpython-312.pyc
-│           urls.cpython-313.pyc
-│           views.cpython-312.pyc
-│           views.cpython-313.pyc
-│           __init__.cpython-312.pyc
-│           __init__.cpython-313.pyc
-│
-└───WMAD_project
-    │   asgi.py
-    │   settings.py
-    │   urls.py
-    │   wsgi.py
-    │   __init__.py
-    │
-    └───__pycache__
-            settings.cpython-312.pyc
-            settings.cpython-313.pyc
-            urls.cpython-312.pyc
-            urls.cpython-313.pyc
-            wsgi.cpython-312.pyc
-            wsgi.cpython-313.pyc
-            __init__.cpython-312.pyc
-            __init__.cpython-313.pyc
-```
-
-## Development Setup
+## Development Setup - MOBILE
 
 ### Initial Setup
 
 1. **Virtual Environment**:
 
-   ```bash
-   python -m venv .venv
-   .\.venv\Scripts\activate  # Windows
-   ```
+```bash
+python -m venv .venv-mobile
+.\.venv-mobile\Scripts\activate  # MOBILE
+```
 
 2. **Install Dependencies**:
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+pip install flet
+```
+
+3. **Create Project + Run**:
+
+```bash
+flet create mobile_app
+```
+
+```bash
+cd mobile_app
+pip install flet-geolocator flet-permission-handler httpx
+```
+
+```bash
+flet run
+```
+
+---
+
+## Development Setup - WEB
+
+### Initial Setup
+
+1. **Virtual Environment**:
+
+```bash
+python -m venv .venv
+.\.venv\Scripts\activate  # Windows
+```
+
+2. **Install Dependencies**:
+
+```bash
+pip install -r requirements.txt
+```
 
 3. **Database Migrations**:
+   _Only to run if **db.sqlite3** file not present_
 
-   ```bash
-   python manage.py migrate
-   ```
+```bash
+cd .\WMAD_project\
+python manage.py makemigrations
+python manage.py migrate
+python manage.py loaddata menu
+```
 
 4. **Run Development Server**:
-   ```bash
-   python manage.py runserver
-   ```
-   Visit `http://127.0.0.1:8000/` to access the application.
 
-### Key Commands
+```bash
+python manage.py runserver
+```
 
-- **Create migrations**: `python manage.py makemigrations`
-- **Apply migrations**: `python manage.py migrate`
-- **Run server**: `python manage.py runserver`
-- **Collect static files**: `python manage.py collectstatic`
-
-## Development Conventions
-
-### Project Workflow
-
-1. Switch to development branch: `git checkout development`
-2. Create feature branch: `git checkout -b feature/<featureName>`
-3. Make changes
-4. If installing new packages: `pip install package-name` then `pip freeze > requirements.txt`
-5. If modifying models: `python manage.py makemigrations` then `python manage.py migrate`
-6. Commit and push: `git add .` → `git commit -m "message"` → `git push origin feature/<featureName>`
-7. Create pull request from feature branch to development
-8. After merge: Sync with development branch
-
-### Code Structure
-
-- Separate apps for different functionality (web_app vs control_panel)
-- Template structure: `app_name/templates/app_name/page.html`
-- Static files: `app_name/static/app_name/`
-- URL routing configured via `urls.py` files in each app
-
-## Configuration Details
-
-### Settings
-
-- Debug mode: Enabled (`DEBUG = True`)
-- Allowed hosts: `['*']` (not production-ready)
-- Static files: Located at `web_app/static/`
-- Database: SQLite3 (`db.sqlite3`)
-- Custom maintenance mode setting: `MAINTENANCE_MODE = False`
-
-### Middleware
-
-- Custom `MaintenanceMiddleware` handles site-wide maintenance mode
-- Standard Django security and session middleware included
-
-### URLs
-
-- Main website accessible at root path (`/`)
-- Control panel accessible at `/control/`
-- Admin interface at `/admin/`
-
-## Important Files & Locations
-
-- **Settings**: `WMAD_project/settings.py` - Core Django configuration
-- **Main URLs**: `WMAD_project/urls.py` - Root URL routing
-- **Middleware**: `control_panel/middleware.py` - Maintenance mode logic
-- **Control Panel Views**: `control_panel/views.py` - Dashboard and maintenance toggle
-- **Web App Views**: `web_app/views.py` - Main site page handlers
-- **Requirements**: `requirements.txt` - Python dependencies
-- **Log File**: `debug.log` - Debug information (created when application runs)
-
-## Special Features
-
-### Maintenance Mode Implementation
-
-1. Toggle accessible via control panel at `/control/maintenance/toggle/`
-2. Configurable via `MAINTENANCE_MODE` setting in `settings.py`
-3. Custom middleware renders maintenance page to customers when enabled
-4. Control panel (`/control/`) remains accessible during maintenance
-
-### Dashboard Functionality
-
-- Shows server status
-- Displays restaurant name ("Saveur Moris")
-- Shows maintenance mode status
-- Displays recent logs (last 50 lines from debug.log)
-
-## Testing & Quality Assurance
-
-The project includes Django's standard testing framework. Tests would typically be added to the `tests.py` files in each app. For now, there are placeholder test files in both apps.
-
-## Security Considerations
-
-- The project uses Django's built-in security middleware
-- Secret key is currently using a default development key and should be changed for production
-- Maintenance mode provides a way to take the site offline for updates
-- Static files configuration follows Django best practices
-
-## Future Enhancement Areas
-
-Potential areas for improvement:
-
-- Production security settings (proper SECRET_KEY, allowed hosts, etc.)
-- Database configuration for production environments
-- Enhanced logging configuration
-- Additional model fields for restaurant functionality
-- Authentication and authorization features
+Visit `http://127.0.0.1:8000/` to access the application.

@@ -1,39 +1,53 @@
 {% extends 'web_app/account/base_account.html' %}
+
 {% block title %}My Reviews{% endblock %}
 
 {% block content %}
-    <h2>My Reviews</h2>
 
-    <div class="scroll-section">
-        <!-- Example review cards -->
-        <div class="review-card">
-            <h4>Chicken Curry</h4>
-            <p>Rating: ⭐⭐⭐⭐☆</p>
-            <p>“Delicious! The curry was perfectly spiced and portioned.”</p>
-            <p class="review-date">Reviewed on: 2025-11-10</p>
-        </div>
+<h2>My Reviews</h2>
 
-        <div class="review-card">
-            <h4>Seafood Platter</h4>
-            <p>Rating: ⭐⭐⭐⭐⭐</p>
-            <p>“Absolutely loved it! Will definitely order again.”</p>
-            <p class="review-date">Reviewed on: 2025-11-05</p>
-        </div>
-
-        <div class="review-card">
-            <h4>Pasta Alfredo</h4>
-            <p>Rating: ⭐⭐⭐☆☆</p>
-            <p>“Good but could use a bit more sauce.”</p>
-            <p class="review-date">Reviewed on: 2025-10-30</p>
-        </div>
-
-        {% for i in "1234567890" %}
-        <div class="review-card">
-            <h4>Sample Dish {{ i }}</h4>
-            <p>Rating: ⭐⭐⭐⭐☆</p>
-            <p>“Sample review text for scroll testing.”</p>
-            <p class="review-date">Reviewed on: 2025-11-01</p>
+<div class="scroll-section">
+    {% if reviews %}
+    {% for review in reviews %}
+    <div class="review-row">
+        <div class="review-main">
+            <div class="review-header">
+                <strong>
+                    {% if review.menu %}
+                    {{ review.menu.menuName }}
+                    {% else %}
+                    Restaurant Review
+                    {% endif %}
+                </strong>
+                <span class="review-date">
+                    {{ review.created_at|date:"Y-m-d" }}
+                </span>
+            </div>
+            <div class="review-rating">
+                {% for i in "12345" %}
+                {% if forloop.counter <= review.rating %} ⭐ {% else %} ☆ {% endif %} {% endfor %} </div>
+                    {% if review.comment %}
+                    <p class="review-comment">
+                        {{ review.comment }}
+                    </p>
+                    {% endif %}
+            </div>
+            <div class="review-actions">
+                <a class="btn-edit" href="{% url 'edit_review' review.review_id %}">
+                    Edit
+                </a>
+                <form method="POST" action="{% url 'delete_review' review.review_id %}">
+                    {% csrf_token %}
+                    <button class="btn-delete" type="submit">
+                        Delete
+                    </button>
+                </form>
+            </div>
         </div>
         {% endfor %}
+        {% else %}
+        <p>You have not written any reviews yet.</p>
+        {% endif %}
     </div>
-{% endblock %}
+    {% endblock %}
+</div>

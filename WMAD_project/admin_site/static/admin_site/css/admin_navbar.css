@@ -9,19 +9,28 @@
     position: sticky;
     top: 0;
     z-index: 20;
-    box-sizing: content-box;
     font-family: Arial, sans-serif;
 }
 
-/* Sections */
-.admin-left { flex: 1; text-align: left; }
+/* Make all 3 sections equal width → true centered navbar */
 .admin-center {
-    flex: 2;
     display: flex;
     justify-content: center;
     gap: 10px;
 }
-.admin-right { flex: 1; text-align: right; }
+
+.admin-right .admin-main-btn {
+    margin-right: 15px;
+    padding: 6px 12px;
+    background-color: #222;
+    color: white;
+    border-radius: 4px;
+}
+
+.admin-right .admin-main-btn:hover {
+    background-color: #444;
+}
+
 
 /* Links */
 .admin-navbar a {
