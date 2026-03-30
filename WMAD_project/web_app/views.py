@@ -15,6 +15,15 @@ from .models import (
 )
 from datetime import datetime
 
+
+def get_customer_or_redirect(request, redirect_name="home"):
+    customer = Customer.objects.filter(user=request.user).first()
+    if customer:
+        return customer, None
+
+    messages.error(request, "Customer profile not found for this account.")
+    return None, redirect(redirect_name)
+
 # HOME
 def home(request):
     special = Special.objects.filter(is_active=True).first()
@@ -98,6 +107,11 @@ def login_view(request):
             if user:
                 login(request, user)
                 request.session.set_expiry(604800)
+
+                # redirect admin to admin panel
+                if user.role == "admin" or user.is_superuser:
+                    return redirect("/admin-site/")
+
                 return redirect("home")
     else:
         form = AuthenticationForm()
@@ -125,6 +139,7 @@ def profile_page(request):
     return render(request, "web_app/account/profile.html", {"section": "profile", "form": form})
 
 # SETTINGS
+@login_required
 def settings_page(request):
     return render(request, "web_app/account/settings.html", {"section": "settings"})
 
@@ -206,6 +221,9 @@ def get_cart_items(request):
 @require_POST
 def remove_from_cart(request):
     cart = Cart.objects.filter(user=request.user).first()
+    if not cart:
+        return JsonResponse({"message": "removed"})
+
     item = cart.cartitem_set.filter(menu__menuID=request.POST["menu_id"]).first()
     if item:
         item.delete()
@@ -232,7 +250,9 @@ def confirm_order(request):
     mode = request.POST.get("delivery_mode", "")
     address = request.POST.get("delivery_address", "")
 
-    customer = Customer.objects.get(user=request.user)
+    customer = Customer.objects.filter(user=request.user).first()
+    if not customer:
+        return JsonResponse({"error": "customer_missing"}, status=400)
 
     order = Order.objects.create(
         customer=customer,
@@ -257,7 +277,10 @@ def confirm_order(request):
 # MY ORDERS
 @login_required
 def my_orders(request):
-    customer = Customer.objects.get(user=request.user)
+    customer, missing_response = get_customer_or_redirect(request, "home")
+    if missing_response:
+        return missing_response
+
     orders = Order.objects.filter(customer=customer).order_by("-order_date")
     return render(request, "web_app/main_page/my_orders.html", {"orders": orders})
 
@@ -265,7 +288,10 @@ def my_orders(request):
 @login_required
 @require_POST
 def cancel_order(request, orderid):
-    customer = Customer.objects.get(user=request.user)
+    customer, missing_response = get_customer_or_redirect(request, "my_orders")
+    if missing_response:
+        return missing_response
+
     order = get_object_or_404(Order, orderID=orderid, customer=customer)
 
     if order.status != "completed":
@@ -277,14 +303,20 @@ def cancel_order(request, orderid):
 # ACCOUNT ORDERS
 @login_required
 def account_orders(request):
-    customer = Customer.objects.get(user=request.user)
+    customer, missing_response = get_customer_or_redirect(request, "home")
+    if missing_response:
+        return missing_response
+
     orders = Order.objects.filter(customer=customer).order_by("-order_date")
     return render(request, "web_app/account/orders.html", {"section": "orders", "orders": orders})
 
 # ACCOUNT RESERVATIONS
 @login_required
 def account_reservations(request):
-    customer = Customer.objects.get(user=request.user)
+    customer, missing_response = get_customer_or_redirect(request, "home")
+    if missing_response:
+        return missing_response
+
     reservations = Reservation.objects.filter(customer=customer).order_by("-reservation_date")
     return render(request, "web_app/account/reservations.html", {
         "section": "reservations",
@@ -294,7 +326,10 @@ def account_reservations(request):
 # ACCOUNT REVIEWS
 @login_required
 def account_reviews(request):
-    customer = Customer.objects.get(user=request.user)
+    customer, missing_response = get_customer_or_redirect(request, "home")
+    if missing_response:
+        return missing_response
+
     reviews = Reviews.objects.filter(customer=customer)\
         .select_related("menu")\
         .order_by("-created_at")
@@ -312,7 +347,9 @@ def account_reviews(request):
 @login_required
 def add_review(request, menu_id):
     menu = get_object_or_404(Menu, pk=menu_id)
-    customer = Customer.objects.get(user=request.user)
+    customer, missing_response = get_customer_or_redirect(request, "menu")
+    if missing_response:
+        return missing_response
 
     if request.method == "POST":
         form = ReviewForm(request.POST)
@@ -337,7 +374,10 @@ def add_review(request, menu_id):
 
 @login_required
 def add_restaurant_review(request):
-    customer = Customer.objects.get(user=request.user)
+    customer, missing_response = get_customer_or_redirect(request, "reviews")
+    if missing_response:
+        return missing_response
+
     if request.method == "POST":
         form = ReviewForm(request.POST)
         if form.is_valid():
@@ -375,7 +415,9 @@ def view_reviews(request):
 @login_required
 def edit_review(request, review_id):
 
-    customer = Customer.objects.get(user=request.user)
+    customer, missing_response = get_customer_or_redirect(request, "reviews")
+    if missing_response:
+        return missing_response
 
     review = get_object_or_404(
         Reviews,
@@ -407,7 +449,9 @@ def edit_review(request, review_id):
 @login_required
 def delete_review(request, review_id):
 
-    customer = Customer.objects.get(user=request.user)
+    customer, missing_response = get_customer_or_redirect(request, "reviews")
+    if missing_response:
+        return missing_response
 
     review = get_object_or_404(
         Reviews,

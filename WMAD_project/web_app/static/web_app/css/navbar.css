@@ -293,7 +293,7 @@
     background: rgba(255, 255, 255, 0.25);
 }
 
-@media (max-width: 950px) {
+@media (max-width: 900px) {
 
     .navbar {
         flex-wrap: wrap;

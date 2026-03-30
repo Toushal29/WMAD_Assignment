@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.db import models
 from django.views.decorators.http import require_POST
+from functools import wraps
 
 from web_app.models import (
     Users,
@@ -21,46 +22,36 @@ from web_app.models import (
 )
 
 def redirect_to_reservation(request):
+    return redirect("admin_dashboard")
+
+def admin_dashboard(request):
     return redirect("admin_reservation")
 
 def admin_required(view_func):
+    @wraps(view_func)
     def wrapper(request, *args, **kwargs):
 
+        # must be logged in
         if not request.user.is_authenticated:
-            return redirect("admin_login")
+            return redirect("login")
 
-        if not request.user.username.startswith("admin_"):
-            return redirect("admin_login")
-
-        if not (request.user.is_superuser or request.user.role == "admin"):
-            return redirect("admin_login")
+        # must be admin role OR superuser
+        if request.user.role != "admin" and not request.user.is_superuser:
+            return redirect("login")
 
         request.admin_user = request.user
         return view_func(request, *args, **kwargs)
 
     return wrapper
 
+# Admin login redirect login
 def admin_login(request):
-    if request.method == 'POST':
-        username = request.POST.get("username").strip()
-        password = request.POST.get("password")
+    return redirect("login")
 
-        user = authenticate(request, username=username, password=password)
-        valid_username = username.startswith("admin_")
-
-        if user and valid_username and (user.is_superuser or user.role == "admin"):
-            login(request, user)
-            request.session.set_expiry(86400 * 7)
-            return redirect("admin_dashboard")
-
-        messages.error(request, "Invalid admin credentials.")
-
-    return redirect("admin_reservation")
-
-
+# Logout redirect home page
 def admin_logout(request):
     logout(request)
-    return redirect("admin_login")
+    return redirect("home")
 
 @admin_required
 def reservation_page(request):

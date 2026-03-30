@@ -24,9 +24,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('web_app.urls')),                      # main website
-    path('control/', include('control_panel.urls')),        # control panel section for website maintenance
-    path('admin-site/', include('admin_site.urls')),        # custom admin site for restaurant management
+    path('', include('web_app.urls')),
+    path('admin-site/', include('admin_site.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
