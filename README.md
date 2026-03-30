@@ -36,20 +36,43 @@
 |               |                                  |                                        |                                        | Signup                              |                                                            |                                                         |
 |               |                                  |                                        |                                        | Login                               |                                                            |                                                         |
 
-# Context File for WebRestaurant Project
+---
 
-## Project Overview
+## Development Setup - MOBILE
 
-**WebRestaurant** is a collaborative Django-based restaurant web application built with Django 5.2.8. The project allows users to interact with the restaurant website and includes a custom admin site for restaurant management.
+### Initial Setup
 
-### Architecture
+1. **Virtual Environment**:
 
-- **Backend**: Django 5.2.8 (Python-based web framework)
-- **Database**: SQLite3 (default)
-- **Frontend**: HTML templates with integrated static files (CSS/JS)
-- **Project Structure**: Multi-app Django project with separate apps for the customer-facing site and the custom admin site
+```bash
+python -m venv .venv-mobile
+.\.venv-mobile\Scripts\activate  # MOBILE
+```
 
-## Development Setup
+2. **Install Dependencies**:
+
+```bash
+pip install flet
+```
+
+3. **Create Project + Run**:
+
+```bash
+flet create mobile_app
+```
+
+```bash
+cd mobile_app
+pip install flet-geolocator flet-permission-handler httpx
+```
+
+```bash
+flet run
+```
+
+---
+
+## Development Setup - WEB
 
 ### Initial Setup
 
