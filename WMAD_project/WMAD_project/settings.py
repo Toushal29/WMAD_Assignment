@@ -14,7 +14,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,10 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'web_app',
-    'admin_site',
 ]
 
-# 2024-06 Addition: Middleware for Maintenance Mode Handling
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -53,7 +50,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'admin_site.middleware.AdminSiteSessionMiddleware',
 ]
 
 ROOT_URLCONF = 'WMAD_project.urls'
@@ -91,21 +87,19 @@ DATABASES = {
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    # },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
-
-    # remove common password and similar to usrname password.
 ]
-
-
-# Email Backend Configuration for Development
-# During development, emails will be printed to the console. In production, configure an appropriate email backend.
-# https://docs.djangoproject.com/en/5.2/topics/email/#email-backends
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 # Internationalization
@@ -126,7 +120,6 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "web_app" / "static",
-    BASE_DIR / "admin_site" / "static",
 ]
 
 MEDIA_URL = '/media/'
@@ -142,9 +135,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 
-# Custom User Model Setting
-AUTH_USER_MODEL = 'web_app.Users'
-
 SESSION_SAVE_EVERY_REQUEST = True
 
 
@@ -154,3 +144,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 7  # 7 days
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+
+# Email Backend Configuration for Development
+# During development, emails will be printed to the console. In production, configure an appropriate email backend.
+# https://docs.djangoproject.com/en/5.2/topics/email/#email-backends
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

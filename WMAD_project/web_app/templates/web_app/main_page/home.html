@@ -1,7 +1,7 @@
 {% extends 'web_app/main_page/base.html' %}
 {% load static %}
 
-{% block title %}Home — Saveur Moris{% endblock %}
+{% block title %}Home - Saveur Moris{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'web_app/css/home.css' %}">
@@ -37,7 +37,7 @@
             <div class="special-info">
                 <h3>{{ special.name }}</h3>
                 <p>{{ special.description }}</p>
-                <span>{{ special.available_days }}<span>
+                <span>{{ special.available_days }}</span>
                 <strong>Rs {{ special.price }}</strong>
                 <a href="{% url 'order' %}" class="order-btn">Order Now</a>
             </div>
@@ -79,8 +79,8 @@
 </section>
 
 <section class="testimonial-section">
-    <p class="quote">“Delicious food, warm atmosphere. Always coming back!”</p>
-    <span class="quote-author">— A Happy Customer</span>
+    <p class="quote">"Delicious food, warm atmosphere. Always coming back!"</p>
+    <span class="quote-author">- A Happy Customer</span>
 </section>
 
 <section class="cta-section">

@@ -1,160 +1,202 @@
-# C:\Users\...\WMAD_Assignment\WMAD_project\web_app\models.py
-
+from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.utils import timezone
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 
-# Custom user model with phone number and role
-class Users(AbstractUser):
-    phone_no = models.CharField(max_length=20, blank=True, null=True)
-    role = models.CharField(
-        max_length=20,
-        choices=[('admin', 'Admin'), ('customer', 'Customer')],
-        default='customer'
-    )
-
-    def __str__(self):
-        return self.username
-
-
-# Admin profile linked to Users
-class Admin(models.Model):
-    user = models.OneToOneField(Users, on_delete=models.CASCADE, primary_key=True)
-
-    def __str__(self):
-        return self.user.username
-
-
-# Customer profile linked to Users
 class Customer(models.Model):
-    user = models.OneToOneField(Users, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="customer_profile",
+    )
+    phone = models.CharField(max_length=20)
     address = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.user.username
 
 
-# Menu items displayed on the site
 class Menu(models.Model):
-    menuID = models.AutoField(primary_key=True)
-    menuName = models.CharField(max_length=150)
-    description = models.TextField()
-    detailed_description = models.TextField(blank=True)
+    name = models.CharField(max_length=150)
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    image_url = models.ImageField(upload_to='menu_images/')
+    description = models.TextField()
+    detail_description = models.TextField(blank=True)
+    image = models.ImageField(upload_to="menu_images/")
+    category = models.CharField(max_length=100, blank=True)
+    available = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["name"]
 
     def __str__(self):
-        return self.menuName
+        return self.name
 
 
-# Special promotions with availability and pricing
 class Special(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    available_days = models.CharField(max_length=100, default='Monday–Sunday')
+    available_days = models.CharField(max_length=100, default="Monday-Sunday")
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    image = models.ImageField(upload_to='specials/')
+    image = models.ImageField(upload_to="specials/")
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
 
 
-# Reservation system for customers
 class Reservation(models.Model):
-    reservationID = models.AutoField(primary_key=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    STATUS_PENDING = "pending"
+    STATUS_CONFIRMED = "confirmed"
+    STATUS_CANCELLED = "cancelled"
+
+    STATUS_CHOICES = [
+        (STATUS_PENDING, "Pending"),
+        (STATUS_CONFIRMED, "Confirmed"),
+        (STATUS_CANCELLED, "Cancelled"),
+    ]
+
+    SEATING_INDOOR = "Indoor"
+    SEATING_OUTDOOR = "Outdoor"
+
+    SEATING_CHOICES = [
+        (SEATING_INDOOR, "Indoor"),
+        (SEATING_OUTDOOR, "Outdoor"),
+    ]
+
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE,
+        related_name="reservations",
+    )
     reservation_date = models.DateField()
     reservation_time = models.TimeField()
     party_size = models.PositiveIntegerField(default=1)
     seating_choice = models.CharField(
         max_length=20,
-        choices=[('Indoor', 'Indoor'), ('Outdoor', 'Outdoor')],
-        default='Indoor'
+        choices=SEATING_CHOICES,
+        default=SEATING_INDOOR,
     )
     allergy_info = models.TextField(blank=True)
     status = models.CharField(
         max_length=20,
-        choices=[('pending', 'Pending'), ('confirmed', 'Confirmed'), ('cancelled', 'Cancelled')],
-        default='pending'
+        choices=STATUS_CHOICES,
+        default=STATUS_PENDING,
     )
+
+    class Meta:
+        ordering = ["-reservation_date", "-reservation_time"]
 
     def __str__(self):
         return f"{self.customer.user.username} - {self.reservation_date} {self.reservation_time}"
 
 
-# Customer's shopping cart
 class Cart(models.Model):
-    user = models.OneToOneField(Users, on_delete=models.CASCADE)
-
-    def total_amount(self):
-        return sum(item.subtotal for item in self.cartitem_set.all())
-
-
-# Items inside the cart
-class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="cart_items",
+    )
+    menu = models.ForeignKey(
+        Menu,
+        on_delete=models.CASCADE,
+        related_name="cart_items",
+    )
     quantity = models.PositiveIntegerField(default=1)
-    unit_price = models.DecimalField(max_digits=8, decimal_places=2)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "menu"],
+                name="unique_cart_item_per_user_menu",
+            )
+        ]
+        ordering = ["-added_at"]
 
     @property
-    def subtotal(self):
-        return self.unit_price * self.quantity
+    def line_total(self):
+        return self.menu.price * self.quantity
+
+    def __str__(self):
+        return f"{self.user.username} - {self.menu.name} x {self.quantity}"
 
 
-# Order details made by customers
 class Order(models.Model):
-    orderID = models.AutoField(primary_key=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    order_date = models.DateTimeField(auto_now_add=True)
-    order_type = models.CharField(
-        max_length=20,
-        choices=[('delivery', 'Delivery'), ('pickup', 'Pickup'), ('dinein', 'Dine-In')],
-        default='pickup'
+    STATUS_PENDING = "pending"
+    STATUS_PREPARING = "preparing"
+    STATUS_COMPLETED = "completed"
+
+    STATUS_CHOICES = [
+        (STATUS_PENDING, "Pending"),
+        (STATUS_PREPARING, "Preparing"),
+        (STATUS_COMPLETED, "Completed"),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="orders",
     )
-    deliveryaddress = models.CharField(max_length=255, blank=True, null=True)
-    totalamount = models.DecimalField(max_digits=10, decimal_places=2)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(
         max_length=20,
-        choices=[("pending", "Pending"), ("completed", "Completed"), ("cancelled", "Cancelled")],
-        default="pending"
+        choices=STATUS_CHOICES,
+        default=STATUS_PENDING,
     )
+    order_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-order_date"]
 
     def __str__(self):
-        return f"Order #{self.orderID}"
+        return f"Order #{self.pk} - {self.user.username}"
 
 
-# Individual items inside each order
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="items",
+    )
+    menu = models.ForeignKey(
+        Menu,
+        on_delete=models.CASCADE,
+        related_name="order_items",
+    )
     quantity = models.PositiveIntegerField(default=1)
-    unit_price = models.DecimalField(max_digits=8, decimal_places=2)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
 
     @property
     def subtotal(self):
-        return self.unit_price * self.quantity
-
-    def save(self, *args, **kwargs):
-        if not self.unit_price:
-            self.unit_price = self.menu.price
-        super().save(*args, **kwargs)
+        return self.price * self.quantity
 
     def __str__(self):
-        return f"{self.menu.menuName} x {self.quantity}"
+        return f"{self.order_id} - {self.menu.name} x {self.quantity}"
 
 
-# Reviews for restaurant or menu items
-class Reviews(models.Model):
-    review_id = models.AutoField(primary_key=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    menu = models.ForeignKey(Menu, on_delete=models.CASCADE, blank=True, null=True)
-    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+class Review(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="reviews",
+    )
+    menu = models.ForeignKey(
+        Menu,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="reviews",
+    )
+    rating = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
     comment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ["-created_at"]
+
     def __str__(self):
-        return f"Review {self.review_id}"
+        target = self.menu.name if self.menu else "Restaurant"
+        return f"{self.user.username} - {target} ({self.rating}/5)"

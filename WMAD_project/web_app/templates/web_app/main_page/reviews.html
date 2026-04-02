@@ -8,7 +8,7 @@
 
 <style>
     body {
-        background-image:url("{% static 'web_app/images/bk_img6.png' %}");
+        background-image: url("{% static 'web_app/images/bk_img6.png' %}");
         background-size: cover;
         background-attachment: fixed;
         background-position: center;
@@ -16,14 +16,12 @@
 </style>
 {% endblock %}
 
-
 {% block content %}
 
 <div class="reviews-container">
-    <!-- LEFT SIDE -->
     <div class="review-column">
         <h2>Restaurant Reviews</h2>
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and not user.is_staff %}
         <button class="review-btn" onclick="toggleRestaurantForm()">
             Leave a Review
         </button>
@@ -32,11 +30,11 @@
                 {% csrf_token %}
                 <label>Rating</label>
                 <select name="rating" required>
-                    <option value="5">⭐⭐⭐⭐⭐</option>
-                    <option value="4">⭐⭐⭐⭐</option>
-                    <option value="3">⭐⭐⭐</option>
-                    <option value="2">⭐⭐</option>
-                    <option value="1">⭐</option>
+                    <option value="5">5 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="2">2 Stars</option>
+                    <option value="1">1 Star</option>
                 </select>
                 <label>Comment</label>
                 <textarea name="comment" rows="3"></textarea>
@@ -47,56 +45,56 @@
 
         {% for review in restaurant_reviews %}
         <div class="review-card">
-            <strong>{{ review.customer.user.username }}</strong>
+            <strong>{{ review.user.username }}</strong>
             <div class="review-rating">
                 {% for i in "12345" %}
-                {% if forloop.counter <= review.rating %} ⭐ {% else %} ☆ {% endif %} {% endfor %} </div>
-                    <p class="review-comment" data-full="{{ review.comment|escapejs }}" onclick="toggleComment(this)">
-                        {{ review.comment|truncatechars:120 }}
-                    </p>
-            </div>
-            {% empty %}
-            <p>No restaurant reviews yet.</p>
-            {% endfor %}
-        </div>
-
-        <!-- RIGHT SIDE -->
-        <div class="review-column">
-            <h2>Menu Reviews</h2>
-            {% for review in menu_reviews %}
-            <div class="review-card">
-                <strong>{{ review.customer.user.username }} | </strong>
-                <span class="review-menu">{{ review.menu.menuName }}</span>
-                <div class="review-rating">
-                    {% for i in "12345" %}
-                    {% if forloop.counter <= review.rating %} ⭐ {% else %} ☆ {% endif %} {% endfor %} </div>
-                        <p>{{ review.comment }}</p>
-                </div>
-                {% empty %}
-                <p>No menu reviews yet.</p>
+                    {% if forloop.counter <= review.rating %}*{% else %}o{% endif %}
                 {% endfor %}
             </div>
+            <p class="review-comment" data-full="{{ review.comment|escapejs }}" onclick="toggleComment(this)">
+                {{ review.comment|truncatechars:120 }}
+            </p>
         </div>
+        {% empty %}
+        <p>No restaurant reviews yet.</p>
+        {% endfor %}
+    </div>
 
-        <script>
-            function toggleRestaurantForm() {
-                const form = document.getElementById("restaurant-review-form")
-                if (form.style.display === "block") {
-                    form.style.display = "none"
-                } else {
-                    form.style.display = "block"
-                }
-            }
-            function toggleComment(el) {
-                const full = el.dataset.full
+    <div class="review-column">
+        <h2>Menu Reviews</h2>
+        {% for review in menu_reviews %}
+        <div class="review-card">
+            <strong>{{ review.user.username }} | </strong>
+            <span class="review-menu">{{ review.menu.name }}</span>
+            <div class="review-rating">
+                {% for i in "12345" %}
+                    {% if forloop.counter <= review.rating %}*{% else %}o{% endif %}
+                {% endfor %}
+            </div>
+            <p>{{ review.comment }}</p>
+        </div>
+        {% empty %}
+        <p>No menu reviews yet.</p>
+        {% endfor %}
+    </div>
+</div>
 
-                if (el.classList.contains("expanded")) {
-                    el.textContent = full.substring(0, 120) + "..."
-                    el.classList.remove("expanded")
-                } else {
-                    el.textContent = full
-                    el.classList.add("expanded")
-                }
-            }
-        </script>
-        {% endblock %}
+<script>
+    function toggleRestaurantForm() {
+        const form = document.getElementById("restaurant-review-form");
+        form.style.display = form.style.display === "block" ? "none" : "block";
+    }
+
+    function toggleComment(el) {
+        const full = el.dataset.full;
+
+        if (el.classList.contains("expanded")) {
+            el.textContent = full.substring(0, 120) + "...";
+            el.classList.remove("expanded");
+        } else {
+            el.textContent = full;
+            el.classList.add("expanded");
+        }
+    }
+</script>
+{% endblock %}

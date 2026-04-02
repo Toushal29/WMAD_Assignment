@@ -1,0 +1,95 @@
+look at the folder again, there is now a new myProject folder along with WMAD_project.
+
+since django provide its own admin site, i want to remove the admin_site that i made since it duplicate and makes it vulnerable. i want to use what is already provided.
+
+but 1st i need to redo my models.py file. this is where the myProject folder comes into play. there i will do what i will later move into WMAD_project.
+
+understand ?
+
+so my database will contain tables:
+- User, Customers, Reservations, Orders, Menus, Reviews
+
+1. User is either a Customer or Admin but not both. User table will use the auth_user provided by django
+
+
+2. Customer : Stores additional customer information.
+
+| Column      | Description           |
+| ----------- | --------------------- |
+| customer_id | Primary key           |
+| user_id     | FK → User             |
+| phone       | Contact number        |
+| address     | Delivery address      |
+| created_at  | Account creation date |
+
+
+3. Menu : Stores food items.
+
+| Column             | Description                   |
+| ------------------ | ----------------------------- |
+| menu_id            | Primary key                   |
+| name               | Food name                     |
+| price              | Item price                    |
+| description        | Short description (card view) |
+| detail_description | Long description (modal view) |
+| image              | Image path                    |
+| category           | Food category (optional)      |
+| available          | Boolean if item is available  |
+
+
+4. Cart : Stores a user's current cart items.
+
+| Column   | Description      |
+| -------- | ---------------- |
+| cart_id  | Primary key      |
+| user_id  | FK → User        |
+| menu_id  | FK → Menu        |
+| quantity | Quantity of item |
+| added_at | Time item added  |
+
+
+5. Orders : Stores completed orders.
+
+| Column      | Description                                  |
+| ----------- | -------------------------------------------- |
+| order_id    | Primary key                                  |
+| user_id     | FK → User                                    |
+| total_price | Total order cost                             |
+| status      | Order status (pending, preparing, completed) |
+| order_date  | Date order placed                            |
+
+
+6. OrderItems : Stores items inside each order.
+
+| Column        | Description               |
+| ------------- | ------------------------- |
+| order_item_id | Primary key               |
+| order_id      | FK → Orders               |
+| menu_id       | FK → Menu                 |
+| quantity      | Quantity                  |
+| price         | Price at time of purchase |
+
+
+7. Reviews : Stores both menu reviews and restaurant reviews. If menu_id is NULL, it means the review is for the restaurant overall.
+
+| Column     | Description          |
+| ---------- | -------------------- |
+| review_id  | Primary key          |
+| user_id    | FK → User            |
+| menu_id    | FK → Menu (nullable) |
+| rating     | 1–5 stars            |
+| comment    | Optional text review |
+| created_at | Review date          |
+
+
+Relationships overview
+User 1 ─── 1 Customer
+User 1 ─── * Orders
+User 1 ─── * Reviews
+User 1 ─── * Cart
+
+Orders 1 ─── * OrderItems
+
+Menu 1 ─── * OrderItems
+Menu 1 ─── * Reviews
+Menu 1 ─── * Cart

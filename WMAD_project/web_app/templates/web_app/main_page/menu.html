@@ -33,15 +33,15 @@
 <div class="menu-container">
     <div class="menu-grid">
         {% for item in items %}
-        <div class="menu-card" data-id="{{ item.menuID }}" data-name="{{ item.menuName }}"
-            data-description="{{ item.description }}" data-details="{{ item.detailed_description }}"
-            data-price="{{ item.price }}" data-image="{{ item.image_url.url }}">
-            <img src="{{ item.image_url.url }}" class="menu-image">
-            <h3>{{ item.menuName }}</h3>
+        <div class="menu-card" data-id="{{ item.id }}" data-name="{{ item.name }}"
+            data-description="{{ item.description }}" data-details="{{ item.detail_description }}"
+            data-price="{{ item.price }}" data-image="{{ item.image.url }}">
+            <img src="{{ item.image.url }}" class="menu-image">
+            <h3>{{ item.name }}</h3>
             <p>{{ item.description|truncatechars:60 }}</p>
             <p class="price">Rs {{ item.price }}</p>
-            {% if user.is_authenticated %}
-            <button class="review-open-btn" data-menu="{{ item.menuID }}">
+            {% if user.is_authenticated and not user.is_staff %}
+            <button class="review-open-btn" data-menu="{{ item.id }}">
                 Write Review
             </button>
             {% endif %}
@@ -74,11 +74,11 @@
             <input type="hidden" name="menu_id" id="review-menu-id">
             <label>Rating</label>
             <select name="rating" required>
-                <option value="5">⭐⭐⭐⭐⭐</option>
-                <option value="4">⭐⭐⭐⭐</option>
-                <option value="3">⭐⭐⭐</option>
-                <option value="2">⭐⭐</option>
-                <option value="1">⭐</option>
+                <option value="5">5 Stars</option>
+                <option value="4">4 Stars</option>
+                <option value="3">3 Stars</option>
+                <option value="2">2 Stars</option>
+                <option value="1">1 Star</option>
             </select>
             <label>Comment</label>
             <textarea name="comment" placeholder="Write your review..." rows="3"></textarea>
@@ -130,7 +130,6 @@
         modalClose.onclick = () => modal.style.display = 'none';
         reviewClose.onclick = () => reviewModal.style.display = 'none';
 
-        /* close when clicking outside the modal */
         modal.onclick = (e) => {
             if (e.target === modal) {
                 modal.style.display = 'none';

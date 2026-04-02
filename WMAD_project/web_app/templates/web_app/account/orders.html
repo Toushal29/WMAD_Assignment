@@ -8,9 +8,9 @@
     {% if orders %}
         {% for o in orders %}
         <div class="order-card">
-            <h4>Order #{{ o.orderID }}</h4>
+            <h4>Order #{{ o.id }}</h4>
             <p>Date: {{ o.order_date|date:"Y-m-d H:i" }}</p>
-            <p>Total: Rs {{ o.totalamount }}</p>
+            <p>Total: Rs {{ o.total_price }}</p>
 
             <p>Status:
                 <span class="status 
@@ -23,8 +23,8 @@
             </p>
 
             <h5>Items:</h5>
-            {% for item in o.orderitem_set.all %}
-                <p>- {{ item.menu.menuName }} (x{{ item.quantity }})</p>
+            {% for item in o.items.all %}
+                <p>- {{ item.menu.name }} (x{{ item.quantity }})</p>
             {% endfor %}
         </div>
         {% endfor %}
