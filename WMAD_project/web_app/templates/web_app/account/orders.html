@@ -8,10 +8,8 @@
     {% if orders %}
         {% for o in orders %}
         <div class="order-card">
-            <h4>Order #{{ o.orderID }}</h4>
-            <p>Date: {{ o.order_date|date:"Y-m-d H:i" }}</p>
-            <p>Total: Rs {{ o.totalamount }}</p>
-
+            <h4><u>Order #{{ o.id }}</u></h4>
+            <p><strong>Date: </strong> <i>{{ o.order_date|date:"Y-m-d H:i" }}</i> <strong> | Total: Rs </strong> <i>{{ o.total_price }}</i></p>
             <p>Status:
                 <span class="status 
                     {% if o.status == 'completed' %}delivered
@@ -23,10 +21,24 @@
             </p>
 
             <h5>Items:</h5>
-            {% for item in o.orderitem_set.all %}
-                <p>- {{ item.menu.menuName }} (x{{ item.quantity }})</p>
+            {% for item in o.items.all %}
+                <p>- {{ item.menu.name }} (x{{ item.quantity }})</p>
             {% endfor %}
+
+            {% if o.status == 'pending' %}
+                <hr>
+                <form action="{% url 'cancel_order_action' o.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" 
+                            class="btn btn-danger" 
+                            style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;"
+                            onclick="return confirm('Are you sure you want to cancel this order?')">
+                        Cancel Order
+                    </button>
+                </form>
+            {% endif %}
         </div>
+
         {% endfor %}
     {% else %}
         <p>No orders yet.</p>

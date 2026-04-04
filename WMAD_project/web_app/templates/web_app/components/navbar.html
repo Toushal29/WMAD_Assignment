@@ -17,19 +17,17 @@
             </ul>
         </div>
         <div class="login-container">
-
-            <!-- PERMANENT CART ICON -->
             <div class="cart-wrapper">
-                <button id="cart-toggle" class="cart-nav-btn">🛒</button>
+                <button id="cart-toggle" class="cart-nav-btn">Cart</button>
                 <span id="cart-count" class="cart-count">0</span>
             </div>
 
             {% if user.is_authenticated %}
             <div class="user-dropdown">
-                <span class="username">👤 Hi, {{ user.username }}</span>
+                <span class="username">Hi, {{ user.username }}</span>
                 <div class="dropdown-content">
-                    {% if "admin_" in user.username %}
-                    <a href="/admin-site/">Admin Panel</a>
+                    {% if user.is_staff or user.is_superuser %}
+                    <a href="/admin/">Admin Panel</a>
                     {% else %}
                     <a href="/profile/">Profile</a>
                     {% endif %}
@@ -40,11 +38,10 @@
             <a href="/login/" class="login-link">Log In</a>
             {% endif %}
 
-            <button class="hamburger" id="navToggle">☰</button>
+            <button class="hamburger" id="navToggle">Menu</button>
         </div>
     </nav>
 
-    <!-- CART WINDOW -->
     <div id="cart-dropdown" class="cart-dropdown">
         <div class="cart-header">
             <span>Cart</span>
