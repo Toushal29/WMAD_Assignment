@@ -126,11 +126,13 @@ class Order(models.Model):
     STATUS_PENDING = "pending"
     STATUS_PREPARING = "preparing"
     STATUS_COMPLETED = "completed"
+    STATUS_CANCELLED = "cancelled"
 
     STATUS_CHOICES = [
         (STATUS_PENDING, "Pending"),
         (STATUS_PREPARING, "Preparing"),
         (STATUS_COMPLETED, "Completed"),
+        (STATUS_CANCELLED, "Cancelled"),
     ]
 
     user = models.ForeignKey(

@@ -1,3 +1,7 @@
+# C:\Users\...\WMAD_Assignment\WMAD_project\web_app\views.py
+
+# this file defines the view functions for the web application, handling the logic for rendering templates, processing forms, managing user authentication and API
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -8,6 +12,316 @@ from django.views.decorators.http import require_POST
 
 from .forms import CustomUserCreationForm, ProfileUpdateForm, ReviewForm
 from .models import Cart, Customer, Menu, Order, OrderItem, Reservation, Review, Special
+
+# API REST FRAMEWORKS
+from . import serializers
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.authtoken.models import Token
+
+
+# API Views
+# Delete the user's token to log them out
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def api_logout(request):
+    try:
+        request.user.auth_token.delete()
+        return Response({"message": "Successfully logged out."}, status=200)
+    except Exception:
+        return Response({"error": "No active token found."}, status=400)
+
+# register and auto-login
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def api_register(request):
+    serializer = serializers.CustomerRegisterSerializer(data=request.data)
+    if serializer.is_valid():
+        customer = serializer.save()        # This returns the Customer instance
+        token, _ = Token.objects.get_or_create(user=customer.user)
+
+        # Combine the data
+        response_data = serializer.data
+        response_data['token'] = token.key
+
+        return Response(response_data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([AllowAny]) # This allows guests to access this specific view
+def api_menus(request):
+    menus = Menu.objects.all()
+    serializer = serializers.MenuSerializer(menus, many=True)
+    return Response(serializer.data)
+
+# update profile
+@api_view(['PUT', 'PATCH'])
+@permission_classes([IsAuthenticated])
+def api_upd_profile(request, pk):
+    customer = get_object_or_404(Customer.objects.select_related('user'), id=pk)
+    if request.user.id != customer.user.id:
+        return Response({"detail": "You do not have permission to edit this profile."},status=status.HTTP_403_FORBIDDEN)
+    serializer = serializers.CustomerUpdateSerializer(customer, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# delete profile
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def api_delete_profile(request, pk):
+    customer = get_object_or_404(Customer, id=pk)
+    if request.user.id != customer.user.id:     # check if user own profile
+        return Response({"detail": "You do not have permission to delete this profile."}, status=status.HTTP_403_FORBIDDEN)
+    # delete
+    user = customer.user
+    user.delete()
+    return Response({"message": "User and Profile deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def api_menu_detail(request,pk):
+    menu = get_object_or_404(Menu, id=pk)
+    serializer = serializers.MenuSerializer(menu)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def api_customers(request):
+    # select_related('user') joins the tables at the DB level
+    customers = Customer.objects.select_related('user').all()
+    serializer = serializers.CustomerSerializer(customers, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def api_profile(request,pk):
+    customer = get_object_or_404(Customer.objects.select_related('user'), id=pk)
+    serializer = serializers.CustomerSerializer(customer)
+    return Response(serializer.data)
+
+# Reviews
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_my_reviews(request):
+    # Use the related_name "reviews" from your User model
+    reviews = request.user.reviews.all()
+    serializer = serializers.ReviewSerializer(reviews, many=True)
+    return Response(serializer.data)
+
+@api_view(['PUT', 'PATCH'])
+@permission_classes([IsAuthenticated])
+def api_upd_reviews(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    if review.user != request.user:
+        return Response({"detail": "You cannot edit someone else's review."}, status=status.HTTP_403_FORBIDDEN)
+    serializer = serializers.ReviewUpdateSerializer(review, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def api_delete_reviews(request,review_id):
+    review = get_object_or_404(Review, id=review_id)
+    if review.user != request.user:
+        return Response({"detail": "You cannot delete someone else's review."}, status=status.HTTP_403_FORBIDDEN)
+    review.delete()
+    return Response({"message": "Review deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+# Orders
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_order_list(request):
+    orders = request.user.orders.all()
+    serializer = serializers.OrderSerializer(orders, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_order_items(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    if order.user != request.user:
+        return Response({"detail": "You do not have permission to view this order."}, status=status.HTTP_403_FORBIDDEN)
+    items = order.items.select_related('menu').all()
+    serializer = serializers.OrderItemSerializer(items, many=True)
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def api_cancel_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    if order.status != Order.STATUS_PENDING:
+        return Response({"detail": f"Order cannot be cancelled because it is currently {order.status}."},status=status.HTTP_400_BAD_REQUEST)
+    order.status = 'cancelled' # Or Order.STATUS_CANCELLED if you defined that constant
+    order.save()
+
+    return Response({"message": f"Order #{order_id} has been successfully cancelled."},status=status.HTTP_200_OK)
+
+
+# reservations
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_reservation_list(request):
+    reservations = Reservation.objects.select_related('customer__user').filter(
+        customer__user=request.user
+    )
+    serializer = serializers.ReservationSerializer(reservations, many=True)
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def api_del_reservation(request, resev_id):
+    reservation = get_object_or_404(Reservation, id=resev_id)
+    if reservation.customer.user != request.user:
+        return Response({"detail": "You cannot cancel someone else's reservation."}, status=status.HTTP_403_FORBIDDEN)
+    if reservation.status != Reservation.STATUS_PENDING:
+        return Response({"detail": f"Reservation cannot be cancelled because it is already {reservation.status}."}, status=status.HTTP_400_BAD_REQUEST)
+    reservation.status = Reservation.STATUS_CANCELLED
+    reservation.save()
+    return Response({"message": "Reservation cancelled successfully."}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def api_create_reservation(request):
+    try:
+        customer = request.user.customer_profile
+    except Customer.DoesNotExist:
+        return Response(
+{"detail": "Customer profile not found. Please complete your profile first."}, status=status.HTTP_400_BAD_REQUEST)
+    serializer = serializers.ReservationCreateSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save(customer=customer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Ordering
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def api_checkout_preview(request):
+    """
+    Step 1: The 'Get Quote' step. 
+    Mobile app sends the local list, server returns the official total.
+    """
+    serializer = serializers.CheckoutSessionSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    items_data = serializer.validated_data['items']
+    subtotal = 0
+    validation_errors = []
+    confirmed_items = []
+
+    for item in items_data:
+        menu_item = Menu.objects.filter(id=item['menu_id']).first()
+        
+        if not menu_item:
+            validation_errors.append(f"Item ID {item['menu_id']} not found.")
+            continue
+        
+        if not menu_item.available:
+            validation_errors.append(f"{menu_item.name} is currently out of stock.")
+            continue
+
+        item_subtotal = menu_item.price * item['quantity']
+        subtotal += item_subtotal
+        
+        confirmed_items.append({
+            "name": menu_item.name,
+            "price": str(menu_item.price),
+            "quantity": item['quantity'],
+            "subtotal": str(item_subtotal)
+        })
+
+    if validation_errors:
+        return Response({"errors": validation_errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Business Logic: Add delivery fee or tax
+    delivery_fee = 5.00
+    grand_total = float(subtotal) + delivery_fee
+
+    return Response({
+        "summary": {
+            "items": confirmed_items,
+            "subtotal": str(subtotal),
+            "delivery_fee": str(delivery_fee),
+            "grand_total": str(grand_total)
+        },
+        "can_proceed": True
+    })
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def api_place_order(request):
+    """
+    Step 2: The 'Commit' step.
+    Actually saves the Order and OrderItems to the database.
+    """
+    serializer = serializers.CheckoutSessionSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    items_data = serializer.validated_data['items']
+    
+    # 1. Start a transaction (optional but recommended)
+    from django.db import transaction
+    try:
+        with transaction.atomic():
+            # 2. Create the Order object
+            # We calculate price again on server to prevent price-hacking from the app
+            order = Order.objects.create(
+                user=request.user,
+                total_price=0, # Will update this in a second
+                status=Order.STATUS_PENDING
+            )
+
+            final_total = 0
+            for item in items_data:
+                menu_item = get_object_or_404(Menu, id=item['menu_id'], available=True)
+                
+                OrderItem.objects.create(
+                    order=order,
+                    menu=menu_item,
+                    quantity=item['quantity'],
+                    price=menu_item.price
+                )
+                final_total += menu_item.price * item['quantity']
+
+            # 3. Update the final price (including $5 delivery)
+            order.total_price = final_total + 5
+            order.save()
+
+            return Response({
+                "message": "Order placed successfully!",
+                "order_id": order.id,
+                "total": str(order.total_price)
+            }, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # function to get customer profile or redirect if not found, used in multiple views to avoid code duplication
 def get_customer_or_redirect(request, redirect_name="home"):
@@ -62,7 +376,7 @@ def order(request):
 
 
 @login_required
-# reservation view now checks if user has a customer profile and shows it in the reservation form, and also handles reservation submission with messages
+# Checkout from cart
 def checkout(request):
     items = Cart.objects.filter(user=request.user).select_related("menu")
     total = cart_total_for_user(request.user)
@@ -82,7 +396,8 @@ def about_contact(request):
 def privacy_policy(request):
     return render(request, "web_app/other_pages/privacy_policy.html")
 
-# authentication views for signup, login, logout, and profile management, using Django's built-in forms and authentication system, with added messages for user feedback
+
+# signup new user
 def signup(request):
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
@@ -93,7 +408,8 @@ def signup(request):
         form = CustomUserCreationForm()
     return render(request, "registration/signup.html", {"form": form})
 
-# login view now sets session expiry to 7 days and redirects staff users to admin dashboard, with messages for invalid login attempts and successful logins, and also checks if user is already authenticated to redirect to home
+
+# user login + redirect
 def login_view(request):
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
@@ -115,14 +431,14 @@ def login_view(request):
         form = AuthenticationForm()
     return render(request, "registration/login.html", {"form": form})
 
-# logout view simply logs out the user and redirects to home, no changes needed
+
+# logout view simply logs out
 def logout_view(request):
     logout(request)
     return redirect("home")
 
 
 @login_required
-# profile view now uses a custom form to allow users to update their profile information, and shows messages on successful update, with the form pre-filled with current user data
 def profile_page(request):
     user = request.user
     if request.method == "POST":
@@ -140,13 +456,13 @@ def profile_page(request):
 
 
 @login_required
-# settings page is a placeholder for future account settings, currently just shows a static page with a section variable for template use
+# settings page
 def settings_page(request):
     return render(request, "web_app/account/settings.html", {"section": "settings"})
 
 
 @login_required
-# delete account view now requires POST method for security, and shows a confirmation page before deletion, with messages on successful deletion and redirects to home after logout
+# delete account
 def delete_account(request):
     if request.method == "POST":
         request.user.delete()
@@ -154,7 +470,8 @@ def delete_account(request):
         return redirect("home")
     return render(request, "web_app/account/confirm_delete.html")
 
-# reservation view now checks if user is authenticated to allow making a reservation, and also checks if user has a customer profile before allowing reservation submission, with messages for errors and success, and also passes customer profile to the template for pre-filling reservation form if available
+
+# reservation view
 def reservation(request):
     if request.method == "POST":
         if not request.user.is_authenticated:
@@ -188,7 +505,8 @@ def reservation(request):
         {"customer_profile": customer},
     )
 
-# AJAX view to load more menu items for infinite scrolling on the menu page, returns JSON response with menu item data, and uses offset and limit parameters to paginate results
+
+# AJAX view to load more menu items for infinite scrolling on the menu page
 def load_more_menu(request):
     offset = int(request.GET.get("offset", 0))
     limit = 8
@@ -208,7 +526,7 @@ def load_more_menu(request):
 
 
 @login_required
-# AJAX view to add a menu item to the cart, expects POST data with menu_id and quantity, checks if the menu item is available, and creates or updates a Cart object for the user, returning a JSON response with a success message
+# AJAX view to add a menu item to the cart
 @require_POST
 def add_to_cart(request):
     menu_id = request.POST["menu_id"]
@@ -228,7 +546,7 @@ def add_to_cart(request):
 
 
 @login_required
-# AJAX view to get current cart items for the logged-in user, returns a JSON response with a list of cart items including menu_id, name, quantity, and subtotal for each item, using select_related to optimize database queries
+# AJAX view to get current cart items for the logged-in user
 def get_cart_items(request):
     items = [
         {
@@ -241,7 +559,7 @@ def get_cart_items(request):
     ]
     return JsonResponse({"items": items})
 
-# AJAX view to remove a menu item from the cart, expects POST data with menu_id, checks if the cart item exists for the user and deletes it, returning a JSON response with a success message
+# AJAX view to remove a menu item from the cart
 @login_required
 @require_POST
 def remove_from_cart(request):
@@ -253,14 +571,14 @@ def remove_from_cart(request):
         item.delete()
     return JsonResponse({"message": "removed"})
 
-# AJAX view to clear all items from the cart for the logged-in user, deletes all Cart objects for the user and returns a JSON response with a success message
+# AJAX view to clear all items from the cart for the logged-in user
 @login_required
 @require_POST
 def clear_cart(request):
     Cart.objects.filter(user=request.user).delete()
     return JsonResponse({"message": "cleared"})
 
-# AJAX view to confirm an order, checks if the cart is not empty and if the user has a customer profile, creates an Order object with related OrderItems for each cart item, calculates the total price, and then clears the cart, returning a JSON response with a success message and a redirect URL to the user's orders page
+# AJAX view to confirm an order
 @login_required
 @require_POST
 def confirm_order(request):
@@ -290,7 +608,8 @@ def confirm_order(request):
 
     return JsonResponse({"success": True, "redirect": "/profile/my_orders/"})
 
-# reservation view now checks if user is authenticated to allow making a reservation, and also checks if user has a customer profile before allowing reservation submission, with messages for errors and success, and also passes customer profile to the template for pre-filling reservation form if available
+
+# reservation view
 @login_required
 def my_orders(request):
     customer, missing_response = get_customer_or_redirect(request, "home")
@@ -300,19 +619,30 @@ def my_orders(request):
     orders = Order.objects.filter(user=customer.user).prefetch_related("items__menu")
     return render(request, "web_app/main_page/my_orders.html", {"orders": orders})
 
-# cancel order view now requires POST method for security, checks if the order belongs to the logged-in user, and shows a message that order cancellation is handled by staff in Django admin, then redirects back to the user's orders page
+
+# cancel order view
 @login_required
 @require_POST
-def cancel_order(request, orderid):
-    customer, missing_response = get_customer_or_redirect(request, "my_orders")
+def cancel_order_action(request, order_id):
+    # Retrieve customer profile
+    customer, missing_response = get_customer_or_redirect(request, "orders")
     if missing_response:
         return missing_response
 
-    get_object_or_404(Order, pk=orderid, user=customer.user)
-    messages.info(request, "Order cancellation is now handled by staff in Django admin.")
-    return redirect("my_orders")
+    # Ensure the order belongs to the user
+    order = get_object_or_404(Order, pk=order_id, user=customer.user)
+    
+    # Only allow cancellation if the order is still pending
+    if order.status == Order.STATUS_PENDING:
+        order.status = 'cancelled' # Matches the logic in your HTML status classes
+        order.save()
+        messages.success(request, f"Order #{order_id} has been cancelled.")
+    else:
+        messages.error(request, "This order is already being prepared or completed and cannot be cancelled.")
+        
+    return redirect("orders")
 
-# account views for orders, reservations, and reviews, now check if the user has a customer profile and show messages if missing, and also use select_related to optimize database queries when fetching related data for display in the templates
+# account views for orders, reservations, and reviews
 @login_required
 def account_orders(request):
     customer, missing_response = get_customer_or_redirect(request, "home")
@@ -326,7 +656,6 @@ def account_orders(request):
         {"section": "orders", "orders": orders},
     )
 
-# account reservations view now checks if user has a customer profile and shows it in the reservation form, and also handles reservation submission with messages, and also passes customer profile to the template for pre-filling reservation form if available, and uses select_related to optimize queries when fetching reservations for display in the template
 @login_required
 def account_reservations(request):
     customer, missing_response = get_customer_or_redirect(request, "home")
@@ -343,7 +672,23 @@ def account_reservations(request):
         },
     )
 
-# account reviews view now checks if user has a customer profile and shows it in the review form, and also handles review submission with messages, and also passes customer profile to the template for pre-filling review form if available, and uses select_related to optimize queries when fetching reviews for display in the template
+@login_required
+@require_POST
+def cancel_reservation(request, reservation_id):
+    customer, missing_response = get_customer_or_redirect(request, "reservations")
+    if missing_response:
+        return missing_response
+
+    reservation = get_object_or_404(Reservation, pk=reservation_id, customer=customer)
+
+    if reservation.status == Reservation.STATUS_PENDING:
+        reservation.status = Reservation.STATUS_CANCELLED
+        reservation.save()
+        messages.success(request, "Reservation cancelled successfully.")
+    else:
+        messages.error(request, "Only pending reservations can be cancelled.")
+    return redirect("reservations")
+
 @login_required
 def account_reviews(request):
     customer, missing_response = get_customer_or_redirect(request, "home")
@@ -360,7 +705,9 @@ def account_reviews(request):
         },
     )
 
-# AJAX view to add a menu item review, expects POST data with menu_id, rating, and optional comment, checks if the user has a customer profile, and creates or updates a Review object for the user and menu item, returning a JSON response with a success message, and also uses update_or_create to handle both creating new reviews and updating existing ones in one query
+
+
+# AJAX view to add a menu item review
 @login_required
 def add_review(request, menu_id):
     menu_item = get_object_or_404(Menu, pk=menu_id)
@@ -384,7 +731,7 @@ def add_review(request, menu_id):
 
     return redirect("menu")
 
-# AJAX view to add a restaurant review, expects POST data with rating and optional comment, checks if the user has a customer profile, and creates or updates a Review object for the user with menu set to None to indicate it's a restaurant review, returning a JSON response with a success message, and also uses update_or_create to handle both creating new reviews and updating existing ones in one query
+# AJAX view to add a restaurant review
 @login_required
 def add_restaurant_review(request):
     customer, missing_response = get_customer_or_redirect(request, "reviews")
@@ -405,7 +752,7 @@ def add_restaurant_review(request):
             messages.success(request, "Restaurant review submitted!")
     return redirect("reviews")
 
-# view to display all reviews, now separates menu item reviews and restaurant reviews, and uses select_related to optimize queries when fetching related user and menu data for display in the template
+# view to display all reviews
 def view_reviews(request):
     menu_reviews = Review.objects.filter(menu__isnull=False).select_related("menu", "user")
     restaurant_reviews = Review.objects.filter(menu__isnull=True).select_related("user")
@@ -418,7 +765,7 @@ def view_reviews(request):
         },
     )
 
-# view to edit a review, checks if the review belongs to the logged-in user, and allows editing the rating and comment using a form, with messages on successful update, and also pre-fills the form with current review data for convenience
+# view to edit a review
 @login_required
 def edit_review(request, review_id):
     customer, missing_response = get_customer_or_redirect(request, "reviews")

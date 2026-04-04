@@ -1,3 +1,7 @@
+# C:\Users\...\WMAD_Assignment\WMAD_project\web_app\forms.py
+
+# this file defines the forms used in the web application, including a custom user creation form that extends Django's built-in UserCreationForm to include additional fields like email, phone, and address, as well as a profile update form for users to update their information, and a review form for submitting reviews with ratings and comments. The forms also include custom initialization and save methods to handle specific logic related to user profiles and reviews.
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
@@ -62,22 +66,30 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
+    username = forms.CharField(required=False)
     phone = forms.CharField(max_length=20, required=True)
     address = forms.CharField(max_length=255, required=True)
 
     class Meta:
         model = User
-        fields = ["first_name", "last_name", "email"]
+        fields = ["username", "first_name", "last_name", "email"]
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
+        self.fields["username"].widget.attrs["readonly"] = True
+        self.fields["username"].widget.attrs["class"] = "form-control-plaintext"
+
         if user:
+            self.fields["username"].initial = user.username
             profile = Customer.objects.filter(user=user).first()
             if profile:
                 self.fields["phone"].initial = profile.phone
                 self.fields["address"].initial = profile.address
+
+    def clean_username(self):
+        return self.instance.username
 
     def save(self, commit=True):
         user = super().save(commit=commit)
