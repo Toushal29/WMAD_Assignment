@@ -8,27 +8,25 @@
     {% if reservations %}
         {% for r in reservations %}
         <div class="order-card">
-            <h4>Reservation #{{ r.reservationID }}</h4>
-
-            <p>Date: {{ r.reservation_date }}</p>
-            <p>Time: {{ r.reservation_time }}</p>
-            <p>Party Size: {{ r.party_size }}</p>
-
-            <p>Seating: {{ r.seating_choice }}</p>
-            {% if r.allergy_info %}
-                <p>Allergy Info: {{ r.allergy_info }}</p>
-            {% endif %}
-
-            <p>Status:
-                <span class="status 
-                    {% if r.status == 'confirmed' %}delivered
-                    {% elif r.status == 'pending' %}pending
-                    {% else %}cancelled{% endif %}
-                ">
+            <h4><u>Reservation #{{ r.id }}</u></h4>
+            <p><strong>Date: </strong> <i>{{ r.reservation_date }}</i> <strong> | Time: </strong> <i>{{ r.reservation_time }}</i></p>
+            <p><strong>Party Size:</strong> <i>{{ r.party_size }}</i> | <strong> Seating: </strong> <i>{{ r.seating_choice }}</i></p>
+            <p><strong>Status: </strong>
+                <span class="status {% if r.status == 'confirmed' %}delivered{% elif r.status == 'pending' %}pending{% else %}cancelled{% endif %}">
                     {{ r.status|title }}
                 </span>
             </p>
+
+            {% if r.status == 'pending' %}
+                <form action="{% url 'cancel_reservation' r.id %}" method="POST" style="margin-top: 10px;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this reservation?')">
+                        Cancel Reservation
+                    </button>
+                </form>
+            {% endif %}
         </div>
+
         {% endfor %}
     {% else %}
         <p>No reservations yet.</p>
