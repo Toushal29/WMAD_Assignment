@@ -1,0 +1,27 @@
+POST /api/auth/login/
+POST /api/auth/logout/
+
+POST /api/auth/register/
+
+GET /api/profile/{:id}/
+PUT/PATCH api/upd_profile/{:id}/
+DELETE api/profile/{:id}/delete/
+
+GET /api/menus/
+GET /api/menu/{:id}/
+
+GET /api/customers/
+
+GET /api/my-reviews/
+PATCH /api/reviews/{id}/
+DELETE /api/reviews/{id}/delete/
+
+GET /api/my-reservations/
+POST /api/reservations/create/
+DELETE /api/my-reservations/:id/delete/
+
+GET /api/my-orders/
+GET /api/orders/{:id}/items/
+DELETE api/orders/{id}/cancel/
+POST api/orders/preview/
+POST api/orders/place/

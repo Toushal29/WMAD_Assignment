@@ -46,7 +46,7 @@
             {% csrf_token %}
             <label>First Name: <input type="text" value="{{ request.user.first_name }}"></label>
             <label>Last Name: <input type="text" value="{{ request.user.last_name }}"></label>
-            <label>Phone Number: <input type="text" value="{{ request.user.phone_no }}"></label>
+            <label>Phone Number: <input type="text" value="{{ customer_profile.phone|default:'' }}"></label>
 
             <!-- Grouped Row -->
             <div class="r-flex-row">

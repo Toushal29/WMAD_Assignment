@@ -25,55 +25,38 @@
             <th>Order ID</th>
             <th>Total (Rs)</th>
             <th>Date</th>
-            <th>Time</th>
-            <th>OrderType</th>
-            <th>DeliveryAddress</th>
             <th>Status</th>
             <th>Items</th>
-            <th>Action</th>
         </tr>
     </thead>
     <tbody>
         {% for order in orders %}
         <tr>
-            <td>{{ order.orderID }}</td>
-            <td>{{ order.totalamount }}</td>
-            <td>{{ order.order_date }}</td>
-            <td>{{ order.order_time }}</td>
-            <td>{{ order.ordertype }}</td>
-            <td>{{ order.deliveryaddress }}</td>
-            <td>{{ order.status }}</td>
+            <td>{{ order.id }}</td>
+            <td>{{ order.total_price }}</td>
+            <td>{{ order.order_date|date:"Y-m-d H:i" }}</td>
+            <td>{{ order.status|title }}</td>
             <td>
-                <button class="toggle-items-btn" onclick="toggleItems('{{ order.orderID }}')">+</button>
-            </td>
-
-            <td>
-                {% if order.status != "completed" %}
-                <form method="post" action="{% url 'cancel_order' order.orderID %}">
-                    {% csrf_token %}
-                    <button type="submit" class="cancel-btn">Cancel</button>
-                </form>
-                {% else %}
-                <button type="button" class="cancel-btn" disabled>Completed</button>
-                {% endif %}
+                <button class="toggle-items-btn" onclick="toggleItems('{{ order.id }}')">+</button>
             </td>
         </tr>
 
-        <!-- Hidden items -->
-        <tr id="items-{{ order.orderID }}" class="hidden-items">
-            <td colspan="9">
+        <tr id="items-{{ order.id }}" class="hidden-items">
+            <td colspan="5">
                 <table class="items-table">
                     <thead>
                         <tr>
                             <th>Item Name</th>
                             <th>Quantity</th>
+                            <th>Price</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for item in order.orderitem_set.all %}
+                        {% for item in order.items.all %}
                         <tr>
-                            <td>{{ item.menu.menuName }}</td>
+                            <td>{{ item.menu.name }}</td>
                             <td>{{ item.quantity }}</td>
+                            <td>{{ item.price }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -82,7 +65,7 @@
         </tr>
         {% empty %}
         <tr>
-            <td colspan="9">You have no orders yet.</td>
+            <td colspan="5">You have no orders yet.</td>
         </tr>
         {% endfor %}
     </tbody>

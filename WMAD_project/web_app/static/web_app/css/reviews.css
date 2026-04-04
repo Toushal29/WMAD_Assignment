@@ -13,16 +13,26 @@
 
 /* simple review card */
 .review-card {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.85);
     color: #000000;
-    border: 1px solid #ffffff;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.review-card:hover {
+    background: rgb(255, 255, 255);
+    color: #000000;
+    border: 1px solid #000000;
+    border-radius: 10px;
     padding: 10px;
     margin-bottom: 10px;
 }
 
 /* rating */
 .review-rating {
-    margin: 4px 0;
+    margin: 5px 0;
 }
 
 .review-comment {
@@ -38,10 +48,31 @@
 
 /* review button */
 .review-btn {
-    margin-bottom: 10px;
-    padding: 6px 10px;
+    background-color: rgb(255, 232, 189);
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
     cursor: pointer;
+    padding: 5px 10px 5px 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 1.25rem;
+    transition: 200ms;
 }
+
+.review-btn:hover {
+    background-color: rgb(230, 210, 171);
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 5px 10px 5px 10px;
+    text-decoration: underline;
+    font-size: 1.3rem;
+    transition: 200ms;
+}
+
 
 /* hidden form */
 .restaurant-review-form {
