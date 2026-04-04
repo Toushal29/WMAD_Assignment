@@ -1,4 +1,3 @@
-/* CART TOGGLE */
 const toggleBtn = document.getElementById("cart-toggle");
 const dropdown = document.getElementById("cart-dropdown");
 const countBadge = document.getElementById("cart-count");
@@ -11,7 +10,6 @@ if (toggleBtn) {
     });
 }
 
-/* REFRESH CART CONTENT */
 function refreshCart() {
     fetch("/ajax/get-cart/")
         .then(res => res.json())
@@ -20,7 +18,7 @@ function refreshCart() {
             container.innerHTML = "";
 
             let total = 0;
-            let itemsCount = data.items.length;
+            const itemsCount = data.items.length;
 
             data.items.forEach(item => {
                 total += item.subtotal;
@@ -28,14 +26,13 @@ function refreshCart() {
                 <div class="cart-item">
                     <span>${item.name}</span>
                     <span>x${item.qty}</span>
-                    <button onclick="removeFromCart(${item.menuID})">✕</button>
+                    <button onclick="removeFromCart(${item.menu_id})">X</button>
                 </div>
             `);
             });
-            document.getElementById("cart-total").innerHTML =
-                "Total: Rs " + total;
 
-            /* UPDATE CART COUNTER */
+            document.getElementById("cart-total").innerHTML = "Total: Rs " + total;
+
             if (itemsCount > 0) {
                 countBadge.style.display = "block";
                 countBadge.innerText = itemsCount;
@@ -45,14 +42,12 @@ function refreshCart() {
         });
 }
 
-/* Close button */
 if (closeBtn) {
     closeBtn.addEventListener("click", () => {
         dropdown.style.display = "none";
     });
 }
 
-/* ADD ITEM TO CART */
 function addToCart(button) {
     const card = button.closest(".card");
     const id = card.dataset.id;
@@ -68,13 +63,11 @@ function addToCart(button) {
             quantity: qty
         })
     })
-
         .then(() => {
             refreshCart();
         });
 }
 
-/* REMOVE ITEM */
 function removeFromCart(id) {
     fetch("/ajax/remove-from-cart/", {
         method: "POST",
@@ -90,7 +83,6 @@ function removeFromCart(id) {
         });
 }
 
-/* CLEAR CART */
 const clearBtn = document.getElementById("refresh-cart");
 
 if (clearBtn) {
@@ -107,7 +99,6 @@ if (clearBtn) {
     };
 }
 
-/* CHECKOUT BUTTON */
 const checkoutBtn = document.getElementById("checkout-btn");
 if (checkoutBtn) {
     checkoutBtn.onclick = () => {
@@ -115,7 +106,6 @@ if (checkoutBtn) {
     };
 }
 
-/* CSRF TOKEN */
 function getCSRFToken() {
     return document.cookie
         .split("; ")
@@ -123,15 +113,13 @@ function getCSRFToken() {
         ?.split("=")[1];
 }
 
-/* INITIAL LOAD */
 document.addEventListener("DOMContentLoaded", () => {
     refreshCart();
 });
 
-/* QUANTITY BUTTONS */
 function changeQty(btn, change) {
     const qtyInput = btn.parentElement.querySelector(".quantity");
-    let value = parseInt(qtyInput.value) || 1;
+    let value = parseInt(qtyInput.value, 10) || 1;
     value += change;
     if (value < 1) value = 1;
     qtyInput.value = value;
