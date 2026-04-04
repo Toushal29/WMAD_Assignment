@@ -5,54 +5,32 @@
 <h2>Restaurant Reviews</h2>
 
 {% for review in restaurant_reviews %}
-
 <div class="review-card">
-
-<strong>{{ review.customer.user.username }}</strong>
-
-<p>
-{% for i in "12345" %}
-{% if forloop.counter <= review.rating %}
-⭐
-{% else %}
-☆
-{% endif %}
-{% endfor %}
-</p>
-
-<p>{{ review.comment }}</p>
-
+    <strong>{{ review.user.username }}</strong>
+    <p>
+        {% for i in "12345" %}
+            {% if forloop.counter <= review.rating %}*{% else %}o{% endif %}
+        {% endfor %}
+    </p>
+    <p>{{ review.comment }}</p>
 </div>
-
 {% empty %}
 <p>No restaurant reviews yet.</p>
 {% endfor %}
 
-
 <h2>Menu Reviews</h2>
 
 {% for review in menu_reviews %}
-
 <div class="review-card">
-
-<strong>{{ review.customer.user.username }}</strong>
-
-<h4>{{ review.menu.menuName }}</h4>
-
-<p>
-{% for i in "12345" %}
-{% if forloop.counter <= review.rating %}
-⭐
-{% else %}
-☆
-{% endif %}
-{% endfor %}
-</p>
-
-<p>{{ review.comment }}</p>
-
+    <strong>{{ review.user.username }}</strong>
+    <h4>{{ review.menu.name }}</h4>
+    <p>
+        {% for i in "12345" %}
+            {% if forloop.counter <= review.rating %}*{% else %}o{% endif %}
+        {% endfor %}
+    </p>
+    <p>{{ review.comment }}</p>
 </div>
-
 {% empty %}
 <p>No menu reviews yet.</p>
 {% endfor %}

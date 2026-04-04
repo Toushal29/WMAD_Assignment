@@ -26,16 +26,15 @@
 
 <h1>Place an Order</h1>
 
-<!-- Menu -->
 <div class="menu-container">
     {% for item in items %}
-    <div class="card" data-id="{{ item.menuID }}">
-        <img src="{{ item.image_url.url }}" class="card-img">
-        <h3 class="food-name">{{ item.menuName }}</h3>
+    <div class="card" data-id="{{ item.id }}">
+        <img src="{{ item.image.url }}" class="card-img">
+        <h3 class="food-name">{{ item.name }}</h3>
         <p class="price">Rs {{ item.price }}</p>
         <div class="quantity-container">
-            <button class="qty-btn" onclick="changeQty(this, -1)">–</button>
-            <input type="number" class="quantity" value="1" style="width: 50px; text-align: center; margin: 0px 10px 0px 10px;">
+            <button class="qty-btn" onclick="changeQty(this, -1)">-</button>
+            <input type="number" class="quantity" value="1" style="width: 50px; text-align: center; margin: 0 10px;">
             <button class="qty-btn" onclick="changeQty(this, 1)">+</button>
         </div>
         <button class="add-cart-btn" onclick="addToCart(this)">Add to Cart</button>
