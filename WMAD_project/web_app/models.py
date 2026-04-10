@@ -128,6 +128,10 @@ class Order(models.Model):
     STATUS_COMPLETED = "completed"
     STATUS_CANCELLED = "cancelled"
 
+    PAYMENT_JUICE = "juice"
+    PAYMENT_CARD = "card"
+    PAYMENT_CASH = "cash"
+
     STATUS_CHOICES = [
         (STATUS_PENDING, "Pending"),
         (STATUS_PREPARING, "Preparing"),
@@ -135,17 +139,16 @@ class Order(models.Model):
         (STATUS_CANCELLED, "Cancelled"),
     ]
 
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="orders",
-    )
+    PAYMENT_CHOICES = [
+        (PAYMENT_JUICE, "MCB Juice / Transfer"),
+        (PAYMENT_CARD, "Debit/Credit Card"),
+        (PAYMENT_CASH, "Pay on Take-away"),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="orders")
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default=STATUS_PENDING,
-    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default=PAYMENT_CASH)
     order_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
