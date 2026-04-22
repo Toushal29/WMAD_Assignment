@@ -12,8 +12,8 @@ async def main(page: ft.Page):
     
     
     # Configuration
-    # my_token = "55242da82c27f93d95e939bdda2b49076f0672c2"
-    my_token = "048c128a5ff6d5415239fa69f33dad9763e942da"
+    my_token = "55242da82c27f93d95e939bdda2b49076f0672c2"
+    # my_token = "048c128a5ff6d5415239fa69f33dad9763e942da"
     host = "http://127.0.0.1:8000/"
     
     result_text = ft.Text()
