@@ -176,7 +176,7 @@ async def main(page: ft.Page):
                     ft.PopupMenuItem("My Reservations", on_click=on_reservation_click),
                     ft.PopupMenuItem("My Orders", on_click=on_orders_click),
                     ft.PopupMenuItem("My Detail Orders", on_click=myorder_byID_page),
-                    ft.PopupMenuItem("Find Us", on_click=on_find_us_click),
+                    
                 ]
             ),
         ],
