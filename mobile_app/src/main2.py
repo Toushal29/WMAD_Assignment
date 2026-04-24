@@ -2,6 +2,8 @@ import flet as ft
 # Import your function from the api folder
 from api_functions import *
 
+import flet_map as ftm #Imports for the map feature
+
 async def main(page: ft.Page):
     page.window.always_on_top = True
     page.title = "API Calls Profile - main2.py"
@@ -162,6 +164,42 @@ async def main(page: ft.Page):
         page.update()
 
 
+    #================ Codes for map (placeholder message) ==================
+    
+    def on_find_us_click(e):
+        reset_view()
+
+        map_view = ft.Column(
+            controls=[
+                ft.Text("Find Us", size=22, weight="bold"),
+
+                ftm.Map(
+                    expand=True,
+                    initial_center=ftm.MapLatitudeLongitude(-20.29, 57.5),
+                    initial_zoom=12,
+                    layers=[
+                        ftm.TileLayer(
+                            url_template="https://tile.memomaps.de/tilegen/{z}/{x}/{y}.png",
+                            on_image_error=lambda e: print(f"TileLayer Error: {e.data}"),
+                        ),
+                        ftm.SimpleAttribution(
+                            text="OpenStreetMap contributors",
+                            on_click=lambda e: e.page.launch_url(
+                                "https://www.openstreetmap.org/copyright"
+                            )
+                        )
+                    ],
+                ),
+            ],
+            expand=True
+        )
+
+        main_content.content = map_view
+        page.update()
+
+    #=======================================================================
+
+    
     page.appbar = ft.AppBar(
         leading=ft.Icon(ft.Icons.FOOD_BANK),
         # leading_width=40,
