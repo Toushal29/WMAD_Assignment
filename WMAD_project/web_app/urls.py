@@ -1,6 +1,6 @@
 # C:\Users\...\WMAD_Assignment\WMAD_project\web_app\urls.py
 
-# this file defines the URL patterns for the web application, mapping URLs to their corresponding view functions. It includes routes for main pages, user authentication, profile management, password reset/change, AJAX API endpoints for cart and orders, and review management.
+# this file defines the URL patterns for the web application, mapping URLs to their corresponding view functions
 
 from django.urls import path
 from django.contrib.auth import views as auth_views
@@ -9,24 +9,26 @@ from rest_framework.authtoken.views import obtain_auth_token
 
 
 urlpatterns = [
-        # API ENDPOINTS
+    # API ENDPOINTS
 
     # This provides the login endpoint automatically
     path('api/auth/login/', obtain_auth_token, name='api_token_auth'),
     path('api/auth/logout/', views.api_logout, name='api_logout'),
-    
     path('api/auth/register/', views.api_register, name='api_register'),
 
-    path('api/profile/<int:pk>/', views.api_profile, name='api_profile'),
-    path('api/upd_profile/<int:pk>/', views.api_upd_profile, name='api_upd_profile'),
-    path('api/profile/<int:pk>/delete/', views.api_delete_profile, name='api_delete_profile'),
+    path('api/my-profile/', views.api_get_current_user_profile, name='api_my_profile'),
+    path('api/upd_profile/', views.api_upd_profile, name='api_upd_profile'),
+    path('api/profile/delete/', views.api_delete_profile, name='api_delete_profile'),
+
+    # path('api/profile/<int:pk>/', views.api_profile, name='api_profile'),
+    # path('api/upd_profile/<int:pk>/', views.api_upd_profile, name='api_upd_profile'),
+    # path('api/profile/<int:pk>/delete/', views.api_delete_profile, name='api_delete_profile'),
 
     path('api/menus/', views.api_menus, name='api_menus'),
     path('api/menu/<int:pk>/', views.api_menu_detail, name='api_menu_detail'),
 
-    path('api/customers/', views.api_customers, name='api_customers'),
-
     path('api/my-reviews/', views.api_my_reviews, name='api_my_reviews'),
+    path('api/reviews/create/', views.api_create_review, name='api_create_review'),
     path('api/reviews/<int:review_id>/', views.api_upd_reviews, name='api_upd_reviews'),
     path('api/reviews/<int:review_id>/delete/', views.api_delete_reviews, name='api_delete_reviews'),
 
@@ -36,9 +38,15 @@ urlpatterns = [
 
     path('api/my-orders/', views.api_order_list, name='api_order_list'),
     path('api/orders/<int:order_id>/items/', views.api_order_items, name='api_order_items'),
+    path('api/orders/place/', views.api_place_order, name='api_place_order'),
     path('api/orders/<int:order_id>/cancel/', views.api_cancel_order, name='api_cancel_order'),
     path('api/orders/preview/', views.api_checkout_preview, name='api_checkout_preview'),
-    path('api/orders/place/', views.api_place_order, name='api_place_order'),
+
+    # to only be not use -- TESTING
+    path('api/customers/', views.api_customers, name='api_customers'),
+
+
+
 
 
 

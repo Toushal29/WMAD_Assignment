@@ -1,6 +1,7 @@
 # C:\Users\...\WMAD_Assignment\WMAD_project\web_app\views.py
 
 # this file defines the view functions for the web application, handling the logic for rendering templates, processing forms, managing user authentication and API
+from decimal import Decimal
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -22,10 +23,29 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
 
 
 # API Views
 # Delete the user's token to log them out
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_get_current_user_profile(request):
+    """
+    Returns the profile information of the user associated with the Token.
+    No ID is needed in the URL.
+    """
+    try:
+        # 'request.user' is identified via the 'Authorization: Token <key>' header
+        customer = request.user.customer_profile
+        serializer = serializers.CustomerSerializer(customer)
+        return Response(serializer.data)
+    except Customer.DoesNotExist:
+        return Response(
+            {"detail": "Customer profile not found for this user."}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def api_logout(request):
@@ -61,10 +81,9 @@ def api_menus(request):
 # update profile
 @api_view(['PUT', 'PATCH'])
 @permission_classes([IsAuthenticated])
-def api_upd_profile(request, pk):
-    customer = get_object_or_404(Customer.objects.select_related('user'), id=pk)
-    if request.user.id != customer.user.id:
-        return Response({"detail": "You do not have permission to edit this profile."},status=status.HTTP_403_FORBIDDEN)
+def api_upd_profile(request):
+    # Identifying the profile via the Token's user
+    customer = get_object_or_404(Customer, user=request.user)
     serializer = serializers.CustomerUpdateSerializer(customer, data=request.data, partial=True)
     if serializer.is_valid():
         serializer.save()
@@ -74,35 +93,18 @@ def api_upd_profile(request, pk):
 # delete profile
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
-def api_delete_profile(request, pk):
-    customer = get_object_or_404(Customer, id=pk)
-    if request.user.id != customer.user.id:     # check if user own profile
-        return Response({"detail": "You do not have permission to delete this profile."}, status=status.HTTP_403_FORBIDDEN)
-    # delete
-    user = customer.user
-    user.delete()
-    return Response({"message": "User and Profile deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+def api_delete_profile(request):
+    # The user can only delete their own account (identified by Token)
+    user = request.user
+    user.delete() 
+    return Response({"message": "Your account and profile have been deleted."}, status=status.HTTP_204_NO_CONTENT)
 
+# return a list of all menus
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def api_menu_detail(request,pk):
     menu = get_object_or_404(Menu, id=pk)
     serializer = serializers.MenuSerializer(menu)
-    return Response(serializer.data)
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def api_customers(request):
-    # select_related('user') joins the tables at the DB level
-    customers = Customer.objects.select_related('user').all()
-    serializer = serializers.CustomerSerializer(customers, many=True)
-    return Response(serializer.data)
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def api_profile(request,pk):
-    customer = get_object_or_404(Customer.objects.select_related('user'), id=pk)
-    serializer = serializers.CustomerSerializer(customer)
     return Response(serializer.data)
 
 # Reviews
@@ -114,13 +116,23 @@ def api_my_reviews(request):
     serializer = serializers.ReviewSerializer(reviews, many=True)
     return Response(serializer.data)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def api_create_review(request):
+    serializer = serializers.ReviewSerializer(data=request.data)
+    if serializer.is_valid():
+        # The user is identified via the Token
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['PUT', 'PATCH'])
 @permission_classes([IsAuthenticated])
 def api_upd_reviews(request, review_id):
     review = get_object_or_404(Review, id=review_id)
     if review.user != request.user:
         return Response({"detail": "You cannot edit someone else's review."}, status=status.HTTP_403_FORBIDDEN)
-    serializer = serializers.ReviewUpdateSerializer(review, data=request.data, partial=True)
+    serializer = serializers.ReviewSerializer(review, data=request.data, partial=True)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
@@ -213,40 +225,31 @@ def api_checkout_preview(request):
     serializer = serializers.CheckoutSessionSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     items_data = serializer.validated_data['items']
     subtotal = 0
     validation_errors = []
     confirmed_items = []
-
     for item in items_data:
         menu_item = Menu.objects.filter(id=item['menu_id']).first()
-        
         if not menu_item:
             validation_errors.append(f"Item ID {item['menu_id']} not found.")
             continue
-        
         if not menu_item.available:
             validation_errors.append(f"{menu_item.name} is currently out of stock.")
             continue
-
         item_subtotal = menu_item.price * item['quantity']
         subtotal += item_subtotal
-        
         confirmed_items.append({
             "name": menu_item.name,
             "price": str(menu_item.price),
             "quantity": item['quantity'],
             "subtotal": str(item_subtotal)
         })
-
     if validation_errors:
         return Response({"errors": validation_errors}, status=status.HTTP_400_BAD_REQUEST)
-
     # Business Logic: Add delivery fee or tax
     delivery_fee = 5.00
     grand_total = float(subtotal) + delivery_fee
-
     return Response({
         "summary": {
             "items": confirmed_items,
@@ -257,35 +260,29 @@ def api_checkout_preview(request):
         "can_proceed": True
     })
 
+# Ordering
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def api_place_order(request):
-    """
-    Step 2: The 'Commit' step.
-    Actually saves the Order and OrderItems to the database.
-    """
     serializer = serializers.CheckoutSessionSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     items_data = serializer.validated_data['items']
-    
-    # 1. Start a transaction (optional but recommended)
+    # Get the payment method from the request data
+    payment_choice = serializer.validated_data.get('payment_method', Order.PAYMENT_CASH)
     from django.db import transaction
     try:
         with transaction.atomic():
-            # 2. Create the Order object
-            # We calculate price again on server to prevent price-hacking from the app
+            # Create the Order with the payment_method
             order = Order.objects.create(
                 user=request.user,
-                total_price=0, # Will update this in a second
-                status=Order.STATUS_PENDING
+                total_price=0, 
+                status=Order.STATUS_PENDING,
+                payment_method=payment_choice  # NEW COLUMN SAVED HERE
             )
-
             final_total = 0
             for item in items_data:
                 menu_item = get_object_or_404(Menu, id=item['menu_id'], available=True)
-                
                 OrderItem.objects.create(
                     order=order,
                     menu=menu_item,
@@ -293,19 +290,33 @@ def api_place_order(request):
                     price=menu_item.price
                 )
                 final_total += menu_item.price * item['quantity']
-
-            # 3. Update the final price (including $5 delivery)
-            order.total_price = final_total + 5
+            
+            delivery_fee = Decimal('5.00')
+            order.total_price = final_total + delivery_fee
             order.save()
-
+            # Re-serialize the order to return the new fields
             return Response({
                 "message": "Order placed successfully!",
-                "order_id": order.id,
-                "total": str(order.total_price)
+                "order_details": serializers.OrderSerializer(order).data
             }, status=status.HTTP_201_CREATED)
-
+            
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# to only not be use -- TESTING
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def api_customers(request):
+    # select_related('user') joins the tables at the DB level
+    customers = Customer.objects.select_related('user').all()
+    serializer = serializers.CustomerSerializer(customers, many=True)
+    return Response(serializer.data)
+
+
+
+
+
 
 
 
@@ -586,14 +597,19 @@ def confirm_order(request):
     if not items.exists():
         return JsonResponse({"error": "empty"}, status=400)
 
+    # Get the payment method from the POST request
+    payment_method = request.POST.get("payment_method", "cash")
+
     customer = Customer.objects.filter(user=request.user).first()
     if not customer:
         return JsonResponse({"error": "customer_missing"}, status=400)
 
+    # Create order with the selected payment method
     order = Order.objects.create(
         user=request.user,
         total_price=cart_total_for_user(request.user),
         status=Order.STATUS_PENDING,
+        payment_method=payment_method  # Save the choice
     )
 
     for item in items:
@@ -605,8 +621,7 @@ def confirm_order(request):
         )
 
     items.delete()
-
-    return JsonResponse({"success": True, "redirect": "/profile/my_orders/"})
+    return JsonResponse({"success": True, "redirect": "/my-orders/"})
 
 
 # reservation view
