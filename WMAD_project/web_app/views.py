@@ -303,6 +303,82 @@ def api_place_order(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+###adding cart api
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def api_add_to_cart(request):
+    menu_id = request.data.get('menu')
+    quantity = int(request.data.get('quantity', 1))
+
+    # Check if the menu item already exists in this user's cart
+    cart_item = Cart.objects.filter(user=request.user, menu_id=menu_id).first()
+
+    if cart_item:
+        # If it exists, simply increase the quantity
+        cart_item.quantity += quantity
+        cart_item.save()
+        serializer = serializers.addCartSerializer(cart_item)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # If it doesn't exist, create a new cart entry
+    serializer = serializers.addCartSerializer(data=request.data)
+    if serializer.is_valid():
+        # Identify the user via the Token, similar to review creation
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#cartitemgetview
+from .serializers import CartSerializer  #return cart data
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+
+def api_get_cart(request):
+    """
+    Returns all items currently in the authenticated user's cart.
+    """
+    # Filter cart items by the current user [1]
+    cart_items = Cart.objects.filter(user=request.user).select_related('menu')
+    serializer = CartSerializer(cart_items, many=True)
+    return Response(serializer.data)
+###
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_specific_cart_item(request, pk):
+    
+   
+    cart_item = get_object_or_404(Cart, pk=pk)
+    
+    
+    cart_item.delete()
+    
+    return Response(
+        {"message": f"Item with ID {pk} has been removed from your cart."}, 
+        status=status.HTTP_204_NO_CONTENT
+    )
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_all_cart_items(request):
+    
+    Cart.objects.all().delete() 
+    
+    return Response(
+        {"message": "All items have been cleared from the cart."}, 
+        status=status.HTTP_204_NO_CONTENT
+    )
+
+
+
+
+
+
+
 
 # to only not be use -- TESTING
 @api_view(['GET'])
