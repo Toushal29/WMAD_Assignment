@@ -41,6 +41,11 @@ urlpatterns = [
     path('api/orders/place/', views.api_place_order, name='api_place_order'),
     path('api/orders/<int:order_id>/cancel/', views.api_cancel_order, name='api_cancel_order'),
     path('api/orders/preview/', views.api_checkout_preview, name='api_checkout_preview'),
+    #cartorder api
+    path('api/cart/add/', views.api_add_to_cart, name='api_add_to_cart'),# this is for cartitem
+    path('api/cart/get/', views.api_get_cart, name='api_get_cart'),
+    path('api/cart/delete/<int:pk>/', views.delete_specific_cart_item, name='delete-cart-item'),
+    path('api/cart/clear/', views.delete_all_cart_items, name='clear-cart'),
 
     # to only be not use -- TESTING
     path('api/customers/', views.api_customers, name='api_customers'),
