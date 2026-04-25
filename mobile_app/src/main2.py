@@ -180,8 +180,34 @@ async def main(page: ft.Page):
             ),
         ],
     )
+    def on_nav_change(e):
+       
+        if e.control.selected_index == 0:
+            print("Menu clicked")
+        elif e.control.selected_index == 1:
+            
+           print("shopping cart clicked")
+        elif e.control.selected_index == 2:
+            print("Reservation clicked")   
+
+    pagelet = ft.Pagelet(
+
+        navigation_bar=ft.NavigationBar(
+            destinations=[
+                ft.NavigationBarDestination(icon=ft.Icons.RESTAURANT_MENU, label="Menu"),
+                ft.NavigationBarDestination(icon=ft.Icons.SHOPPING_CART_CHECKOUT, label="Order"),
+                ft.NavigationBarDestination(icon=ft.Icons.TABLE_BAR, label="Reservation")],
+                on_change=on_nav_change
+                    
+                ),
+            
+       
+        content=ft.Container(),
+        height=70,
+    )
 
     page.add(
+        pagelet,
         main_content,
         ft.Button("Home", bgcolor=ft.Colors.BLUE_ACCENT_700, color=ft.Colors.BLACK,on_click=go_home),
         )
