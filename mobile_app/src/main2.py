@@ -160,7 +160,37 @@ async def main(page: ft.Page):
         )
         main_content.content = new_view
         page.update()
-
+    def on_place_click(e):
+    # 1. Clear previous views
+      reset_view()
+    
+    # 2. Create the container where menu items will be injected
+      cart_container = ft.Column(spacing=10)
+    
+    # 3. Set the UI layout for the Menu section
+      main_content.content = ft.Column(
+          controls=[ft.Row(controls=[
+            ft.Text("Place Order", size=20, weight="bold"),
+            ft.IconButton(
+                icon=ft.Icons.SHOPPING_CART, 
+                
+                on_click=lambda _: page.run_task(get_cart_api,page, cart_container, my_token, host,on_place_click)
+            ),],
+            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+             ) 
+            ,
+            cart_container],
+                
+            scroll=ft.ScrollMode.ADAPTIVE ,
+                                           )
+                 
+              
+      page.update()
+    # 4. Refresh the page to show the title and empty container
+       
+    
+    # 5. Run the asynchronous task to fetch and display the menu data
+      #page.run_task(get_place_api, page, cart_container, my_token, host)
 
     page.appbar = ft.AppBar(
         leading=ft.Icon(ft.Icons.FOOD_BANK),
@@ -185,8 +215,8 @@ async def main(page: ft.Page):
         if e.control.selected_index == 0:
             print("Menu clicked")
         elif e.control.selected_index == 1:
-            
-           print("shopping cart clicked")
+            on_place_click(e)
+           
         elif e.control.selected_index == 2:
             print("Reservation clicked")   
 
