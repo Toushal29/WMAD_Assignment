@@ -23,6 +23,7 @@ org = "com.mycompany"
 product = "mobile-app"
 company = "Flet"
 copyright = "Copyright (C) 2023-2026 by Flet"
+permissions = ["location"]
 
 [tool.flet.app]
 path = "src"

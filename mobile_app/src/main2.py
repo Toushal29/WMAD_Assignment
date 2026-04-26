@@ -2,7 +2,8 @@ import flet as ft
 # Import your function from the api folder
 from api_functions import *
 
-import flet_map as ftm #Imports for the map feature
+import flet_map as ftm        #Imports for the map feature
+import flet_geolocator as ftg #Imports to get user location
 
 async def main(page: ft.Page):
     page.window.always_on_top = True
@@ -13,10 +14,17 @@ async def main(page: ft.Page):
     page.horizontal_alignment = ft.MainAxisAlignment.CENTER
     
     
+    
     # Configuration
     my_token = "55242da82c27f93d95e939bdda2b49076f0672c2"
     # my_token = "048c128a5ff6d5415239fa69f33dad9763e942da"
     host = "http://127.0.0.1:8000/"
+
+    geo = ftg.Geolocator(
+        configuration=ftg.GeolocatorConfiguration(
+            accuracy=ftg.GeolocatorPositionAccuracy.HIGH
+        )
+    ) 
     
     result_text = ft.Text()
 
@@ -169,39 +177,62 @@ async def main(page: ft.Page):
     def on_find_us_click(e):
         reset_view()
 
+        location_text = ft.Text(value="Your location will appear here")
+
+        async def get_location(e):
+            try:
+                permission = await geo.request_permission()
+
+                if not permission:
+                    location_text.value = "Location permission denied"
+                    page.update()
+                    return
+
+                pos = await geo.get_current_position()
+
+                location_text.value = f"Your Location: {pos.latitude}, {pos.longitude}"
+
+            except Exception as ex:
+                location_text.value = f"Error: {ex}"
+
+            page.update()
+
         map_view = ft.Column(
             controls=[
                 ft.Text("Find Us", size=22, weight="bold"),
 
-                #Map codes
+                #Button for user location 
+                ft.ElevatedButton(
+                    "Get My Location",
+                    on_click=lambda e: page.run_task(get_location, e)
+                ),
+
+                location_text,
+
                 ftm.Map(
                     expand=True,
-                    initial_center=ftm.MapLatitudeLongitude(-20.161056741550073, 57.50051223540556), #Coordinates for restaurant in Port-Louis, map will be centered here
+                    initial_center=ftm.MapLatitudeLongitude(-20.161038464127024, 57.500502439216895),
                     initial_zoom=12,
                     layers=[
                         ftm.TileLayer(
                             url_template="https://tile.memomaps.de/tilegen/{z}/{x}/{y}.png",
-                            on_image_error=lambda e: print(f"TileLayer Error: {e.data}"),
-                        ),
-                        ftm.SimpleAttribution(
-                            text="OpenStreetMap contributors",
-                            on_click=lambda e: e.page.launch_url(
-                                "https://www.openstreetmap.org/copyright"
-                            )
                         ),
 
-                        #Adding a marker to point to the restaurant
+                        #Marker pointing to restaurant
                         ftm.MarkerLayer(
                             markers=[
-                                ftm.Marker(  
-                                    coordinates=ftm.MapLatitudeLongitude(-20.161056741550073, 57.50051223540556), #same coordinates as above
-                                    content=ft.Icon(ft.Icons.LOCATION_ON, color=ft.Colors.RED, size=40),
+                                ftm.Marker(
+                                    coordinates=ftm.MapLatitudeLongitude(-20.161038464127024, 57.500502439216895),
+                                    content=ft.Icon(
+                                        ft.Icons.LOCATION_ON,
+                                        color=ft.Colors.RED,
+                                        size=40
+                                    ),
                                 )
                             ]
                         ),
                     ],
-                )               
-
+                ),
             ],
             expand=True
         )
