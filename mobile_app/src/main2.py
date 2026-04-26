@@ -173,11 +173,35 @@ async def main(page: ft.Page):
             controls=[
                 ft.Text("Find Us", size=22, weight="bold"),
 
-                #Map 
-                
+                #Map codes
+                ftm.Map(
+                    expand=True,
+                    initial_center=ftm.MapLatitudeLongitude(-20.161056741550073, 57.50051223540556), #Coordinates for restaurant in Port-Louis, map will be centered here
+                    initial_zoom=12,
+                    layers=[
+                        ftm.TileLayer(
+                            url_template="https://tile.memomaps.de/tilegen/{z}/{x}/{y}.png",
+                            on_image_error=lambda e: print(f"TileLayer Error: {e.data}"),
+                        ),
+                        ftm.SimpleAttribution(
+                            text="OpenStreetMap contributors",
+                            on_click=lambda e: e.page.launch_url(
+                                "https://www.openstreetmap.org/copyright"
+                            )
+                        ),
 
+                        #Adding a marker to point to the restaurant
+                        ftm.MarkerLayer(
+                            markers=[
+                                ftm.Marker(  
+                                    coordinates=ftm.MapLatitudeLongitude(-20.161056741550073, 57.50051223540556), #same coordinates as above
+                                    content=ft.Icon(ft.Icons.LOCATION_ON, color=ft.Colors.RED, size=40),
+                                )
+                            ]
+                        ),
+                    ],
+                )               
 
-                
             ],
             expand=True
         )
