@@ -177,7 +177,53 @@ async def main(page: ft.Page):
     def on_find_us_click(e):
         reset_view()
 
-        location_text = ft.Text(value="Your location will appear here")
+        
+        state = {
+            "user_marker": None
+        }
+
+        location_text = ft.Text("Your location will appear here")
+
+        def build_map():
+            return ftm.Map(
+                expand=True,
+                initial_center=ftm.MapLatitudeLongitude(-20.160980262121928, 57.50049775736102),
+                initial_zoom=12,
+                layers=[
+                    ftm.TileLayer(
+                        url_template="https://tile.memomaps.de/tilegen/{z}/{x}/{y}.png",
+                    ),
+
+                    ftm.MarkerLayer(
+                        markers=[
+                            #Restaurant marker
+                            ftm.Marker(
+                                coordinates=ftm.MapLatitudeLongitude(-20.160980262121928, 57.50049775736102),
+                                content=ft.Icon(
+                                    ft.Icons.LOCATION_ON,
+                                    color=ft.Colors.RED,
+                                    size=40
+                                ),
+                            ),
+
+                            #User marker
+                            *(
+                                [ftm.Marker(
+                                    coordinates=state["user_marker"],
+                                    content=ft.Icon(
+                                        ft.Icons.MY_LOCATION,
+                                        color=ft.Colors.BLUE,
+                                        size=40
+                                    ),
+                                )]
+                                if state["user_marker"] else []
+                            )
+                        ]
+                    ),
+                ],
+            )
+
+        map_control = build_map()
 
         async def get_location(e):
             try:
@@ -190,18 +236,27 @@ async def main(page: ft.Page):
 
                 pos = await geo.get_current_position()
 
+                # updating th state
+                state["user_marker"] = ftm.MapLatitudeLongitude(pos.latitude, pos.longitude)
+
                 location_text.value = f"Your Location: {pos.latitude}, {pos.longitude}"
+
+                #rebuilding the map after update
+                nonlocal map_control
+                map_control = build_map()
+                map_container.content = map_control
 
             except Exception as ex:
                 location_text.value = f"Error: {ex}"
 
-            page.update()
+            
+
+        map_container = ft.Container(content=map_control, expand=True)
 
         map_view = ft.Column(
             controls=[
                 ft.Text("Find Us", size=22, weight="bold"),
 
-                #Button for user location 
                 ft.ElevatedButton(
                     "Get My Location",
                     on_click=lambda e: page.run_task(get_location, e)
@@ -209,30 +264,7 @@ async def main(page: ft.Page):
 
                 location_text,
 
-                ftm.Map(
-                    expand=True,
-                    initial_center=ftm.MapLatitudeLongitude(-20.161038464127024, 57.500502439216895),
-                    initial_zoom=12,
-                    layers=[
-                        ftm.TileLayer(
-                            url_template="https://tile.memomaps.de/tilegen/{z}/{x}/{y}.png",
-                        ),
-
-                        #Marker pointing to restaurant
-                        ftm.MarkerLayer(
-                            markers=[
-                                ftm.Marker(
-                                    coordinates=ftm.MapLatitudeLongitude(-20.161038464127024, 57.500502439216895),
-                                    content=ft.Icon(
-                                        ft.Icons.LOCATION_ON,
-                                        color=ft.Colors.RED,
-                                        size=40
-                                    ),
-                                )
-                            ]
-                        ),
-                    ],
-                ),
+                map_container
             ],
             expand=True
         )
