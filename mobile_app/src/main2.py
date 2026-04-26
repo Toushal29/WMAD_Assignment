@@ -173,23 +173,11 @@ async def main(page: ft.Page):
             controls=[
                 ft.Text("Find Us", size=22, weight="bold"),
 
-                ftm.Map(
-                    expand=True,
-                    initial_center=ftm.MapLatitudeLongitude(-20.29, 57.5),
-                    initial_zoom=12,
-                    layers=[
-                        ftm.TileLayer(
-                            url_template="https://tile.memomaps.de/tilegen/{z}/{x}/{y}.png",
-                            on_image_error=lambda e: print(f"TileLayer Error: {e.data}"),
-                        ),
-                        ftm.SimpleAttribution(
-                            text="OpenStreetMap contributors",
-                            on_click=lambda e: e.page.launch_url(
-                                "https://www.openstreetmap.org/copyright"
-                            )
-                        )
-                    ],
-                ),
+                #Map 
+                
+
+
+                
             ],
             expand=True
         )
