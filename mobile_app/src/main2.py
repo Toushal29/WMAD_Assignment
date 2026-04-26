@@ -249,7 +249,7 @@ async def main(page: ft.Page):
             except Exception as ex:
                 location_text.value = f"Error: {ex}"
 
-            
+            page.update()
 
         map_container = ft.Container(content=map_control, expand=True)
 
