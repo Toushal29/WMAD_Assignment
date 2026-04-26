@@ -78,6 +78,8 @@ def api_menus(request):
     serializer = serializers.MenuSerializer(menus, many=True)
     return Response(serializer.data)
 
+
+#
 # update profile
 @api_view(['PUT', 'PATCH'])
 @permission_classes([IsAuthenticated])
@@ -303,6 +305,18 @@ def api_place_order(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+# to only not be use -- TESTING
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def api_customers(request):
+    # select_related('user') joins the tables at the DB level
+    customers = Customer.objects.select_related('user').all()
+    serializer = serializers.CustomerSerializer(customers, many=True)
+    return Response(serializer.data)
+
+
+
 ###adding cart api
 
 @api_view(['POST'])
@@ -329,13 +343,10 @@ def api_add_to_cart(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+from .serializers import CartSerializer
 #cartitemgetview
-from .serializers import CartSerializer  #return cart data
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-
 def api_get_cart(request):
     """
     Returns all items currently in the authenticated user's cart.
@@ -345,8 +356,6 @@ def api_get_cart(request):
     serializer = CartSerializer(cart_items, many=True)
     return Response(serializer.data)
 ###
-
-
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_specific_cart_item(request, pk):
@@ -380,14 +389,40 @@ def delete_all_cart_items(request):
 
 
 
-# to only not be use -- TESTING
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def api_customers(request):
-    # select_related('user') joins the tables at the DB level
-    customers = Customer.objects.select_related('user').all()
-    serializer = serializers.CustomerSerializer(customers, many=True)
-    return Response(serializer.data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -12,7 +12,7 @@ async def main(page: ft.Page):
     
     
     # Configuration
-    my_token = "55242da82c27f93d95e939bdda2b49076f0672c2"
+    my_token = "e633e485212d0e183f9397771fafed5ff5fa8ff2"
     # my_token = "048c128a5ff6d5415239fa69f33dad9763e942da"
     host = "http://127.0.0.1:8000/"
     
@@ -190,7 +190,7 @@ async def main(page: ft.Page):
        
     
     # 5. Run the asynchronous task to fetch and display the menu data
-      #page.run_task(get_place_api, page, cart_container, my_token, host)
+      page.run_task(get_place_api, page, cart_container, my_token, host)
 
     page.appbar = ft.AppBar(
         leading=ft.Icon(ft.Icons.FOOD_BANK),
