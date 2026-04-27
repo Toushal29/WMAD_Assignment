@@ -103,7 +103,7 @@ async def get_myreviews_api(page, container, my_token, host):
                     )
                 )
         else:
-            container.controls.append(ft.Text("Failed to load reviews", color="red"), ft.Text(f"Error: {response}", color="red"))
+            container.controls.extend([ft.Text("Failed to load reviews", color="red"), ft.Text(f"Error: {response}", color="red")])
         page.update()
 
 
@@ -127,7 +127,7 @@ async def get_myreservations_api(page, container, my_token, host):
                 )
             )
     else:
-        container.controls.append(ft.Text("Failed to load reviews", color="red"), ft.Text(f"{response}", color="red"))
+        container.controls.extend([ft.Text("Failed to load reservations", color="red"), ft.Text(f"Error: {response}", color="red")])
     page.update()
 
 
@@ -191,10 +191,10 @@ async def create_reservation_api(
             )
         )
     else:
-        container.controls.append(
+        container.controls.extend([
             ft.Text("Failed to create reservation", color="red"),
             ft.Text(str(response.text), size=10, color="red")
-        )
+        ])
 
     page.update()
 

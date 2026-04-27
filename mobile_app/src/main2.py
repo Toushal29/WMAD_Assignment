@@ -16,8 +16,8 @@ async def main(page: ft.Page):
     
     
     # Configuration
-    my_token = "55242da82c27f93d95e939bdda2b49076f0672c2"
-    # my_token = "048c128a5ff6d5415239fa69f33dad9763e942da"
+    
+    my_token = "a5842a6437612fed23a00407b72fcff384e776b7"
     host = "http://127.0.0.1:8000/"
 
     geo = ftg.Geolocator(
@@ -128,9 +128,7 @@ async def main(page: ft.Page):
     def on_reservation_click(e):
         reset_view()
 
-       
-        selected_date = {"value": None}
-        selected_time = {"value": None}
+    
 
         #Fields for user input
         #Field for party size
@@ -147,32 +145,18 @@ async def main(page: ft.Page):
             multiline=True
         )
 
-        date_text = ft.Text("No date selected")
-        time_text = ft.Text("No time selected")
+        # Simple date input (YYYY-MM-DD)
+        date_input = ft.TextField(
+            label="Reservation Date (YYYY-MM-DD)",
+            width=300
+        )
 
-        #Date picker similar to how it is in django
-        def pick_date(e):
-            def on_date_change(e: ft.DatePickerChangeEvent):
-                selected_date["value"] = str(e.control.value)
-                date_text.value = f"Date: {selected_date['value']}"
-                page.update()
+        # Simple time input (HH:MM)
+        time_input = ft.TextField(
+            label="Reservation Time (HH:MM)",
+            width=300
+        )
 
-            date_picker = ft.DatePicker(on_change=on_date_change)
-            page.overlay.append(date_picker)
-            page.update()
-            date_picker.pick_date()
-
-        #Time picker similar to how it is in django
-        def pick_time(e):
-            def on_time_change(e: ft.TimePickerChangeEvent):
-                selected_time["value"] = str(e.control.value)
-                time_text.value = f"Time: {selected_time['value']}"
-                page.update()
-
-            time_picker = ft.TimePicker(on_change=on_time_change)
-            page.overlay.append(time_picker)
-            page.update()
-            time_picker.pick_time()
 
         #Radio buttons for seating choice
         seating = ft.RadioGroup(
@@ -189,7 +173,7 @@ async def main(page: ft.Page):
         # creation apis
         def submit_reservation(e):
 
-            if not selected_date["value"] or not selected_time["value"]:
+            if not date_input.value or not time_input.value:
                 page.snack_bar = ft.SnackBar(
                     ft.Text("Please select both date and time"),
                     bgcolor="red"
@@ -204,8 +188,8 @@ async def main(page: ft.Page):
                 container,
                 my_token,
                 host,
-                selected_date["value"],
-                selected_time["value"],
+                date_input.value,
+                time_input.value,
                 party_size,
                 seating,
                 allergy_info
@@ -217,11 +201,8 @@ async def main(page: ft.Page):
 
                 party_size,
 
-                ft.ElevatedButton("Pick Date", on_click=pick_date),
-                date_text,
-
-                ft.ElevatedButton("Pick Time", on_click=pick_time),
-                time_text,
+                date_input,
+                time_input,
 
                 ft.Text("Seating Choice"),
                 seating,
