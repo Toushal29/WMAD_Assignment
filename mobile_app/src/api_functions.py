@@ -131,6 +131,74 @@ async def get_myreservations_api(page, container, my_token, host):
     page.update()
 
 
+async def create_reservation_api(
+    page,
+    container,
+    my_token,
+    host,
+    selected_date,
+    selected_time,
+    party_size,
+    seating,
+    allergy_info
+):
+    endpoint = f"{host}api/reservations/create/"
+    headers = {"Authorization": f"Token {my_token}"}
+
+
+    data = {
+        "reservation_date": selected_date.current,
+        "reservation_time": selected_time.current,
+        "party_size": int(party_size.value) if party_size.value else 1,
+        "seating_choice": seating.value,
+        "allergy_info": allergy_info.value
+    }
+
+
+    if not data["reservation_date"] or not data["reservation_time"]:
+        page.snack_bar = ft.SnackBar(
+            ft.Text("Please select date and time"),
+            bgcolor="red"
+        )
+        page.snack_bar.open = True
+        page.update()
+        return
+
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            endpoint,
+            json=data,
+            headers=headers
+        )
+
+    container.controls.clear()
+
+
+    if 200 <= response.status_code <= 299:
+        container.controls.append(
+            ft.Card(
+                content=ft.Container(
+                    padding=15,
+                    content=ft.Column([
+                        ft.Icon(ft.Icons.CHECK_CIRCLE, color="green", size=40),
+                        ft.Text("Reservation Created!", size=18, weight="bold"),
+                        ft.Text(f"Date: {data['reservation_date']}"),
+                        ft.Text(f"Time: {data['reservation_time']}"),
+                        ft.Text(f"Party Size: {data['party_size']}"),
+                    ])
+                )
+            )
+        )
+    else:
+        container.controls.append(
+            ft.Text("Failed to create reservation", color="red"),
+            ft.Text(str(response.text), size=10, color="red")
+        )
+
+    page.update()
+
+
 async def get_myorders_api(page, container, my_token, host):
     endpoint = f"{host}api/my-orders/"
     headers = {"Authorization": f"Token {my_token}"}
