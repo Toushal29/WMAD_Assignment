@@ -123,20 +123,119 @@ async def main(page: ft.Page):
         page.update()
         page.run_task(get_myreviews_api, page, container, my_token, host)
 
+    #======================== Reservation sections =========================
 
     def on_reservation_click(e):
         reset_view()
-        container = ft.Column(spacing=10)
+
+       
+        selected_date = ft.Ref[str]()
+        selected_time = ft.Ref[str]()
+        seating_choice = ft.Ref[str]()
+
+        #Fields for user input
+        #Field for party size
+        party_size = ft.TextField(
+            label="Party Size",
+            width=300,
+            keyboard_type=ft.KeyboardType.NUMBER
+        )
+
+        #field for allergy information
+        allergy_info = ft.TextField(
+            label="Allergy Information (optional)",
+            width=300,
+            multiline=True
+        )
+
+        date_text = ft.Text("No date selected")
+        time_text = ft.Text("No time selected")
+
+        #Date picker similar to how it is in django
+        def pick_date(e):
+            def on_date_change(e: ft.DatePickerChangeEvent):
+                selected_date.current = str(e.control.value)
+                date_text.value = f"Date: {selected_date.current}"
+                page.update()
+
+            date_picker = ft.DatePicker(on_change=on_date_change)
+            page.overlay.append(date_picker)
+            page.update()
+            date_picker.pick_date()
+
+        #Time picker similar to how it is in django
+        def pick_time(e):
+            def on_time_change(e: ft.TimePickerChangeEvent):
+                selected_time.current = str(e.control.value)
+                time_text.value = f"Time: {selected_time.current}"
+                page.update()
+
+            time_picker = ft.TimePicker(on_change=on_time_change)
+            page.overlay.append(time_picker)
+            page.update()
+            time_picker.pick_time()
+
+        #Radio buttons for seating choice
+        seating = ft.RadioGroup(
+            content=ft.Column([
+                ft.Radio(value="Indoor", label="Indoor"),
+                ft.Radio(value="Outdoor", label="Outdoor"),
+            ]),
+            ref=seating_choice,
+            value="Indoor"
+        )
+
+        
+        container = ft.Column(spacing=15)
+
+        # creation apis
+        def submit_reservation(e):
+            page.run_task(
+                create_reservation_api,
+                page,
+                container,
+                my_token,
+                host,
+                selected_date,
+                selected_time,
+                party_size,
+                seating,
+                allergy_info
+            )
+
+        
         main_content.content = ft.Column(
             controls=[
-                ft.Text("My Reservation", size=20, weight="bold"),
+                ft.Text("Make a Reservation", size=22, weight="bold"),
+
+                party_size,
+
+                ft.ElevatedButton("Pick Date", on_click=pick_date),
+                date_text,
+
+                ft.ElevatedButton("Pick Time", on_click=pick_time),
+                time_text,
+
+                ft.Text("Seating Choice"),
+                seating,
+
+                allergy_info,
+
+                ft.ElevatedButton(
+                    "Create Reservation",
+                    bgcolor=ft.Colors.GREEN,
+                    on_click=submit_reservation
+                ),
+
                 container
             ],
             scroll=ft.ScrollMode.ADAPTIVE,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER
         )
+
         page.update()
-        page.run_task(get_myreservations_api, page, container, my_token, host)
+
+    #=======================================================================
 
 
     def on_orders_click(e):
