@@ -129,9 +129,8 @@ async def main(page: ft.Page):
         reset_view()
 
        
-        selected_date = ft.Ref[str]()
-        selected_time = ft.Ref[str]()
-        seating_choice = ft.Ref[str]()
+        selected_date = {"value": None}
+        selected_time = {"value": None}
 
         #Fields for user input
         #Field for party size
@@ -154,8 +153,8 @@ async def main(page: ft.Page):
         #Date picker similar to how it is in django
         def pick_date(e):
             def on_date_change(e: ft.DatePickerChangeEvent):
-                selected_date.current = str(e.control.value)
-                date_text.value = f"Date: {selected_date.current}"
+                selected_date["value"] = str(e.control.value)
+                date_text.value = f"Date: {selected_date['value']}"
                 page.update()
 
             date_picker = ft.DatePicker(on_change=on_date_change)
@@ -166,8 +165,8 @@ async def main(page: ft.Page):
         #Time picker similar to how it is in django
         def pick_time(e):
             def on_time_change(e: ft.TimePickerChangeEvent):
-                selected_time.current = str(e.control.value)
-                time_text.value = f"Time: {selected_time.current}"
+                selected_time["value"] = str(e.control.value)
+                time_text.value = f"Time: {selected_time['value']}"
                 page.update()
 
             time_picker = ft.TimePicker(on_change=on_time_change)
@@ -181,7 +180,6 @@ async def main(page: ft.Page):
                 ft.Radio(value="Indoor", label="Indoor"),
                 ft.Radio(value="Outdoor", label="Outdoor"),
             ]),
-            ref=seating_choice,
             value="Indoor"
         )
 
@@ -190,19 +188,28 @@ async def main(page: ft.Page):
 
         # creation apis
         def submit_reservation(e):
+
+            if not selected_date["value"] or not selected_time["value"]:
+                page.snack_bar = ft.SnackBar(
+                    ft.Text("Please select both date and time"),
+                    bgcolor="red"
+                )
+                page.snack_bar.open = True
+                page.update()
+                return
+
             page.run_task(
                 create_reservation_api,
                 page,
                 container,
                 my_token,
                 host,
-                selected_date,
-                selected_time,
+                selected_date["value"],
+                selected_time["value"],
                 party_size,
                 seating,
                 allergy_info
             )
-
         
         main_content.content = ft.Column(
             controls=[

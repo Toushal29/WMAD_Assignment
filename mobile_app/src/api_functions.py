@@ -147,8 +147,8 @@ async def create_reservation_api(
 
 
     data = {
-        "reservation_date": selected_date.current,
-        "reservation_time": selected_time.current,
+        "reservation_date": selected_date,
+        "reservation_time": selected_time,
         "party_size": int(party_size.value) if party_size.value else 1,
         "seating_choice": seating.value,
         "allergy_info": allergy_info.value
