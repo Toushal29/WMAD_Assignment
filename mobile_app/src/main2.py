@@ -264,82 +264,95 @@ async def main(page: ft.Page):
     def on_find_us_click(e):
         reset_view()
 
+        # Store user location
+        state = {"user_marker": None}
+
+        location_text = ft.Text("Click below to get your location")
+
         
-        state = {
-            "user_marker": None
-        }
-
-        location_text = ft.Text("Your location will appear here")
-
         def build_map():
+            markers = [
+                # Restaurant marker
+                ftm.Marker(
+                    coordinates=ftm.MapLatitudeLongitude(
+                        -20.160980262121928,
+                        57.50049775736102
+                    ),
+                    content=ft.Icon(
+                        ft.Icons.LOCATION_ON,
+                        color=ft.Colors.RED,
+                        size=40
+                    ),
+                )
+            ]
+
+            #Marker for user location 
+            if state["user_marker"]:
+                markers.append(
+                    ftm.Marker(
+                        coordinates=state["user_marker"],
+                        content=ft.Icon(
+                            ft.Icons.MY_LOCATION,
+                            color=ft.Colors.BLUE,
+                            size=40
+                        ),
+                    )
+                )
+
             return ftm.Map(
                 expand=True,
-                initial_center=ftm.MapLatitudeLongitude(-20.160980262121928, 57.50049775736102),
-                initial_zoom=12,
+                initial_center=state["user_marker"]
+                if state["user_marker"]
+                else ftm.MapLatitudeLongitude(-20.1609, 57.5005),
+                initial_zoom=14,
                 layers=[
                     ftm.TileLayer(
                         url_template="https://tile.memomaps.de/tilegen/{z}/{x}/{y}.png",
                     ),
-
-                    ftm.MarkerLayer(
-                        markers=[
-                            #Restaurant marker
-                            ftm.Marker(
-                                coordinates=ftm.MapLatitudeLongitude(-20.160980262121928, 57.50049775736102),
-                                content=ft.Icon(
-                                    ft.Icons.LOCATION_ON,
-                                    color=ft.Colors.RED,
-                                    size=40
-                                ),
-                            ),
-
-                            #User marker
-                            *(
-                                [ftm.Marker(
-                                    coordinates=state["user_marker"],
-                                    content=ft.Icon(
-                                        ft.Icons.MY_LOCATION,
-                                        color=ft.Colors.BLUE,
-                                        size=40
-                                    ),
-                                )]
-                                if state["user_marker"] else []
-                            )
-                        ]
-                    ),
+                    ftm.MarkerLayer(markers=markers),
                 ],
             )
 
-        map_control = build_map()
+        
+        map_container = ft.Container(expand=True)
 
+        #Code for getting the location 
         async def get_location(e):
             try:
-                permission = await geo.request_permission()
+                print("Getting location...")
 
-                if not permission:
-                    location_text.value = "Location permission denied"
-                    page.update()
-                    return
-
+                await geo.request_permission()
                 pos = await geo.get_current_position()
 
-                # updating th state
-                state["user_marker"] = ftm.MapLatitudeLongitude(pos.latitude, pos.longitude)
+                
+                if not pos:
+                    print("GPS failed → using fallback")
+                    pos = type("obj", (), {
+                        "latitude": -20.1609,
+                        "longitude": 57.5005
+                    })
+
+                print("FINAL POS:", pos.latitude, pos.longitude)
+
+                state["user_marker"] = ftm.MapLatitudeLongitude(
+                    pos.latitude,
+                    pos.longitude
+                )
 
                 location_text.value = f"Your Location: {pos.latitude}, {pos.longitude}"
 
-                #rebuilding the map after update
-                nonlocal map_control
-                map_control = build_map()
-                map_container.content = map_control
+                map_container.content = build_map()
+                map_container.update()
 
             except Exception as ex:
+                print("ERROR:", ex)
                 location_text.value = f"Error: {ex}"
+                page.update()
 
-            page.update()
+        
+        map_container.content = build_map()
 
-        map_container = ft.Container(content=map_control, expand=True)
-
+        
         map_view = ft.Column(
             controls=[
                 ft.Text("Find Us", size=22, weight="bold"),
