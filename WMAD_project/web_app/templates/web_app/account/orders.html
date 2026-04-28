@@ -9,8 +9,10 @@
         {% for o in orders %}
         <div class="order-card">
             <h4><u>Order #{{ o.id }}</u></h4>
-            <p><strong>Date: </strong> <i>{{ o.order_date|date:"Y-m-d H:i" }}</i> <strong> | Total: Rs </strong> <i>{{ o.total_price }}</i></p>
-            <p>Status:
+            <p><strong>Date: </strong><i>{{ o.order_date|date:"Y-m-d H:i" }}</i></p>
+            <p><strong>Total: Rs </strong><i>{{ o.total_price }}</i></p>
+            <p><strong>Payment Method: </strong><i>{{ o.payment_method}}</i></p>
+            <p><strong>Status: </strong>
                 <span class="status 
                     {% if o.status == 'completed' %}delivered
                     {% elif o.status == 'pending' %}pending

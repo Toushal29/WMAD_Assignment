@@ -1,8 +1,6 @@
 {% extends 'web_app/main_page/base.html' %}
 {% load static %}
 
-{% block title %}Checkout{% endblock %}
-
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'web_app/css/order.css' %}">
 <style>
@@ -14,26 +12,56 @@
     body {
         background-color: rgba(0, 0, 0, 0.5);
     }
-
+    
     .checkout-box {
         max-width: 600px;
         margin: 40px auto;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.7);
         padding: 25px;
         border-radius: 12px;
+        color: white;
     }
 
-    .checkout-box h1 {
-        color: #FFD700;
-        margin-bottom: 20px;
+    .payment-section {
+        margin-top: 20px;
+        border-top: 1px solid #444;
+        padding-top: 20px;
+    }
+
+    .payment-option {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: block;
+        border: 1px solid transparent;
+    }
+
+    .payment-option:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .payment-option input {
+        margin-right: 15px;
+    }
+
+    .action-btn {
+        background-color: #FFD700;
+        color: black;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        font-weight: bold;
+        margin-top: 20px;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-
 <div class="checkout-box">
-
     <h1>Finalize Your Order</h1>
 
     <h2>Your Items</h2>
@@ -42,27 +70,32 @@
         <li>{{ item.menu.name }} x {{ item.quantity }} - Rs {{ item.line_total }}</li>
         {% endfor %}
     </ul>
-
     <h2>Total: Rs {{ total }}</h2>
 
-    <button class="primary action-btn" onclick="confirmFinalOrder()">Confirm Order</button>
+    <div class="payment-section">
+        <h3>Choose Payment Method</h3>
 
+        <label class="payment-option">
+            <input type="radio" name="payment_method" value="juice" checked>
+            <strong>MCB Juice / Bank Transfer</strong>
+            <p style="font-size: 0.8em; color: #ccc;">Fastest for remote payment.</p>
+        </label>
+
+        <label class="payment-option">
+            <input type="radio" name="payment_method" value="card">
+            <strong>Debit/Credit Card</strong>
+            <p style="font-size: 0.8em; color: #ccc;">Pay via terminal upon delivery/pickup.</p>
+        </label>
+
+        <label class="payment-option">
+            <input type="radio" name="payment_method" value="cash">
+            <strong>Pay on Take-away</strong>
+            <p style="font-size: 0.8em; color: #ccc;">Cash payment at the counter.</p>
+        </label>
+    </div>
+
+    <button class="primary action-btn" onclick="confirmFinalOrder()">Confirm & Place Order</button>
 </div>
 
-<script>
-    function confirmFinalOrder() {
-        let data = new FormData();
-
-        fetch("/ajax/confirm-order/", {
-            method: "POST",
-            body: data,
-            headers: { "X-CSRFToken": document.cookie.split("=")[1] }
-        })
-            .then(r => r.json())
-            .then(res => {
-                if (res.success) window.location.href = res.redirect;
-            });
-    }
-</script>
-
+<script src="{% static 'web_app/js/order.js' %}"></script>
 {% endblock %}

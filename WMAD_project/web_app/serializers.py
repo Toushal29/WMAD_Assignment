@@ -1,3 +1,5 @@
+# C:\Users\...\WMAD_Assignment\WMAD_project\web_app\serializers.py
+
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
@@ -49,33 +51,42 @@ class CustomerRegisterSerializer(serializers.ModelSerializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email']
+        fields = ['id', 'first_name', 'last_name', 'email']
 
 class CustomerUpdateSerializer(serializers.ModelSerializer):
-    user = UserUpdateSerializer()
+    user = UserUpdateSerializer(partial=True)
     class Meta:
         model = Customer
-        fields = ['user', 'phone', 'address']
+        fields = ['id', 'user', 'phone', 'address']
 
     def update(self, instance, validated_data):
+        # Handle the nested user data update
         user_data = validated_data.pop('user', None)
         if user_data:
             user_serializer = UserUpdateSerializer(instance.user, data=user_data, partial=True)
-            if user_serializer.is_valid():
-                user_serializer.save()
-
-        instance.phone = validated_data.get('phone', instance.phone)
-        instance.address = validated_data.get('address', instance.address)
-        instance.save()
+            user_serializer.is_valid(raise_exception=True)
+            user_serializer.save()
         
-        return instance
+        # Update the customer fields (phone, address)
+        return super().update(instance, validated_data)
     
 # reviews
 class ReviewSerializer(serializers.ModelSerializer):
     menu_name = serializers.ReadOnlyField(source='menu.name')
     class Meta:
         model = Review
-        fields = ['id', 'menu_id', 'menu_name', 'rating', 'comment', 'created_at']
+        # Use 'menu' instead of 'menu_id' to match the model and the JSON body
+        fields = ['id', 'menu', 'menu_name', 'rating', 'comment', 'created_at']
+
+class ReviewCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['menu', 'rating', 'comment']
+
+    def validate_rating(self, value):
+        if value < 1 or value > 5:
+            raise serializers.ValidationError("Rating must be between 1 and 5.")
+        return value
 
 class ReviewUpdateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -87,7 +98,7 @@ class ReviewUpdateSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['id', 'total_price', 'status', 'order_date']
+        fields = ['id', 'total_price', 'status', 'payment_method', 'order_date']
 
 class OrderItemSerializer(serializers.ModelSerializer):
     menu_name = serializers.ReadOnlyField(source='menu.name')
@@ -123,3 +134,5 @@ class CartItemInputSerializer(serializers.Serializer):
 
 class CheckoutSessionSerializer(serializers.Serializer):
     items = CartItemInputSerializer(many=True)
+    # Add this field to accept the payment choice during checkout
+    payment_method = serializers.ChoiceField(choices=Order.PAYMENT_CHOICES, default=Order.PAYMENT_CASH)
