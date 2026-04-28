@@ -79,22 +79,28 @@
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    function toggleRestaurantForm() {
-        const form = document.getElementById("restaurant-review-form");
-        form.style.display = form.style.display === "block" ? "none" : "block";
-    }
-
-    function toggleComment(el) {
-        const full = el.dataset.full;
-
-        if (el.classList.contains("expanded")) {
-            el.textContent = full.substring(0, 120) + "...";
-            el.classList.remove("expanded");
-        } else {
-            el.textContent = full;
-            el.classList.add("expanded");
+    $(document).ready(function() {
+        function toggleRestaurantForm() {
+            $("#restaurant-review-form").toggle();
         }
-    }
+
+        function toggleComment(el) {
+            const full = $(el).data("full");
+
+            if ($(el).hasClass("expanded")) {
+                $(el).text(full.substring(0, 120) + "...");
+                $(el).removeClass("expanded");
+            } else {
+                $(el).text(full);
+                $(el).addClass("expanded");
+            }
+        }
+
+        // Attach functions to global scope if needed
+        window.toggleRestaurantForm = toggleRestaurantForm;
+        window.toggleComment = toggleComment;
+    });
 </script>
 {% endblock %}
