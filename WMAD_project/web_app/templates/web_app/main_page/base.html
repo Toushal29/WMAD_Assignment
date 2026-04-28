@@ -1,0 +1,79 @@
+<!-- This is a base layout tat will be use to overwrite other pages on. Parent layer that will be overwrite by a child layer -->
+{% load static %}           
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--this title can be overwrite by anoter title using the block title from another files.-->
+    <title>{% block title %}Saveur Moris{% endblock %}</title>
+    <style>
+        * {
+            text-decoration: none;
+            margin: 0px;
+            padding: 0px;
+        }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            overflow: auto;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            color: white;
+        }
+    </style>
+    {% block extra_css %}
+    
+    {% endblock %}
+
+
+</head>
+<body>
+    <!--this gets the navbar and loads it to the base.-->
+    {% include 'web_app/components/navbar.html' %}
+
+    {% block content %}
+    <!--this block is overwrite by another the main content from other files. this is the main body of the page-->
+    {% endblock %}
+
+    <!--this loads the footer into the base.-->
+    {% include 'web_app/components/footer.html' %}
+
+    <!-- ✅ ADD JQUERY FIRST -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Your custom JavaScript files -->
+    <script src="{% static 'web_app/js/order.js' %}"></script>
+
+    <!-- Converted navbar toggle to jQuery -->
+    <script>
+        $(document).ready(function() {
+            $("#navToggle").click(function() {
+                $(this).toggleClass("active");
+                $(".mainNav").toggleClass("active");
+            });
+        });
+
+        // Your other jQuery functions can go here
+        function toggleRestaurantForm() {
+            $("#restaurant-review-form").toggle();
+        }
+
+        function toggleComment(el) {
+            const $el = $(el);
+            const full = $el.data("full");
+
+            if ($el.hasClass("expanded")) {
+                $el.text(full.substring(0, 120) + "...").removeClass("expanded");
+            } else {
+                $el.text(full).addClass("expanded");
+            }
+        }
+    </script>
+
+    {% block extra_js %}
+    <!-- For page-specific JavaScript -->
+    {% endblock %}
+
+</body>
+
+</html>
