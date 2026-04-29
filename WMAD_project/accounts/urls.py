@@ -4,7 +4,14 @@ from . import views
 app_name = 'accounts'
 
 urlpatterns = [
+    # Website HTML views
     path('register/', views.register, name='register'),
-    path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
+    path('login/', views.user_login, name='login'),
+    path('logout/', views.user_logout, name='logout'),
+    
+    # API endpoints for mobile app
+    path('api/register/', views.api_register, name='api_register'),
+    path('api/login/', views.api_login, name='api_login'),
+    path('api/logout/', views.api_logout, name='api_logout'),
+    path('api/my-profile/', views.api_my_profile, name='api_profile'),
 ]
