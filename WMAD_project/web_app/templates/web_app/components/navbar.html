@@ -31,11 +31,12 @@
                     {% else %}
                     <a href="/profile/">Profile</a>
                     {% endif %}
-                    <a href="/account/logout/">Logout</a>
+                    <a href="{% url 'accounts:logout' %}">Logout</a>
                 </div>
             </div>
             {% else %}
-            <a href="/login/" class="login-link">Log In</a>
+            <a href="{% url 'accounts:login' %}" class="login-link">Log In</a>
+            <a href="{% url 'accounts:register' %}" class="login-link" style="margin-left: 10px;">Register</a>
             {% endif %}
 
             <button class="hamburger" id="navToggle">Menu</button>
