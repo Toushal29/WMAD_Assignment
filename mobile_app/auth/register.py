@@ -4,15 +4,15 @@ def register_page(page: ft.Page):
     username_field = ft.TextField(
         label="Username",
         width=300,
-        border_color=ft.colors.ORANGE_700,
-        prefix_icon=ft.icons.PERSON,
+        border_color=ft.Colors.ORANGE_700,
+        prefix_icon=ft.Icons.PERSON,
     )
     
     email_field = ft.TextField(
         label="Email",
         width=300,
-        border_color=ft.colors.ORANGE_700,
-        prefix_icon=ft.icons.EMAIL,
+        border_color=ft.Colors.ORANGE_700,
+        prefix_icon=ft.Icons.EMAIL,
     )
     
     password_field = ft.TextField(
@@ -20,8 +20,8 @@ def register_page(page: ft.Page):
         password=True,
         can_reveal_password=True,
         width=300,
-        border_color=ft.colors.ORANGE_700,
-        prefix_icon=ft.icons.LOCK,
+        border_color=ft.Colors.ORANGE_700,
+        prefix_icon=ft.Icons.LOCK,
     )
     
     confirm_field = ft.TextField(
@@ -29,11 +29,11 @@ def register_page(page: ft.Page):
         password=True,
         can_reveal_password=True,
         width=300,
-        border_color=ft.colors.ORANGE_700,
-        prefix_icon=ft.icons.LOCK_OUTLINE,
+        border_color=ft.Colors.ORANGE_700,
+        prefix_icon=ft.Icons.LOCK_OUTLINE,
     )
     
-    error_text = ft.Text("", color=ft.colors.RED, size=14)
+    error_text = ft.Text("", color=ft.Colors.RED, size=14)
     
     def register_click(e):
         username = username_field.value
@@ -48,10 +48,9 @@ def register_page(page: ft.Page):
         elif username in page.users:
             error_text.value = "Username already exists"
         else:
-            # Save user
             page.users[username] = password
             page.session.set("registered", True)
-            page.go("/login")
+            page.push_route("/login")  # Changed from go()
         
         page.update()
     
@@ -59,14 +58,14 @@ def register_page(page: ft.Page):
         "Register",
         on_click=register_click,
         width=300,
-        bgcolor=ft.colors.ORANGE,
-        color=ft.colors.WHITE,
+        bgcolor=ft.Colors.ORANGE,
+        color=ft.Colors.WHITE,
     )
     
     login_link = ft.TextButton(
         "Already have an account? Login",
-        on_click=lambda e: page.go("/login"),
-        style=ft.ButtonStyle(color=ft.colors.ORANGE),
+        on_click=lambda e: page.push_route("/login"),  # Changed from go()
+        style=ft.ButtonStyle(color=ft.Colors.ORANGE),
     )
     
     return ft.View(
@@ -75,9 +74,9 @@ def register_page(page: ft.Page):
             ft.Container(
                 content=ft.Column(
                     [
-                        ft.Text("Create Account", size=32, weight=ft.FontWeight.BOLD, color=ft.colors.ORANGE),
-                        ft.Text("Join Saveur Moris today", size=16, color=ft.colors.GREY_600),
-                        ft.Divider(height=30, color=ft.colors.TRANSPARENT),
+                        ft.Text("Create Account", size=32, weight=ft.FontWeight.BOLD, color=ft.Colors.ORANGE),
+                        ft.Text("Join Saveur Moris today", size=16, color=ft.Colors.GREY_600),
+                        ft.Divider(height=30, color=ft.Colors.TRANSPARENT),
                         username_field,
                         email_field,
                         password_field,
