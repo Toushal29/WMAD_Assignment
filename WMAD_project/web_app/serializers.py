@@ -122,4 +122,40 @@ class CartItemInputSerializer(serializers.Serializer):
     quantity = serializers.IntegerField(min_value=1)
 
 class CheckoutSessionSerializer(serializers.Serializer):
+<<<<<<< HEAD
     items = CartItemInputSerializer(many=True)
+=======
+    items = CartItemInputSerializer(many=True)
+    # Add this field to accept the payment choice during checkout
+    payment_method = serializers.ChoiceField(choices=Order.PAYMENT_CHOICES, default=Order.PAYMENT_CASH)
+
+
+####cart creating api
+
+class addCartSerializer(serializers.ModelSerializer):
+    # This provides the name of the dish for the frontend, but is read-only
+    menu_name = serializers.ReadOnlyField(source='menu.name')
+
+    class Meta:
+        model = Cart
+        # 'user' is omitted because it will be handled by the view via the Token
+        fields = ['id', 'menu', 'menu_name', 'quantity', 'added_at']
+
+
+class CartSerializer(serializers.ModelSerializer):
+    # Pulling readable details from the related Menu model
+    menu_name = serializers.ReadOnlyField(source='menu.name')
+    price = serializers.ReadOnlyField(source='menu.price')
+    
+    # Calculating the subtotal for this specific cart item
+    subtotal = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Cart
+        # These fields are based on the Cart and Menu models in your sources
+        fields = ['id', 'menu', 'menu_name', 'quantity', 'price', 'subtotal', 'added_at']
+
+    def get_subtotal(self, obj):
+        """Calculates the subtotal for the line item."""
+        return obj.quantity * obj.menu.price
+>>>>>>> main

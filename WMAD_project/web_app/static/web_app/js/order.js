@@ -124,3 +124,60 @@ function changeQty(btn, change) {
     if (value < 1) value = 1;
     qtyInput.value = value;
 }
+<<<<<<< HEAD
+=======
+
+const clearBtn = document.getElementById("refresh-cart");
+
+// web_app/static/web_app/js/order.js
+
+// Function to get CSRF token from cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function confirmFinalOrder() {
+    const paymentRadios = document.getElementsByName('payment_method');
+    if (!paymentRadios.length) return; // prevent errors
+
+    let selectedMethod = 'cash';
+
+    for (const radio of paymentRadios) {
+        if (radio.checked) {
+            selectedMethod = radio.value;
+            break;
+        }
+    }
+
+    fetch("/ajax/confirm-order/", {
+        method: "POST",
+        headers: { 
+            "X-CSRFToken": getCookie('csrftoken'),
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({
+            payment_method: selectedMethod
+        })
+    })
+    .then(res => res.json())
+    .then(res => {
+        if (res.success) {
+            window.location.href = res.redirect;
+        }
+    })
+    .catch(() => {
+        alert("Order failed.");
+    });
+}
+>>>>>>> main
