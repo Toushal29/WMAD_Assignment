@@ -7,9 +7,14 @@ def main(page: ft.Page):
     page.title = "Saveur Moris"
     page.theme_mode = ft.ThemeMode.LIGHT
     page.padding = 20
+    page.window_width = 400
+    page.window_height = 700
     
-    # Route handling
-    def route_change(route):
+    # Create in-memory user store
+    if not hasattr(page, "users"):
+        page.users = {"demo": "password123"}
+    
+    def route_change(e):
         page.views.clear()
         
         if page.route == "/login":
@@ -23,7 +28,7 @@ def main(page: ft.Page):
         
         page.update()
     
-    def view_pop(view):
+    def view_pop(e):
         page.views.pop()
         top_view = page.views[-1]
         page.go(top_view.route)
@@ -31,7 +36,6 @@ def main(page: ft.Page):
     page.on_route_change = route_change
     page.on_view_pop = view_pop
     
-    # Start with login page
     page.go("/login")
 
 ft.app(target=main)
