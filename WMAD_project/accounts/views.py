@@ -3,6 +3,7 @@ from django.contrib import messages
 from .forms import RegistrationForm
 from django.contrib.auth import login, authenticate
 from .forms import RegistrationForm, LoginForm
+from django.contrib.auth import logout
 
 def register(request):
     if request.method == 'POST':
@@ -36,3 +37,8 @@ def user_login(request):
         form = LoginForm()
     
     return render(request, 'accounts/login.html', {'form': form})
+
+def user_logout(request):
+    logout(request)
+    messages.success(request, 'You have been logged out successfully.')
+    return redirect('login')
