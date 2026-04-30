@@ -1,3 +1,4 @@
+from pages.profile import profile_page
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -30,6 +31,7 @@ def main(page: ft.Page):
             actions=[
                 ft.PopupMenuButton(
                     items=[
+                        ft.PopupMenuItem("My Profile", on_click=lambda e: show_profile()),
                         ft.PopupMenuItem("Logout", on_click=lambda e: logout()),
                     ]
                 ),
@@ -50,7 +52,34 @@ def main(page: ft.Page):
         
         page.add(home_content)
         page.update()
-    
+    def show_profile(e=None):
+        page.controls.clear()
+        page.appbar = None
+        page.navigation_bar = None
+        
+        # Use temporary token (replace with real token later)
+        my_token = "temp_token"
+        host = "http://127.0.0.1:8000/"
+        
+        profile_view = profile_page(page, my_token, host)
+        
+        # Add back button to home
+        def go_back(e):
+            show_home()
+        
+        # Wrap view with back button
+        content = ft.Column([
+            ft.Row([
+                ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=go_back),
+                ft.Text("Back", size=16),
+            ], spacing=5),
+            profile_view.controls[1],  # The container with profile content
+        ])
+        
+        page.add(content)
+        page.update()
+        
+        
     def logout():
         nonlocal current_user
         current_user = None
