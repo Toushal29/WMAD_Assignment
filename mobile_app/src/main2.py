@@ -1,501 +1,165 @@
-import flet as ft
-from auth.login import login_page
-from auth.register import register_page
-from pages.home import home_page
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-<<<<<<< HEAD
+import flet as ft
+
 def main(page: ft.Page):
     page.title = "Saveur Moris"
-    page.theme_mode = ft.ThemeMode.LIGHT
-    page.padding = 20
-    page.window_width = 400
-    page.window_height = 700
-=======
-import flet_map as ftm        #Imports for the map feature
-import flet_geolocator as ftg #Imports to get user location
-
-async def main(page: ft.Page):
-    page.window.always_on_top = True
-    page.title = "API Calls Profile - main2.py"
     page.window.width = 400
     page.window.height = 700
-    page.vertical_alignment = ft.MainAxisAlignment.START
-    page.horizontal_alignment = ft.MainAxisAlignment.CENTER
->>>>>>> main
+    page.theme_mode = ft.ThemeMode.LIGHT
     
-    # Create in-memory user store
-    if not hasattr(page, "users"):
-        page.users = {"demo": "password123"}
+    # Create in-memory user store (simple dict)
+    users = {"demo": "password123"}
     
-<<<<<<< HEAD
-    def route_change(e):
-        page.views.clear()
+    # Track logged in user
+    current_user = None
+    
+    # Main home screen after login
+    def show_home():
+        page.controls.clear()
+        page.appbar = None
+        page.navigation_bar = None
         
-        if page.route == "/login":
-            page.views.append(login_page(page))
-        elif page.route == "/register":
-            page.views.append(register_page(page))
-        elif page.route == "/home":
-            page.views.append(home_page(page))
-        else:
-            page.views.append(login_page(page))
-=======
-    
-    # Configuration
-    
-    my_token = "a5842a6437612fed23a00407b72fcff384e776b7"
-    host = "http://127.0.0.1:8000/"
-
-    geo = ftg.Geolocator(
-        configuration=ftg.GeolocatorConfiguration(
-            accuracy=ftg.GeolocatorPositionAccuracy.HIGH
-        )
-    ) 
-    
-    result_text = ft.Text()
-
-    home_layout = ft.Column([
-                    ft.Text("Welcome to Saveur Moris", size=25, weight="bold"),
-                    ft.Text("Experience the best Mauritian cuisine", italic=True),
-                    ft.Image(src="https://flet.dev/img/pages/quick-start/flet-app-icons.png", width=200), # Example placeholder
-                    ft.Text("Select an option from the menu to get started."),
-                    ],
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=20)
-
-    # Normal view
-    main_content = ft.Container(
-        content=home_layout,
-        expand=True,
-    )
-
-    # Function to return home
-    def go_home(e):
-        main_content.content = home_layout
-        page.update()
-    
-    # Reset the view to remove what orderId added
-    def reset_view():
-        main_content.content = ft.Column([result_text], horizontal_alignment=ft.CrossAxisAlignment.CENTER)
-        page.update()
-
-    # Use page.run_task to call the imported async function
-    def on_profile_click(e):
-        reset_view()
-        container = ft.Column(spacing=10)
-        main_content.content = ft.Column(
-            controls=[
-                ft.Text("User Profile", size=20, weight="bold"),
-                container,
-                ft.Row(
-                    controls=[
-                        ft.Button("Update", bgcolor=ft.Colors.BLUE_300, on_click=update_profile_click),
-                        ft.Button("Delete", bgcolor=ft.Colors.RED_300, on_click=delete_profile_click),
-                    ],
-                    alignment=ft.CrossAxisAlignment.CENTER,
-                )
+        # AppBar
+        page.appbar = ft.AppBar(
+            leading=ft.Icon(ft.Icons.FOOD_BANK),
+            title=ft.Text(f"Saveur Moris - Hi, {current_user}"),
+            bgcolor=ft.Colors.ORANGE_100,
+            actions=[
+                ft.PopupMenuButton(
+                    items=[
+                        ft.PopupMenuItem("Logout", on_click=lambda e: logout()),
+                    ]
+                ),
             ],
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER
         )
-        page.update()
-        page.run_task(get_my_profile_api, page, container, my_token, host)
-
-    # update profile
-    def update_profile_click(e):
-        # We find the container within our main_content: main_content.content.controls[1] is the 'container' Column
-        profile_container = main_content.content.controls[1]
-        page.run_task(update_profile_api, page, profile_container, my_token, host)
-
-    # delete profile
-    def delete_profile_click(e):
-        # 1. Create a "Danger Zone" confirmation view
-        confirmation_view = ft.Column(
-            controls=[
-                ft.Icon(ft.Icons.WARNING_AMBER_ROUNDED, color="red", size=50),
-                ft.Text("Confirm Account Deletion", size=20, weight="bold"),
-                ft.Text("Are you absolutely sure? This cannot be undone.", text_align="center"),
-                ft.Row([
-                    ft.ElevatedButton(
-                        "YES, DELETE", 
-                        bgcolor=ft.Colors.RED_400, 
-                        color="white",
-                        on_click=lambda _: page.run_task(delete_profile_api, page, main_content, my_token, host)
-                    ),
-                    ft.TextButton(
-                        "Cancel", 
-                        on_click=on_profile_click # Go back to profile view
-                    )
-                ], alignment=ft.MainAxisAlignment.CENTER)
+        
+        # Home content
+        home_content = ft.Column(
+            [
+                ft.Text("Welcome to Saveur Moris", size=25, weight="bold"),
+                ft.Text("Experience the best Mauritian cuisine", italic=True),
+                ft.Divider(height=20),
+                ft.Text("Select an option from the menu below:", size=16),
             ],
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-            spacing=20
+            spacing=20,
         )
->>>>>>> main
         
+        page.add(home_content)
         page.update()
     
-    def view_pop(e):
-        page.views.pop()
-        top_view = page.views[-1]
-        page.go(top_view.route)
+    def logout():
+        nonlocal current_user
+        current_user = None
+        show_login()
     
-    page.on_route_change = route_change
-    page.on_view_pop = view_pop
-    
-    page.go("/login")
-
-<<<<<<< HEAD
-ft.app(target=main)
-=======
-
-    def on_review_click(e):
-        reset_view()
-        container = ft.Column(spacing=10)
-        main_content.content = ft.Column(
-            controls=[
-                ft.Text("My reviews", size=20, weight="bold"),
-                container
-            ],
-            scroll=ft.ScrollMode.ADAPTIVE,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER
-        )
-        page.update()
-        page.run_task(get_myreviews_api, page, container, my_token, host)
-
-    #======================== Reservation sections =========================
-
-    def on_reservation_click(e):
-        reset_view()
-
-    
-
-        #Fields for user input
-        #Field for party size
-        party_size = ft.TextField(
-            label="Party Size",
-            width=300,
-            keyboard_type=ft.KeyboardType.NUMBER
-        )
-
-        #field for allergy information
-        allergy_info = ft.TextField(
-            label="Allergy Information (optional)",
-            width=300,
-            multiline=True
-        )
-
-        # Simple date input (YYYY-MM-DD)
-        date_input = ft.TextField(
-            label="Reservation Date (YYYY-MM-DD)",
-            width=300
-        )
-
-        # Simple time input (HH:MM)
-        time_input = ft.TextField(
-            label="Reservation Time (HH:MM)",
-            width=300
-        )
-
-
-        #Radio buttons for seating choice
-        seating = ft.RadioGroup(
-            content=ft.Column([
-                ft.Radio(value="Indoor", label="Indoor"),
-                ft.Radio(value="Outdoor", label="Outdoor"),
-            ]),
-            value="Indoor"
-        )
-
+    def show_login():
+        nonlocal current_user
+        page.controls.clear()
+        page.appbar = None
+        page.navigation_bar = None
         
-        container = ft.Column(spacing=15)
-
-        # creation apis
-        def submit_reservation(e):
-
-            if not date_input.value or not time_input.value:
-                page.snack_bar = ft.SnackBar(
-                    ft.Text("Please select both date and time"),
-                    bgcolor="red"
-                )
-                page.snack_bar.open = True
-                page.update()
-                return
-
-            page.run_task(
-                create_reservation_api,
-                page,
-                container,
-                my_token,
-                host,
-                date_input.value,
-                time_input.value,
-                party_size,
-                seating,
-                allergy_info
-            )
+        # Login UI
+        username_field = ft.TextField(label="Username", width=300)
+        password_field = ft.TextField(label="Password", password=True, width=300)
+        error_text = ft.Text("", color=ft.Colors.RED)
         
-        main_content.content = ft.Column(
-            controls=[
-                ft.Text("Make a Reservation", size=22, weight="bold"),
-
-                party_size,
-
-                date_input,
-                time_input,
-
-                ft.Text("Seating Choice"),
-                seating,
-
-                allergy_info,
-
-                ft.ElevatedButton(
-                    "Create Reservation",
-                    bgcolor=ft.Colors.GREEN,
-                    on_click=submit_reservation
-                ),
-
-                container
-            ],
-            scroll=ft.ScrollMode.ADAPTIVE,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER
-        )
-
-        page.update()
-
-    #=======================================================================
-
-
-    def on_orders_click(e):
-        reset_view()
-        container = ft.Column(spacing=10)
-        main_content.content = ft.Column(
-            controls=[
-                ft.Text("My Orders", size=20, weight="bold"),
-                container
-            ],
-            scroll=ft.ScrollMode.ADAPTIVE,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER
-        )
-        page.update()
-        page.run_task(get_myorders_api, page, container, my_token, host)
-
-
-    def myorder_byID_page(e):
-        reset_view()
-        id_input = ft.TextField(label="Order ID", width=300)
-        container = ft.Column(spacing=10)
-        new_view = ft.Column(
-            controls=[
-                ft.Text("Enter your Order ID below:", size=20, weight="bold"),
-                id_input,
-                ft.ElevatedButton("Search Order", on_click=lambda _: page.run_task(get_myorder_byID_api, page, container, my_token, host, id_input)),
-                container,
-            ],
-            scroll=ft.ScrollMode.ADAPTIVE,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER
-        )
-        main_content.content = new_view
-        page.update()
-
-
-    #================ Codes for map (placeholder message) ==================
-    
-    def on_find_us_click(e):
-        reset_view()
-
-        # Store user location
-        state = {"user_marker": None}
-
-        location_text = ft.Text("Click below to get your location")
-
-        
-        def build_map():
-            markers = [
-                # Restaurant marker
-                ftm.Marker(
-                    coordinates=ftm.MapLatitudeLongitude(
-                        -20.160980262121928,
-                        57.50049775736102
-                    ),
-                    content=ft.Icon(
-                        ft.Icons.LOCATION_ON,
-                        color=ft.Colors.RED,
-                        size=40
-                    ),
-                )
-            ]
-
-            #Marker for user location 
-            if state["user_marker"]:
-                markers.append(
-                    ftm.Marker(
-                        coordinates=state["user_marker"],
-                        content=ft.Icon(
-                            ft.Icons.MY_LOCATION,
-                            color=ft.Colors.BLUE,
-                            size=40
-                        ),
-                    )
-                )
-
-            return ftm.Map(
-                expand=True,
-                initial_center=state["user_marker"]
-                if state["user_marker"]
-                else ftm.MapLatitudeLongitude(-20.1609, 57.5005),
-                initial_zoom=14,
-                layers=[
-                    ftm.TileLayer(
-                        url_template="https://tile.memomaps.de/tilegen/{z}/{x}/{y}.png",
-                    ),
-                    ftm.MarkerLayer(markers=markers),
-                ],
-            )
-
-        
-        map_container = ft.Container(expand=True)
-
-        #Code for getting the location 
-        async def get_location(e):
-            try:
-                print("Getting location...")
-
-                await geo.request_permission()
-                pos = await geo.get_current_position()
-
-                
-                if not pos:
-                    print("GPS failed → using fallback")
-                    pos = type("obj", (), {
-                        "latitude": -20.1609,
-                        "longitude": 57.5005
-                    })
-
-                print("FINAL POS:", pos.latitude, pos.longitude)
-
-                state["user_marker"] = ftm.MapLatitudeLongitude(
-                    pos.latitude,
-                    pos.longitude
-                )
-
-                location_text.value = f"Your Location: {pos.latitude}, {pos.longitude}"
-
-                map_container.content = build_map()
-                map_container.update()
-
-            except Exception as ex:
-                print("ERROR:", ex)
-                location_text.value = f"Error: {ex}"
-                page.update()
-
-        
-        map_container.content = build_map()
-
-        
-        map_view = ft.Column(
-            controls=[
-                ft.Text("Find Us", size=22, weight="bold"),
-
-                ft.ElevatedButton(
-                    "Get My Location",
-                    on_click=lambda e: page.run_task(get_location, e)
-                ),
-
-                location_text,
-
-                map_container
-            ],
-            expand=True
-        )
-
-        main_content.content = map_view
-        page.update()
-   
-
-    #=======================================================================
-
-    
-    def on_place_click(e):
-    # 1. Clear previous views
-      reset_view()
-    
-    # 2. Create the container where menu items will be injected
-      cart_container = ft.Column(spacing=10)
-    
-    # 3. Set the UI layout for the Menu section
-      main_content.content = ft.Column(
-          controls=[ft.Row(controls=[
-            ft.Text("Place Order", size=20, weight="bold"),
-            ft.IconButton(
-                icon=ft.Icons.SHOPPING_CART, 
-                
-                on_click=lambda _: page.run_task(get_cart_api,page, cart_container, my_token, host,on_place_click)
-            ),],
-            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-             ) 
-            ,
-            cart_container],
-                
-            scroll=ft.ScrollMode.ADAPTIVE ,
-                                           )
-                 
-              
-      page.update()
-    # 4. Refresh the page to show the title and empty container
-       
-    
-    # 5. Run the asynchronous task to fetch and display the menu data
-      page.run_task(get_place_api, page, cart_container, my_token, host)
-
-    page.appbar = ft.AppBar(
-        leading=ft.Icon(ft.Icons.FOOD_BANK),
-        # leading_width=40,
-        title=ft.Text("Saveur Moris"),
-        center_title=False,
-        bgcolor=ft.Colors.PRIMARY_CONTAINER,
-        actions=[
-            ft.PopupMenuButton(
-                items=[
-                    ft.PopupMenuItem("My Profile", on_click=on_profile_click),
-                    ft.PopupMenuItem("My Reviews", on_click=on_review_click),
-                    ft.PopupMenuItem("My Reservations", on_click=on_reservation_click),
-                    ft.PopupMenuItem("My Orders", on_click=on_orders_click),
-                    ft.PopupMenuItem("My Detail Orders", on_click=myorder_byID_page),
-                    ft.PopupMenuItem("Find Us", on_click=on_find_us_click),
-                ]
-            ),
-        ],
-    )
-    def on_nav_change(e):
-       
-        if e.control.selected_index == 0:
-            print("Menu clicked")
-        elif e.control.selected_index == 1:
-            on_place_click(e)
-           
-        elif e.control.selected_index == 2:
-            on_reservation_click(e)  
-
-    pagelet = ft.Pagelet(
-
-        navigation_bar=ft.NavigationBar(
-            destinations=[
-                ft.NavigationBarDestination(icon=ft.Icons.RESTAURANT_MENU, label="Menu"),
-                ft.NavigationBarDestination(icon=ft.Icons.SHOPPING_CART_CHECKOUT, label="Order"),
-                ft.NavigationBarDestination(icon=ft.Icons.TABLE_BAR, label="Reservation")],
-                on_change=on_nav_change
-                    
-                ),
+        def do_login(e):
+            nonlocal current_user
+            username = username_field.value
+            password = password_field.value
             
-       
-        content=ft.Container(),
-        height=70,
-    )
-
-    page.add(
-        pagelet,
-        main_content,
-        ft.Button("Home", bgcolor=ft.Colors.BLUE_ACCENT_700, color=ft.Colors.BLACK,on_click=go_home),
+            if username in users and users[username] == password:
+                current_user = username
+                show_home()
+            else:
+                error_text.value = "Invalid username or password"
+                page.update()
+        
+        def go_to_register(e):
+            show_register()
+        
+        login_btn = ft.ElevatedButton("Login", on_click=do_login, width=300)
+        register_link = ft.TextButton("Create an Account", on_click=go_to_register)
+        
+        page.add(
+            ft.Container(
+                content=ft.Column(
+                    [
+                        ft.Text("Welcome Back!", size=30, weight="bold"),
+                        ft.Divider(height=20),
+                        username_field,
+                        password_field,
+                        error_text,
+                        login_btn,
+                        register_link,
+                    ],
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                    spacing=15,
+                ),
+                expand=True,
+            )
         )
+        page.update()
+    
+    def show_register():
+        page.controls.clear()
+        
+        username_field = ft.TextField(label="Username", width=300)
+        email_field = ft.TextField(label="Email", width=300)
+        password_field = ft.TextField(label="Password", password=True, width=300)
+        confirm_field = ft.TextField(label="Confirm Password", password=True, width=300)
+        error_text = ft.Text("", color=ft.Colors.RED)
+        
+        def do_register(e):
+            username = username_field.value
+            email = email_field.value
+            password = password_field.value
+            confirm = confirm_field.value
+            
+            if not all([username, email, password, confirm]):
+                error_text.value = "Please fill all fields"
+            elif password != confirm:
+                error_text.value = "Passwords do not match"
+            elif username in users:
+                error_text.value = "Username already exists"
+            else:
+                users[username] = password
+                show_login()
+            page.update()
+        
+        def back_to_login(e):
+            show_login()
+        
+        register_btn = ft.ElevatedButton("Register", on_click=do_register, width=300)
+        login_link = ft.TextButton("Back to Login", on_click=back_to_login)
+        
+        page.add(
+            ft.Container(
+                content=ft.Column(
+                    [
+                        ft.Text("Create Account", size=30, weight="bold"),
+                        ft.Divider(height=20),
+                        username_field,
+                        email_field,
+                        password_field,
+                        confirm_field,
+                        error_text,
+                        register_btn,
+                        login_link,
+                    ],
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                    spacing=15,
+                ),
+                expand=True,
+            )
+        )
+        page.update()
+    
+    # Start with login screen
+    show_login()
 
-ft.app(main)
->>>>>>> main
+ft.app(target=main)
