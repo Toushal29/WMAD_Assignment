@@ -78,8 +78,6 @@ def api_menus(request):
     serializer = serializers.MenuSerializer(menus, many=True)
     return Response(serializer.data)
 
-
-#
 # update profile
 @api_view(['PUT', 'PATCH'])
 @permission_classes([IsAuthenticated])
@@ -316,7 +314,7 @@ def api_customers(request):
     return Response(serializer.data)
 
 
-
+##===========================================================##
 ###adding cart api
 
 @api_view(['POST'])
@@ -381,60 +379,6 @@ def delete_all_cart_items(request):
         {"message": "All items have been cleared from the cart."}, 
         status=status.HTTP_204_NO_CONTENT
     )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

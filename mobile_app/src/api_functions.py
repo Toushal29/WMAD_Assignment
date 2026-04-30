@@ -131,20 +131,9 @@ async def get_myreservations_api(page, container, my_token, host):
     page.update()
 
 
-async def create_reservation_api(
-    page,
-    container,
-    my_token,
-    host,
-    selected_date,
-    selected_time,
-    party_size,
-    seating,
-    allergy_info
-):
+async def create_reservation_api(page,container,my_token,host,selected_date,selected_time,party_size,seating,allergy_info):
     endpoint = f"{host}api/reservations/create/"
     headers = {"Authorization": f"Token {my_token}"}
-
 
     data = {
         "reservation_date": selected_date,
@@ -154,26 +143,15 @@ async def create_reservation_api(
         "allergy_info": allergy_info.value
     }
 
-
     if not data["reservation_date"] or not data["reservation_time"]:
-        page.snack_bar = ft.SnackBar(
-            ft.Text("Please select date and time"),
-            bgcolor="red"
-        )
+        page.snack_bar = ft.SnackBar(ft.Text("Please select date and time"),bgcolor="red")
         page.snack_bar.open = True
         page.update()
         return
 
-
     async with httpx.AsyncClient() as client:
-        response = await client.post(
-            endpoint,
-            json=data,
-            headers=headers
-        )
-
+        response = await client.post(endpoint,json=data,headers=headers)
     container.controls.clear()
-
 
     if 200 <= response.status_code <= 299:
         container.controls.append(
@@ -298,7 +276,7 @@ async def get_place_api(page, container, my_token, host):   ##call add to cart t
                                     ft.Row([
                                         ft.Image(
                                             src=f"{host}{item.get('image')}", 
-                                             # Fixed width to allow button space
+                                            # Fixed width to allow button space
                                             height=150, 
                                             expand=True,
                                             fit="cover",
@@ -368,15 +346,11 @@ async def get_cart_api(page, container, my_token, host,on_place_click):  ##get c
                             ], expand=True),
                             ft.Text(f"Rs {item['subtotal']}", weight="bold",expand= True),
                             ft.IconButton(icon=ft.Icons.DELETE_OUTLINE,icon_color="red",
-                            on_click=lambda e, item_id=item['id']: page.run_task(delete_cart_item_api,page,container,my_token,host,item_id,on_place_click)
-    
-)
+                            on_click=lambda e, item_id=item['id']: page.run_task(delete_cart_item_api,page,container,my_token,host,item_id,on_place_click))
                         ],  ) 
                     )
                 )
-         
-            
-            
+
             container.controls.extend([
                 ft.Divider(),
                 ft.Row([
@@ -390,9 +364,6 @@ async def get_cart_api(page, container, my_token, host,on_place_click):  ##get c
                 ft.Button("Checkout",  width=350,expand= True,on_click= lambda _: page.run_task(show_checkout_view,page, container, my_token, host,item_list)),
                 # Clear button (unresponsive) below
                 ft.Container(height=20,expand= True,),
-
-                
-                
                 ft.Container(height=10,expand= True),
             ])
         else:
