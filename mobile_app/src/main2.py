@@ -402,10 +402,10 @@ async def main(page: ft.Page):
                  
               
       page.update()
-    # 4. Refresh the page to show the title and empty container
+   
        
     
-    # 5. Run the asynchronous task to fetch and display the menu data
+    # Run the asynchronous task to fetch and display the menu data
       page.run_task(get_place_api, page, cart_container, my_token, host)
 
     page.appbar = ft.AppBar(
