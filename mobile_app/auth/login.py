@@ -1,6 +1,9 @@
 import flet as ft
+import httpx
 
 def login_page(page: ft.Page, on_login_success=None):
+    host = "http://127.0.0.1:8000/"
+    
     username_field = ft.TextField(
         label="Username",
         width=300,
@@ -20,6 +23,7 @@ def login_page(page: ft.Page, on_login_success=None):
     )
     
     error_text = ft.Text("", color=ft.Colors.RED, size=14)
+    loading_indicator = ft.ProgressRing(visible=False)
     
     def login_click(e):
         username = username_field.value
@@ -27,21 +31,55 @@ def login_page(page: ft.Page, on_login_success=None):
         
         if not username or not password:
             error_text.value = "Please enter username and password"
-        elif username in page.users and page.users[username] == password:
-            error_text.value = ""
+            page.update()
+            return
+        
+        # Show loading
+        error_text.value = ""
+        loading_indicator.visible = True
+        page.update()
+        
+        try:
+            # Call Django login API
+            response = httpx.post(
+                f"{host}api/auth/login/",
+                json={
+                    "username": username,
+                    "password": password
+                },
+                timeout=10.0
+            )
             
-            # Call the success callback if provided
-            if on_login_success:
-                on_login_success(username)
+            loading_indicator.visible = False
+            
+            if response.status_code == 200:
+                data = response.json()
+                token = data.get("token")
+                
+                if token:
+                    # Store token in session
+                    page.session.set("token", token)
+                    page.session.set("username", username)
+                    page.session.set("logged_in", True)
+                    
+                    # Call success callback if provided, otherwise navigate directly
+                    if on_login_success:
+                        on_login_success(username)
+                    else:
+                        page.go("/home")
+                else:
+                    error_text.value = "Login failed: No token received"
             else:
-                # Fallback: set session and navigate
-                page.session.set("logged_in", True)
-                page.session.set("username", username)
-                page.go("/home")
-        else:
-            error_text.value = "Invalid username or password"
+                error_text.value = "Invalid username or password"
+        except Exception as ex:
+            loading_indicator.visible = False
+            error_text.value = f"Cannot connect to server. Make sure Django is running."
+            print(f"Error: {ex}")
         
         page.update()
+    
+    def go_to_register(e):
+        page.go("/register")
     
     login_btn = ft.ElevatedButton(
         "Login",
@@ -54,7 +92,7 @@ def login_page(page: ft.Page, on_login_success=None):
     
     register_link = ft.TextButton(
         "Don't have an account? Register",
-        on_click=lambda e: page.go("/register"),
+        on_click=go_to_register,
         style=ft.ButtonStyle(color=ft.Colors.ORANGE),
     )
     
@@ -66,6 +104,7 @@ def login_page(page: ft.Page, on_login_success=None):
             ft.Divider(height=30, color=ft.Colors.TRANSPARENT),
             username_field,
             password_field,
+            loading_indicator,
             error_text,
             login_btn,
             register_link,
@@ -86,4 +125,4 @@ def login_page(page: ft.Page, on_login_success=None):
         container,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-    )S
+    )

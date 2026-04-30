@@ -3,6 +3,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import flet as ft
+import httpx
 from pages.profile import profile_page
 
 
@@ -12,11 +13,11 @@ def main(page: ft.Page):
     page.window.height = 700
     page.theme_mode = ft.ThemeMode.LIGHT
     
-    # Create in-memory user store (simple dict)
-    users = {"demo": "password123"}
+    host = "http://127.0.0.1:8000/"
     
-    # Track logged in user
+    # Track logged in user (simple variables, no session)
     current_user = None
+    auth_token = None
     
     # Main home screen after login
     def show_home():
@@ -53,15 +54,15 @@ def main(page: ft.Page):
         
         page.add(home_content)
         page.update()
+    
     def show_profile(e=None):
+        nonlocal auth_token
         page.controls.clear()
         page.appbar = None
         page.navigation_bar = None
         
-        # ⚠️ REPLACE with your real token from login
-        # For now, use a temporary token (you'll get this from login API)
-        my_token = "your_token_here"  # TODO: Get from login response
-        host = "http://127.0.0.1:8000/"
+        # Use the token from login
+        my_token = auth_token if auth_token else "no_token"
         
         # Create profile view
         profile_view = profile_page(page, my_token, host)
@@ -80,15 +81,15 @@ def main(page: ft.Page):
         
         page.add(content)
         page.update()
-        
-        
+    
     def logout():
-        nonlocal current_user
+        nonlocal current_user, auth_token
         current_user = None
+        auth_token = None
         show_login()
     
     def show_login():
-        nonlocal current_user
+        nonlocal current_user, auth_token
         page.controls.clear()
         page.appbar = None
         page.navigation_bar = None
@@ -97,18 +98,54 @@ def main(page: ft.Page):
         username_field = ft.TextField(label="Username", width=300)
         password_field = ft.TextField(label="Password", password=True, width=300)
         error_text = ft.Text("", color=ft.Colors.RED)
+        loading_indicator = ft.ProgressRing(visible=False)
         
         def do_login(e):
-            nonlocal current_user
+            nonlocal current_user, auth_token
             username = username_field.value
             password = password_field.value
             
-            if username in users and users[username] == password:
-                current_user = username
-                show_home()
-            else:
-                error_text.value = "Invalid username or password"
+            if not username or not password:
+                error_text.value = "Please enter username and password"
                 page.update()
+                return
+            
+            # Show loading
+            error_text.value = ""
+            loading_indicator.visible = True
+            page.update()
+            
+            try:
+                # Call Django login API
+                response = httpx.post(
+                    f"{host}api/auth/login/",
+                    json={
+                        "username": username,
+                        "password": password
+                    },
+                    timeout=10.0
+                )
+                
+                loading_indicator.visible = False
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    token = data.get("token")
+                    
+                    if token:
+                        auth_token = token
+                        current_user = username
+                        show_home()
+                    else:
+                        error_text.value = "Login failed: No token received"
+                else:
+                    error_text.value = "Invalid username or password"
+            except Exception as ex:
+                loading_indicator.visible = False
+                error_text.value = "Cannot connect to server. Make sure Django is running."
+                print(f"Error: {ex}")
+            
+            page.update()
         
         def go_to_register(e):
             show_register()
@@ -124,6 +161,7 @@ def main(page: ft.Page):
                         ft.Divider(height=20),
                         username_field,
                         password_field,
+                        loading_indicator,
                         error_text,
                         login_btn,
                         register_link,
@@ -144,6 +182,7 @@ def main(page: ft.Page):
         password_field = ft.TextField(label="Password", password=True, width=300)
         confirm_field = ft.TextField(label="Confirm Password", password=True, width=300)
         error_text = ft.Text("", color=ft.Colors.RED)
+        loading_indicator = ft.ProgressRing(visible=False)
         
         def do_register(e):
             username = username_field.value
@@ -153,13 +192,41 @@ def main(page: ft.Page):
             
             if not all([username, email, password, confirm]):
                 error_text.value = "Please fill all fields"
+                page.update()
+                return
             elif password != confirm:
                 error_text.value = "Passwords do not match"
-            elif username in users:
-                error_text.value = "Username already exists"
-            else:
-                users[username] = password
-                show_login()
+                page.update()
+                return
+            
+            # Show loading
+            error_text.value = ""
+            loading_indicator.visible = True
+            page.update()
+            
+            try:
+                # Call Django register API
+                response = httpx.post(
+                    f"{host}api/auth/register/",
+                    json={
+                        "username": username,
+                        "password": password,
+                        "email": email
+                    },
+                    timeout=10.0
+                )
+                
+                loading_indicator.visible = False
+                
+                if response.status_code in [200, 201]:
+                    show_login()
+                else:
+                    error_text.value = f"Registration failed: {response.status_code}"
+            except Exception as ex:
+                loading_indicator.visible = False
+                error_text.value = "Cannot connect to server"
+                print(f"Error: {ex}")
+            
             page.update()
         
         def back_to_login(e):
@@ -178,6 +245,7 @@ def main(page: ft.Page):
                         email_field,
                         password_field,
                         confirm_field,
+                        loading_indicator,
                         error_text,
                         register_btn,
                         login_link,
@@ -190,7 +258,7 @@ def main(page: ft.Page):
         )
         page.update()
     
-    # Start with login screen
+    # Start with login screen (no session persistence)
     show_login()
 
 ft.app(target=main)
