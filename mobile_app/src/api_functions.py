@@ -392,8 +392,7 @@ async def get_cart_api(page, container, my_token, host,on_place_click):  ##get c
                 ft.Container(height=20,expand= True,),
 
                 
-                ft.Button("Return To Place Order",expand= True,width= 350,on_click= on_place_click),
-
+                
                 ft.Container(height=10,expand= True),
             ])
         else:
