@@ -120,6 +120,7 @@ function changeQty(btn, change) {
     qtyInput.value = value;
 }
 
+const clearBtn = document.getElementById("refresh-cart");
 
 // web_app/static/web_app/js/order.js
 

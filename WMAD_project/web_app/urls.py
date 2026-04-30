@@ -2,8 +2,14 @@
 
 # this file defines the URL patterns for the web application, mapping URLs to their corresponding view functions
 
+# C:\Users\...\WMAD_Assignment\WMAD_project\web_app\urls.py
+
+# this file defines the URL patterns for the web application, mapping URLs to their corresponding view functions
+
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from . import views
+from rest_framework.authtoken.views import obtain_auth_token
 from . import views
 from rest_framework.authtoken.views import obtain_auth_token
 
@@ -41,6 +47,11 @@ urlpatterns = [
     path('api/orders/place/', views.api_place_order, name='api_place_order'),
     path('api/orders/<int:order_id>/cancel/', views.api_cancel_order, name='api_cancel_order'),
     path('api/orders/preview/', views.api_checkout_preview, name='api_checkout_preview'),
+    #cartorder api
+    path('api/cart/add/', views.api_add_to_cart, name='api_add_to_cart'),# this is for cartitem
+    path('api/cart/get/', views.api_get_cart, name='api_get_cart'),
+    path('api/cart/delete/<int:pk>/', views.delete_specific_cart_item, name='delete-cart-item'),
+    path('api/cart/clear/', views.delete_all_cart_items, name='clear-cart'),
 
     # to only be not use -- TESTING
     path('api/customers/', views.api_customers, name='api_customers'),
@@ -58,8 +69,10 @@ urlpatterns = [
     path('menu/', views.menu, name='menu'),
     path('order/', views.order, name='order'),
     path('checkout/', views.checkout, name='checkout'),
+   
     path('about-contact/', views.about_contact, name='about_contact'),
     path('reservation/', views.reservation, name='reservation'),
+   
     path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
 
     # PUBLIC REVIEWS
@@ -69,6 +82,10 @@ urlpatterns = [
     # SIMPLE LOGIN/SIGNUP
     path('login/', views.login_view, name='simple_login'),
     path('signup/', views.signup, name='simple_signup'),
+
+  
+
+    
 
     # ACCOUNT LINKS
     path('account/login/', views.login_view, name='login'),
@@ -87,6 +104,8 @@ urlpatterns = [
     path('profile/my_reviews/', views.account_reviews, name='account_reviews'),
 
     # PASSWORD RESET
+
+   
     path(
         'account/reset-password/',
         auth_views.PasswordResetView.as_view(
@@ -99,6 +118,7 @@ urlpatterns = [
         name='custom_reset_request'
     ),
 
+
     path(
         'account/reset-password/sent/',
         auth_views.PasswordResetDoneView.as_view(
@@ -106,6 +126,7 @@ urlpatterns = [
         ),
         name='custom_reset_sent'
     ),
+
 
     path(
         'account/reset-password/confirm/<uidb64>/<token>/',
@@ -116,6 +137,7 @@ urlpatterns = [
         name='custom_reset_confirm'
     ),
 
+
     path(
         'account/reset-password/complete/',
         auth_views.PasswordResetCompleteView.as_view(
@@ -125,6 +147,7 @@ urlpatterns = [
     ),
 
     # PASSWORD CHANGE
+
     path(
         'account/change-password/',
         auth_views.PasswordChangeView.as_view(
@@ -159,4 +182,5 @@ urlpatterns = [
     # EDIT / DELETE
     path("review/edit/<int:review_id>/", views.edit_review, name="edit_review"),
     path("review/delete/<int:review_id>/", views.delete_review, name="delete_review"),
+    
 ]
