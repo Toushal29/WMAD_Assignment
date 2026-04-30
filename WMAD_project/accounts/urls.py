@@ -13,4 +13,5 @@ urlpatterns = [
     path('api/login/', views.api_login, name='api_login'),
     path('api/logout/', views.api_logout, name='api_logout'),
     path('api/my-profile/', views.api_my_profile, name='api_profile'),
+    path('api/test/', views.api_test, name='api_test'),
 ]
