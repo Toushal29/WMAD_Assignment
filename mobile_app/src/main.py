@@ -1,3 +1,5 @@
+import datetime
+
 import flet as ft
 # Import your function from the api folder
 from api_functions import *
@@ -8,8 +10,8 @@ import flet_geolocator as ftg #Imports to get user location
 async def main(page: ft.Page):
     page.window.always_on_top = True
     page.title = "Saveur Moris"
-    page.window.width = 400
-    page.window.height = 700
+    # page.window.width = 400
+    # page.window.height = 700
     page.vertical_alignment = ft.MainAxisAlignment.START
     page.horizontal_alignment = ft.MainAxisAlignment.CENTER
     
@@ -36,23 +38,23 @@ async def main(page: ft.Page):
                     ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=20)
 
-    # Normal view
+    #Normal view
     main_content = ft.Container(
         content=home_layout,
         expand=True,
     )
 
-    # Function to return home
+    #function to return home
     def go_home(e):
         main_content.content = home_layout
         page.update()
     
-    # Reset the view to remove what orderId added
+    #reset the view to remove what orderId added
     def reset_view():
         main_content.content = ft.Column([result_text], horizontal_alignment=ft.CrossAxisAlignment.CENTER)
         page.update()
 
-    # Use page.run_task to call the imported async function
+
     def on_profile_click(e):
         reset_view()
         container = ft.Column(spacing=10)
@@ -79,9 +81,8 @@ async def main(page: ft.Page):
         profile_container = main_content.content.controls[1]
         page.run_task(update_profile_api, page, profile_container, my_token, host)
 
-    # delete profile
+
     def delete_profile_click(e):
-        # 1. Create a "Danger Zone" confirmation view
         confirmation_view = ft.Column(
             controls=[
                 ft.Icon(ft.Icons.WARNING_AMBER_ROUNDED, color="red", size=50),
@@ -96,15 +97,13 @@ async def main(page: ft.Page):
                     ),
                     ft.TextButton(
                         "Cancel", 
-                        on_click=on_profile_click # Go back to profile view
+                        on_click=on_profile_click
                     )
                 ], alignment=ft.MainAxisAlignment.CENTER)
             ],
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             spacing=20
         )
-        
-        # 2. Swap the main container
         main_content.content = confirmation_view
         page.update()
 
@@ -123,55 +122,87 @@ async def main(page: ft.Page):
         page.update()
         page.run_task(get_myreviews_api, page, container, my_token, host)
 
-    #======================== Reservation sections =========================
 
     def on_reservation_click(e):
         reset_view()
+        container = ft.Column(spacing=10)
+        main_content.content = ft.Column(
+            controls=[
+                ft.Text("My Reservation", size=20, weight="bold"),
+                container
+            ],
+            scroll=ft.ScrollMode.ADAPTIVE,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        )
+        page.update()
+        page.run_task(get_myreservations_api, page, container, my_token, host)
 
-        #Fields for user input
+
+    ##Reservation
+    def make_reservation(e):
+        reset_view()
+
+        selected_date = None
+        selected_time = None
+
+        def on_date_change(e):
+            nonlocal selected_date
+            selected_date = e.control.value
+            date_input.text = f"{selected_date.date()}"
+            page.update()
+
+        def on_time_change(e):
+            nonlocal selected_time
+            selected_time = e.control.value
+            time_input.text = f"{selected_time}"
+            page.update()
+
         #Field for party size
-        party_size = ft.TextField(
-            label="Party Size",
-            width=300,
-            keyboard_type=ft.KeyboardType.NUMBER
-        )
-
+        party_size = ft.TextField(label="Party Size",width=300,keyboard_type=ft.KeyboardType.NUMBER)
         #field for allergy information
-        allergy_info = ft.TextField(
-            label="Allergy Information (optional)",
-            width=300,
-            multiline=True
-        )
+        allergy_info = ft.TextField(label="Allergy Information (optional)",width=300,multiline=True)
 
-        # Simple date input (YYYY-MM-DD)
-        date_input = ft.TextField(
-            label="Reservation Date (YYYY-MM-DD)",
-            width=300
-        )
+        #date input
+        date_input = ft.Button(
+                        "Pick date",
+                        icon=ft.Icons.CALENDAR_MONTH,
+                        on_click=lambda e: e.control.page.show_dialog(
+                            ft.DatePicker(
+                                first_date=datetime.datetime(2023, 10, 1),
+                                last_date=datetime.datetime(2026, 12, 1),
+                                on_change=on_date_change,
+                            )
+                        ),
+                    )
 
-        # Simple time input (HH:MM)
-        time_input = ft.TextField(
-            label="Reservation Time (HH:MM)",
-            width=300
-        )
-
+        #time input
+        time_input = ft.Button(
+                        "Pick time",
+                        icon=ft.Icons.ACCESS_TIME,
+                        on_click=lambda e: e.control.page.show_dialog(
+                            ft.TimePicker(
+                                confirm_text="Confirm",
+                                on_change=on_time_change,
+                            )
+                        ),
+                    )
 
         #Radio buttons for seating choice
         seating = ft.RadioGroup(
-            content=ft.Column([
-                ft.Radio(value="Indoor", label="Indoor"),
-                ft.Radio(value="Outdoor", label="Outdoor"),
-            ]),
-            value="Indoor"
-        )
+                content=ft.Row(
+                    controls=[
+                        ft.Radio(value="Indoor", label="Indoor"),
+                        ft.Radio(value="Outdoor", label="Outdoor"),
+                    ],
+                    alignment=ft.MainAxisAlignment.CENTER
+                ),
+                value="Indoor",
+            )
 
-        
         container = ft.Column(spacing=15)
 
-        # creation apis
         def submit_reservation(e):
-
-            if not date_input.value or not time_input.value:
+            if not selected_date or not selected_time:
                 page.snack_bar = ft.SnackBar(
                     ft.Text("Please select both date and time"),
                     bgcolor="red"
@@ -186,8 +217,8 @@ async def main(page: ft.Page):
                 container,
                 my_token,
                 host,
-                date_input.value,
-                time_input.value,
+                selected_date,
+                selected_time,
                 party_size,
                 seating,
                 allergy_info
@@ -196,34 +227,26 @@ async def main(page: ft.Page):
         main_content.content = ft.Column(
             controls=[
                 ft.Text("Make a Reservation", size=22, weight="bold"),
-
                 party_size,
-
                 date_input,
                 time_input,
-
-                ft.Text("Seating Choice"),
+                ft.Text("Seating Choice", weight="bold",),
                 seating,
-
                 allergy_info,
-
-                ft.ElevatedButton(
+                ft.Button(
                     "Create Reservation",
                     bgcolor=ft.Colors.GREEN,
                     on_click=submit_reservation
                 ),
-
                 container
             ],
+            spacing=20,
             scroll=ft.ScrollMode.ADAPTIVE,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER
         )
-
         page.update()
 
-    #=======================================================================
-
-
+    ##order
     def on_orders_click(e):
         reset_view()
         container = ft.Column(spacing=10)
@@ -257,17 +280,14 @@ async def main(page: ft.Page):
         page.update()
 
 
-    #================ Codes for map (placeholder message) ==================
+    ## map
     
     def on_find_us_click(e):
         reset_view()
-
         # Store user location
         state = {"user_marker": None}
-
         location_text = ft.Text("Click below to get your location")
 
-        
         def build_map():
             markers = [
                 # Restaurant marker
@@ -311,26 +331,26 @@ async def main(page: ft.Page):
                 ],
             )
 
-        
         map_container = ft.Container(expand=True)
-
         #Code for getting the location 
         async def get_location(e):
             try:
-                print("Getting location...")
-
+                print("Permission requested")
+                print("Position:", pos)
                 await geo.request_permission()
                 pos = await geo.get_current_position()
-
+                if not pos:
+                    location_text.value = "Could not get location. Please enable GPS."
+                    print("fail")
+                    page.update()
+                    return
                 
                 if not pos:
-                    print("GPS failed → using fallback")
+                    print("fail2")
                     pos = type("obj", (), {
                         "latitude": -20.1609,
                         "longitude": 57.5005
                     })
-
-                print("FINAL POS:", pos.latitude, pos.longitude)
 
                 state["user_marker"] = ftm.MapLatitudeLongitude(
                     pos.latitude,
@@ -338,30 +358,20 @@ async def main(page: ft.Page):
                 )
 
                 location_text.value = f"Your Location: {pos.latitude}, {pos.longitude}"
-
                 map_container.content = build_map()
-                map_container.update()
-
+                page.update()
+                
             except Exception as ex:
-                print("ERROR:", ex)
                 location_text.value = f"Error: {ex}"
                 page.update()
 
-        
         map_container.content = build_map()
 
-        
         map_view = ft.Column(
             controls=[
                 ft.Text("Find Us", size=22, weight="bold"),
-
-                ft.ElevatedButton(
-                    "Get My Location",
-                    on_click=lambda e: page.run_task(get_location, e)
-                ),
-
+                ft.Button("Get My Location",on_click=lambda e: page.run_task(get_location, e)),
                 location_text,
-
                 map_container
             ],
             expand=True
@@ -370,17 +380,12 @@ async def main(page: ft.Page):
         main_content.content = map_view
         page.update()
 
-    #=======================================================================
 
-    
+    ## Cart Handler
     def on_place_click(e):
-    # 1. Clear previous views
         reset_view()
-    
-    # 2. Create the container where menu items will be injected
         cart_container = ft.Column(spacing=10)
     
-    # 3. Set the UI layout for the Menu section
         main_content.content = ft.Column(
             controls=[ft.Row(controls=[
             ft.Text("Place Order", size=20, weight="bold"),
@@ -392,9 +397,8 @@ async def main(page: ft.Page):
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,) ,
             cart_container],
             scroll=ft.ScrollMode.ADAPTIVE ,)
+        
         page.update()
-
-        # Run the asynchronous task to fetch and display the menu data
         page.run_task(get_place_api, page, cart_container, my_token, host)
 
     page.appbar = ft.AppBar(
@@ -411,7 +415,6 @@ async def main(page: ft.Page):
                     ft.PopupMenuItem("My Reservations", on_click=on_reservation_click),
                     ft.PopupMenuItem("My Orders", on_click=on_orders_click),
                     ft.PopupMenuItem("My Detail Orders", on_click=myorder_byID_page),
-                    ft.PopupMenuItem("Find Us", on_click=on_find_us_click),
                 ]
             ),
         ],
@@ -424,7 +427,9 @@ async def main(page: ft.Page):
         elif e.control.selected_index == 2:
             on_place_click(e)
         elif e.control.selected_index == 3:
-            on_reservation_click(e)  
+            make_reservation(e)
+        elif e.control.selected_index == 4:
+            on_find_us_click(e)  
 
     pagelet = ft.Pagelet(
         navigation_bar=ft.NavigationBar(
@@ -432,12 +437,13 @@ async def main(page: ft.Page):
                 ft.NavigationBarDestination(icon=ft.Icons.HOME, label="Home"),
                 ft.NavigationBarDestination(icon=ft.Icons.RESTAURANT_MENU, label="Menu"),
                 ft.NavigationBarDestination(icon=ft.Icons.SHOPPING_CART_CHECKOUT, label="Order"),
-                ft.NavigationBarDestination(icon=ft.Icons.TABLE_BAR, label="Reservation")],
+                ft.NavigationBarDestination(icon=ft.Icons.TABLE_BAR, label="Reservation"),
+                ft.NavigationBarDestination(icon=ft.Icons.NAVIGATION, label="Find Us")],
                 on_change=on_nav_change
                     
                 ),
         content=ft.Container(),
-        height=70,
+        height=120,
     )
 
     page.add(

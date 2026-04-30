@@ -136,8 +136,8 @@ async def create_reservation_api(page,container,my_token,host,selected_date,sele
     headers = {"Authorization": f"Token {my_token}"}
 
     data = {
-        "reservation_date": selected_date,
-        "reservation_time": selected_time,
+        "reservation_date": selected_date.strftime("%Y-%m-%d"),
+        "reservation_time": selected_time.strftime("%H:%M:%S"),
         "party_size": int(party_size.value) if party_size.value else 1,
         "seating_choice": seating.value,
         "allergy_info": allergy_info.value
