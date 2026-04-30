@@ -94,8 +94,62 @@
         </label>
     </div>
 
-    <button class="primary action-btn" onclick="confirmFinalOrder()">Confirm & Place Order</button>
+    <button class="primary action-btn" id="confirmOrderBtn">
+        Confirm & Place Order
+    </button>
 </div>
 
-<script src="{% static 'web_app/js/order.js' %}"></script>
+<!-- jQuery CDN -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+
+$(document).ready(function () {
+
+
+    function getCookie(name) {
+    let result = null;
+
+    $.each(document.cookie.split('; '), function (i, cookie) {
+        let parts = cookie.split('=');
+
+        if (parts[0] === name) {
+            result = decodeURIComponent(parts[1]);
+            return false; // break loop
+        }
+    });
+
+    return result;
+    }
+
+    $('#confirmOrderBtn').click(function () {
+
+        let selectedMethod = $('input[name="payment_method"]:checked').val() || 'cash';
+
+        $.ajax({
+            url: "/ajax/confirm-order/",
+            type: "POST",
+            headers: {
+                "X-CSRFToken": getCookie('csrftoken')
+            },
+            data: {
+                payment_method: selectedMethod
+            },
+            success: function (res) {
+                if (res.success) {
+                    window.location.href = res.redirect;
+                }
+            },
+            error: function () {
+                alert("Order failed.");
+            }
+        });
+
+    });
+
+});
+</script>
+
+
 {% endblock %}

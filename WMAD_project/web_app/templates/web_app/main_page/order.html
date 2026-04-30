@@ -32,17 +32,147 @@
         <img src="{{ item.image.url }}" class="card-img">
         <h3 class="food-name">{{ item.name }}</h3>
         <p class="price">Rs {{ item.price }}</p>
+
         <div class="quantity-container">
-            <button class="qty-btn" onclick="changeQty(this, -1)">-</button>
+            <button class="qty-btn">-</button>
             <input type="number" class="quantity" value="1" style="width: 50px; text-align: center; margin: 0 10px;">
-            <button class="qty-btn" onclick="changeQty(this, 1)">+</button>
+            <button class="qty-btn">+</button>
         </div>
-        <button class="add-cart-btn" onclick="addToCart(this)">Add to Cart</button>
+
+        <button class="add-cart-btn">Add to Cart</button>
     </div>
     {% endfor %}
 </div>
 
 <a href="{% url 'my_orders' %}" class="my-orders-btn">View My Orders</a>
 
-<script src="{% static 'web_app/js/order.js' %}"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function () {
+
+    const $dropdown = $("#cart-dropdown");
+    const $countBadge = $("#cart-count");
+
+    // Toggle cart dropdown
+    $("#cart-toggle").click(function () {
+        $dropdown.toggle();
+    });
+
+    // Close dropdown
+    $("#cart-close, #close-btn").click(function () {
+        $dropdown.hide();
+    });
+
+    // Refresh Cart
+    function refreshCart() {
+        $.get("/ajax/get-cart/", function (data) {
+            const $container = $("#cart-items");
+            $container.html("");
+
+            let total = 0;
+            const itemsCount = data.items.length;
+
+            $.each(data.items, function (index, item) {
+                total += item.subtotal;
+
+                $container.append(`
+                    <div class="cart-item">
+                        <span>${item.name}</span>
+                        <span>x${item.qty}</span>
+                        <button class="remove-btn" data-id="${item.menu_id}">X</button>
+                    </div>
+                `);
+            });
+
+            $("#cart-total").text("Total: Rs " + total);
+
+            if (itemsCount > 0) {
+                $countBadge.show().text(itemsCount);
+            } else {
+                $countBadge.hide();
+            }
+        });
+    }
+
+    // Add to cart
+    $(".add-cart-btn").click(function () {
+        const $card = $(this).closest(".card");
+        const id = $card.data("id");
+        const qty = $card.find(".quantity").val();
+
+        $.post("/ajax/add-to-cart/", {
+            menu_id: id,
+            quantity: qty,
+            csrfmiddlewaretoken: getCookie('csrftoken')
+        }, function () {
+            refreshCart();
+        });
+    });
+
+    // Remove from cart 
+    $(document).on("click", ".remove-btn", function () {
+        const id = $(this).data("id");
+
+        $.post("/ajax/remove-from-cart/", {
+            menu_id: id,
+            csrfmiddlewaretoken: getCookie('csrftoken')
+        }, function () {
+            refreshCart();
+        });
+    });
+
+    // Clear cart
+    $("#refresh-cart").click(function () {
+        $.post("/ajax/clear-cart/", {
+            csrfmiddlewaretoken: getCookie('csrftoken')
+        }, function () {
+            refreshCart();
+        });
+    });
+
+    // Checkout
+    $("#checkout-btn").click(function () {
+        window.location.href = "/checkout/";
+    });
+
+    // Quantity buttons
+    $(".qty-btn").click(function () {
+        const $input = $(this).siblings(".quantity");
+        let value = parseInt($input.val()) || 1;
+
+        if ($(this).text() === "+") {
+            value++;
+        } else {
+            value--;
+        }
+
+        if (value < 1) value = 1;
+        $input.val(value);
+    });
+
+    
+    
+    function getCookie(name) {
+    let result = null;
+
+    $.each(document.cookie.split('; '), function (i, cookie) {
+        let parts = cookie.split('=');
+
+        if (parts[0] === name) {
+            result = decodeURIComponent(parts[1]);
+            return false; // break loop
+        }
+    });
+
+    return result;
+  }
+
+    // Initial cart load
+    refreshCart();
+
+});
+</script>
+
 {% endblock %}

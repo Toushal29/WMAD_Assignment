@@ -477,6 +477,7 @@ def menu(request):
     )
 
 # order view now checks if user is authenticated to show cart status, and also counts total menu items for display
+@login_required
 def order(request):
     items = Menu.objects.filter(available=True)
     total_menu_count = items.count()
