@@ -31,11 +31,12 @@ def main(page: ft.Page):
     def view_pop(e):
         page.views.pop()
         top_view = page.views[-1]
-        page.go(top_view.route)
+        page.push_route(top_view.route)
     
     page.on_route_change = route_change
     page.on_view_pop = view_pop
     
-    page.go("/login")
+    # Start with login page
+    page.push_route("/login")
 
 ft.app(target=main)
