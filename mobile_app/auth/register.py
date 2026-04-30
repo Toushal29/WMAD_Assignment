@@ -1,6 +1,6 @@
 import flet as ft
 
-def register_page(page: ft.Page):
+def register_page(page: ft.Page, on_register_success=None):
     username_field = ft.TextField(
         label="Username",
         width=300,
@@ -48,9 +48,17 @@ def register_page(page: ft.Page):
         elif username in page.users:
             error_text.value = "Username already exists"
         else:
+            # Save user
             page.users[username] = password
             page.session.set("registered", True)
-            page.push_route("/login")  # Changed from go()
+            error_text.value = ""
+            
+            # Call success callback if provided
+            if on_register_success:
+                on_register_success(username)
+            else:
+                # Fallback: go to login page
+                page.go("/login")
         
         page.update()
     
@@ -64,34 +72,38 @@ def register_page(page: ft.Page):
     
     login_link = ft.TextButton(
         "Already have an account? Login",
-        on_click=lambda e: page.push_route("/login"),  # Changed from go()
+        on_click=lambda e: page.go("/login"),
         style=ft.ButtonStyle(color=ft.Colors.ORANGE),
     )
     
+    # Create the main content column
+    content_column = ft.Column(
+        [
+            ft.Text("Create Account", size=32, weight=ft.FontWeight.BOLD, color=ft.Colors.ORANGE),
+            ft.Text("Join Saveur Moris today", size=16, color=ft.Colors.GREY_600),
+            ft.Divider(height=30, color=ft.Colors.TRANSPARENT),
+            username_field,
+            email_field,
+            password_field,
+            confirm_field,
+            error_text,
+            register_btn,
+            login_link,
+        ],
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        spacing=15,
+    )
+    
+    # Create container with the column
+    container = ft.Container(
+        content=content_column,
+        expand=True,
+    )
+    
+    # Return the view
     return ft.View(
         "/register",
-        controls=[
-            ft.Container(
-                content=ft.Column(
-                    [
-                        ft.Text("Create Account", size=32, weight=ft.FontWeight.BOLD, color=ft.Colors.ORANGE),
-                        ft.Text("Join Saveur Moris today", size=16, color=ft.Colors.GREY_600),
-                        ft.Divider(height=30, color=ft.Colors.TRANSPARENT),
-                        username_field,
-                        email_field,
-                        password_field,
-                        confirm_field,
-                        error_text,
-                        register_btn,
-                        login_link,
-                    ],
-                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                    spacing=15,
-                ),
-                alignment=ft.alignment.center,
-                expand=True,
-            )
-        ],
+        container,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
