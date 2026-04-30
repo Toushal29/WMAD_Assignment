@@ -1,9 +1,10 @@
-from pages.profile import profile_page
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import flet as ft
+from pages.profile import profile_page
+
 
 def main(page: ft.Page):
     page.title = "Saveur Moris"
@@ -57,17 +58,18 @@ def main(page: ft.Page):
         page.appbar = None
         page.navigation_bar = None
         
-        # Use temporary token (replace with real token later)
-        my_token = "temp_token"
+        # ⚠️ REPLACE with your real token from login
+        # For now, use a temporary token (you'll get this from login API)
+        my_token = "your_token_here"  # TODO: Get from login response
         host = "http://127.0.0.1:8000/"
         
+        # Create profile view
         profile_view = profile_page(page, my_token, host)
         
-        # Add back button to home
         def go_back(e):
             show_home()
         
-        # Wrap view with back button
+        # Add back button
         content = ft.Column([
             ft.Row([
                 ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=go_back),
