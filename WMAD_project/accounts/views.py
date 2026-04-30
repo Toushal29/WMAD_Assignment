@@ -118,3 +118,6 @@ def api_my_profile(request):
         }, status=200)
     
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+def api_test(request):
+    return JsonResponse({'message': 'API is working!'})
