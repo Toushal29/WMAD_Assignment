@@ -8,7 +8,10 @@ authors = [
     { name = "Flet developer", email = "you@example.com" }
 ]
 dependencies = [
-    "flet>=0.83.0"
+    "flet>=0.83.0",
+    "flet-geolocator>=0.83.0",
+    "flet-map>=0.83.0",
+    "flet-permission-handler>=0.83.0",
 ]
 
 [dependency-groups]

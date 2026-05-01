@@ -110,7 +110,7 @@ async def update_profile_api(page, container, my_token, host):
         page.update()
 
 
-async def delete_profile_api(page, main_content, my_token, host):
+async def delete_profile_api(my_token, host):
     endpoint = f"{host}api/profile/delete/"
     headers = {"Authorization": f"Token {my_token}"}
     
@@ -118,26 +118,9 @@ async def delete_profile_api(page, main_content, my_token, host):
         response = await client.delete(endpoint, headers=headers)
         
         if response.status_code in [200, 204]:
-            # Clear everything and show Login/Signup screen
-            main_content.content = ft.Column(
-                controls=[
-                    ft.Icon(ft.Icons.CHECK_CIRCLE_OUTLINE, color="green", size=50),
-                    ft.Text("Account Deleted", size=24, weight="bold"),
-                    ft.Divider(),
-                    ft.Text("Welcome to Saveur Moris", size=18),
-                    ft.ElevatedButton("Login", width=200, on_click=lambda _: print("Go to Login")),
-                    ft.OutlinedButton("Sign Up", width=200, on_click=lambda _: print("Go to Signup")),
-                ],
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                spacing=20
-            )
-        else:
-            # Show error inside the container instead of a popup
-            main_content.content.controls.append(
-                ft.Text(f"Delete Failed: {response.status_code}", color="red")
-            )
-            
-        page.update()
+            return True, None
+
+        return False, f"Delete failed: {response.status_code}"
 
 
 async def get_myreviews_api(page, container, my_token, host):

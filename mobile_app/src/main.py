@@ -3,6 +3,7 @@ import datetime
 import flet as ft
 # Import your function from the api folder
 from api_functions import *
+from permissions import build_permission_handler, request_location_permission
 
 import flet_map as ftm        #Imports for the map feature
 import flet_geolocator as ftg #Imports to get user location
@@ -28,6 +29,8 @@ async def main(page: ft.Page):
             accuracy=ftg.GeolocatorPositionAccuracy.HIGH
         )
     ) 
+    permission_handler = build_permission_handler()
+    page.services = [geo, permission_handler]
     
     result_text = ft.Text()
     auth_screen = ft.Container(expand=True, padding=24)
@@ -312,6 +315,20 @@ async def main(page: ft.Page):
 
     # delete profile
     def delete_profile_click(e):
+        async def confirm_delete_profile(e):
+            nonlocal auth_token
+            success, result = await delete_profile_api(auth_token, host)
+            if success:
+                auth_token = None
+                page.snack_bar = ft.SnackBar(ft.Text("Account deleted successfully."))
+                page.snack_bar.open = True
+                show_login()
+                return
+
+            page.snack_bar = ft.SnackBar(ft.Text(result), bgcolor=ft.Colors.RED)
+            page.snack_bar.open = True
+            page.update()
+
         confirmation_view = ft.Column(
             controls=[
                 ft.Icon(ft.Icons.WARNING_AMBER_ROUNDED, color="red", size=50),
@@ -322,7 +339,7 @@ async def main(page: ft.Page):
                         "YES, DELETE", 
                         bgcolor=ft.Colors.RED_400, 
                         color="white",
-                        on_click=lambda _: page.run_task(delete_profile_api, page, main_content, auth_token, host)
+                        on_click=lambda e: page.run_task(confirm_delete_profile, e)
                     ),
                     ft.TextButton("Cancel", on_click=on_profile_click)
                 ], alignment=ft.MainAxisAlignment.CENTER)
@@ -576,22 +593,23 @@ async def main(page: ft.Page):
         #Code for getting the location 
         async def get_location(e):
             try:
-                print("Permission requested")
-                print("Position:", pos)
-                await geo.request_permission()
+                has_permission = await request_location_permission(page, permission_handler)
+                if not has_permission:
+                    location_text.value = "Location permission is required."
+                    page.update()
+                    return
+
+                service_enabled = await geo.is_location_service_enabled()
+                if not service_enabled:
+                    location_text.value = "Please enable location services/GPS."
+                    page.update()
+                    return
+
                 pos = await geo.get_current_position()
                 if not pos:
                     location_text.value = "Could not get location. Please enable GPS."
-                    print("fail")
                     page.update()
                     return
-                
-                if not pos:
-                    print("fail2")
-                    pos = type("obj", (), {
-                        "latitude": -20.1609,
-                        "longitude": 57.5005
-                    })
 
                 state["user_marker"] = ftm.MapLatitudeLongitude(
                     pos.latitude,
