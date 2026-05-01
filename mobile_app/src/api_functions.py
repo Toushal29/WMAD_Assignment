@@ -2,6 +2,67 @@ import httpx
 import flet as ft
 import json
 
+## Login logout register api handling
+def login_api(host, username, password):
+    try:
+        response = httpx.post(
+            f"{host}api/auth/login/",
+            json={"username": username, "password": password},
+            timeout=10.0,
+        )
+        if response.status_code == 200:
+            token = response.json().get("token")
+            if token:
+                return True, token
+            return False, "Login failed: no token received."
+        
+        error_data = response.json() if response.content else {}
+        msg = error_data.get("detail") or error_data.get("non_field_errors") or f"Login failed ({response.status_code})"
+        return False, str(msg)
+    except Exception:
+        return False, "Cannot connect to server."
+
+def register_api(host, username, password, first_name, last_name, email, phone, address):
+    payload = {
+        "user": {
+            "username": username,
+            "password": password,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email": email,
+        },
+        "phone": phone,
+        "address": address,
+    }
+    try:
+        response = httpx.post(
+            f"{host}api/auth/register/",
+            json=payload,
+            timeout=10.0,
+        )
+        if response.status_code in (200, 201):
+            return True, response.json()
+        error_data = response.json() if response.content else {}
+        msg = "; ".join([f"{k}: {v}" for k, v in error_data.items()]) if error_data else f"Registration failed ({response.status_code})"
+        return False, msg
+    except Exception:
+        return False, "Cannot connect to server."
+
+def logout_api(host, token):
+    if not token:
+        return True, None
+    try:
+        response = httpx.post(
+            f"{host}api/auth/logout/",
+            headers={"Authorization": f"Token {token}"},
+            timeout=10.0,
+        )
+        if response.status_code in (200, 204):
+            return True, None
+        return False, f"Logout failed: Status {response.status_code}"
+    except Exception:
+        return False, "Cannot connect to server."
+# ##user profile api handling ========================
 async def get_my_profile_api(page, container, my_token, host):
     endpoint = f"{host}api/my-profile/"
     headers = {"Authorization": f"Token {my_token}"}
@@ -227,7 +288,7 @@ async def get_myorder_byID_api(page, container, my_token, host, id_input):
         else:
             container.controls.append(ft.Text("Failed to load reviews", color="red"), ft.Text(f"{response}", color="red"))
         page.update()
-
+# ## user profile api handling END ========================
 
 ####placing order
 async def add_to_cart_api(page, my_token, host, menu_id, quantity=1):##respond to send data to cart
@@ -490,3 +551,4 @@ async def get_menu_display_api(page, container, my_token, host):
             ft.Text("Failed to load menu", color="red")
         )
     page.update()
+
