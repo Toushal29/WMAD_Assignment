@@ -327,8 +327,8 @@ async def get_cart_api(page, container, my_token, host,on_place_click):  ##get c
             for item in data:
                 
                 item_list["items"].append({
-                       "menu_id": item["menu"],
-                       "quantity": item["quantity"] })
+                        "menu_id": item["menu"],
+                        "quantity": item["quantity"] })
         
     
 
@@ -362,6 +362,7 @@ async def get_cart_api(page, container, my_token, host,on_place_click):  ##get c
                 ft.Button("Clear Cart",expand= True,width=350,bgcolor=ft.Colors.RED,on_click=lambda _: page.run_task(clear_cart_api,page, container, my_token, host,on_place_click)), 
                 ft.Container(height=10,expand= True),
                 ft.Button("Checkout",  width=350,expand= True,on_click= lambda _: page.run_task(show_checkout_view,page, container, my_token, host,item_list)),
+                
                 # Clear button (unresponsive) below
                 ft.Container(height=20,expand= True,),
                 ft.Container(height=10,expand= True),
@@ -381,13 +382,11 @@ async def clear_cart_api(page, container, my_token, host,on_place_click):
         response = await client.delete(endpoint, headers=headers)
         
         if response.status_code == 204 or response.status_code == 200:
-           
             # Refresh the cart UI to show it's empty
             await get_cart_api(page, container, my_token, host,on_place_click) 
         else:
             
             page.snack_bar = ft.SnackBar(ft.Text("Failed to clear cart"))
-           
             page.update()
 
 
@@ -428,9 +427,7 @@ async def show_checkout_view(page, container, my_token, host, item_list):
         payment_dropdown, # The dropdown defined above
         
         ft.Button(
-            
             "Confirm and Place Order",
-
             expand = True,
             icon=ft.Icons.CHECK_CIRCLE,
             on_click=lambda _: page.run_task(place_order_api,page, my_token, host, item_list,payment_dropdown.value,container)
@@ -451,9 +448,45 @@ async def place_order_api(page, my_token, host, item_list, payment_method,contai
     item_list["payment_method"] = "cash"
     # The payload now includes the payment_method from the dropdown
     
-
     async with httpx.AsyncClient() as client:
         print("success")
         response = await client.post(endpoint, headers=headers, json=payload)
         response = await client.delete(endpoint1, headers=headers)
         await get_myorders_api(page, container, my_token, host)
+
+# menu display function
+async def get_menu_display_api(page, container, my_token, host):
+    headers = {"Authorization": f"Token {my_token}"}
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{host}api/menus/", headers=headers)
+    container.controls.clear()
+    if 200 <= response.status_code <= 299:
+        for item in response.json():
+            if item.get("available"):
+                container.controls.append(
+                    ft.Card(
+                        content=ft.Container(
+                            padding=10,
+                            width=350,
+                            content=ft.Column(
+                                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                                controls=[
+                                # Image
+                                ft.Image(src=f"{host}{item.get('image')}",height=180,fit="cover",border_radius=10,),
+                                # Name + Price
+                                ft.Row([
+                                    ft.Text(item["name"],weight="bold",size=18,expand=True),
+                                    ft.Text(f"Rs {item['price']}",color="green",weight="bold"),
+                                ]),
+                                # description
+                                ft.Text(item.get("description", ""),size=12,color="grey"),
+                            ])
+                        )
+                    )
+                )
+    else:
+        container.controls.append(
+            ft.Text("Failed to load menu", color="red")
+        )
+    page.update()

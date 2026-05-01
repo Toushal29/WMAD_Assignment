@@ -10,13 +10,12 @@ import flet_geolocator as ftg #Imports to get user location
 async def main(page: ft.Page):
     page.window.always_on_top = True
     page.title = "Saveur Moris"
-    # page.window.width = 400
-    # page.window.height = 700
+    page.window.width = 400
+    page.window.height = 800
     page.vertical_alignment = ft.MainAxisAlignment.START
     page.horizontal_alignment = ft.MainAxisAlignment.CENTER
     
-    
-    
+        
     # Configuration
     # my_token = "a5842a6437612fed23a00407b72fcff384e776b7"
     my_token = "5bf094ad3d1e0d1bf2d39e18ac8e5f84c81cca88"
@@ -30,13 +29,67 @@ async def main(page: ft.Page):
     
     result_text = ft.Text()
 
-    home_layout = ft.Column([
-                    ft.Text("Welcome to Saveur Moris", size=25, weight="bold"),
-                    ft.Text("Experience the best Mauritian cuisine", italic=True),
-                    ft.Image(src="https://flet.dev/img/pages/quick-start/flet-app-icons.png", width=200), # Example placeholder
-                    ft.Text("Select an option from the menu to get started."),
-                    ],
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=20)
+    home_layout = ft.Column(
+                controls=[
+                        # todays special
+                        ft.Container(
+                            content=ft.Column([
+                                ft.Text("Today's Special", size=22, weight="bold"),
+                                ft.Text("Chicken Biryani", weight="bold"),
+                                ft.Image(src="biryani.jpg",width=250,height=180,fit="cover",border_radius=10),
+                                ft.Text("Fragrant rice cooked with tender chicken."),
+                                ft.Text("Available Daily", size=10),
+                                ft.Text("Rs 250", color="green", weight="bold"),
+                            ],
+                            horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+                            padding=10
+                        ),
+                        # popular dishes
+                        ft.Container(
+                            content=ft.Column([
+                                ft.Text("Popular Dishes", size=22, weight="bold"),
+                                ft.Row([
+                                        ft.Column([
+                                            ft.Image(src="farata_curry.png",width=150,height=120,fit="cover",border_radius=10),
+                                            ft.Text("Farata & Curry", text_align="center")
+                                        ],
+                                        horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+                                        ft.Column([
+                                            ft.Image(src="mine_frite.png",width=150,height=120,fit="cover",border_radius=10),
+                                            ft.Text("Mine Frite", text_align="center")
+                                        ],
+                                        horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+                                        ft.Column([
+                                            ft.Image(src="chicken_curry.png",width=150,height=120,fit="cover",border_radius=10),
+                                            ft.Text("Chicken Curry", text_align="center")
+                                        ],
+                                        horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+                                    ],
+                                    scroll=ft.ScrollMode.HIDDEN,
+                                    spacing=10
+                                )
+                            ]),
+                            padding=10
+                        ),
+                        ft.Container(
+                            content=ft.Column([
+                                ft.Text(
+                                    '"Delicious food, warm atmosphere. Always coming back!"',
+                                    italic=True,
+                                    text_align="center"
+                                ),
+                                ft.Text("- A Happy Customer", size=12)
+                            ],
+                            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                            ),
+                            padding=10,
+                            bgcolor=ft.Colors.LIGHT_GREEN_100,
+                        ),
+                ],
+                scroll=ft.ScrollMode.HIDDEN,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            )
+
 
     #Normal view
     main_content = ft.Container(
@@ -55,6 +108,7 @@ async def main(page: ft.Page):
         page.update()
 
 
+## USER PROFILE line 58-174 {no changes}
     def on_profile_click(e):
         reset_view()
         container = ft.Column(spacing=10)
@@ -81,7 +135,7 @@ async def main(page: ft.Page):
         profile_container = main_content.content.controls[1]
         page.run_task(update_profile_api, page, profile_container, my_token, host)
 
-
+    # delete profile
     def delete_profile_click(e):
         confirmation_view = ft.Column(
             controls=[
@@ -89,16 +143,13 @@ async def main(page: ft.Page):
                 ft.Text("Confirm Account Deletion", size=20, weight="bold"),
                 ft.Text("Are you absolutely sure? This cannot be undone.", text_align="center"),
                 ft.Row([
-                    ft.ElevatedButton(
+                    ft.Button(
                         "YES, DELETE", 
                         bgcolor=ft.Colors.RED_400, 
                         color="white",
                         on_click=lambda _: page.run_task(delete_profile_api, page, main_content, my_token, host)
                     ),
-                    ft.TextButton(
-                        "Cancel", 
-                        on_click=on_profile_click
-                    )
+                    ft.TextButton("Cancel", on_click=on_profile_click)
                 ], alignment=ft.MainAxisAlignment.CENTER)
             ],
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -107,7 +158,7 @@ async def main(page: ft.Page):
         main_content.content = confirmation_view
         page.update()
 
-
+    # user review page
     def on_review_click(e):
         reset_view()
         container = ft.Column(spacing=10)
@@ -122,7 +173,7 @@ async def main(page: ft.Page):
         page.update()
         page.run_task(get_myreviews_api, page, container, my_token, host)
 
-
+    # usuer reservation
     def on_reservation_click(e):
         reset_view()
         container = ft.Column(spacing=10)
@@ -137,8 +188,57 @@ async def main(page: ft.Page):
         page.update()
         page.run_task(get_myreservations_api, page, container, my_token, host)
 
+    ##user order
+    def on_orders_click(e):
+        reset_view()
+        container = ft.Column(spacing=10)
+        main_content.content = ft.Column(
+            controls=[
+                ft.Text("My Orders", size=20, weight="bold"),
+                container
+            ],
+            scroll=ft.ScrollMode.ADAPTIVE,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        )
+        page.update()
+        page.run_task(get_myorders_api, page, container, my_token, host)
 
-    ##Reservation
+    # user order details
+    def myorder_byID_page(e):
+        reset_view()
+        id_input = ft.TextField(label="Order ID", width=300)
+        container = ft.Column(spacing=10)
+        new_view = ft.Column(
+            controls=[
+                ft.Text("Enter your Order ID below:", size=20, weight="bold"),
+                id_input,
+                ft.ElevatedButton("Search Order", on_click=lambda _: page.run_task(get_myorder_byID_api, page, container, my_token, host, id_input)),
+                container,
+            ],
+            scroll=ft.ScrollMode.ADAPTIVE,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        )
+        main_content.content = new_view
+        page.update()
+
+## ======================user profile end==================
+
+    def on_menu_click(e):
+        reset_view()
+        container = ft.Column(spacing=10)
+        main_content.content = ft.Column(
+            controls=[
+                ft.Text("Menu", size=20, weight="bold"),
+                container,
+            ],
+            scroll=ft.ScrollMode.ADAPTIVE,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        )
+        page.update()
+        page.run_task(get_menu_display_api, page, container, my_token, host)
+
+
+    ##Reservation page
     def make_reservation(e):
         reset_view()
 
@@ -246,42 +346,8 @@ async def main(page: ft.Page):
         )
         page.update()
 
-    ##order
-    def on_orders_click(e):
-        reset_view()
-        container = ft.Column(spacing=10)
-        main_content.content = ft.Column(
-            controls=[
-                ft.Text("My Orders", size=20, weight="bold"),
-                container
-            ],
-            scroll=ft.ScrollMode.ADAPTIVE,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER
-        )
-        page.update()
-        page.run_task(get_myorders_api, page, container, my_token, host)
 
-
-    def myorder_byID_page(e):
-        reset_view()
-        id_input = ft.TextField(label="Order ID", width=300)
-        container = ft.Column(spacing=10)
-        new_view = ft.Column(
-            controls=[
-                ft.Text("Enter your Order ID below:", size=20, weight="bold"),
-                id_input,
-                ft.ElevatedButton("Search Order", on_click=lambda _: page.run_task(get_myorder_byID_api, page, container, my_token, host, id_input)),
-                container,
-            ],
-            scroll=ft.ScrollMode.ADAPTIVE,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER
-        )
-        main_content.content = new_view
-        page.update()
-
-
-    ## map
-    
+    ## map page
     def on_find_us_click(e):
         reset_view()
         # Store user location
@@ -404,9 +470,9 @@ async def main(page: ft.Page):
     page.appbar = ft.AppBar(
         leading=ft.Icon(ft.Icons.FOOD_BANK),
         # leading_width=40,
-        title=ft.Text("Saveur Moris"),
+        title=ft.Text("Saveur Moris", weight="bold"),
         center_title=False,
-        bgcolor=ft.Colors.PRIMARY_CONTAINER,
+        bgcolor=ft.Colors.PINK_ACCENT,
         actions=[
             ft.PopupMenuButton(
                 items=[
@@ -419,11 +485,13 @@ async def main(page: ft.Page):
             ),
         ],
     )
+
+    # navigations bar control
     def on_nav_change(e):
         if e.control.selected_index == 0:
             go_home(e)
         elif e.control.selected_index == 1:
-            print("Menu clicked")
+            on_menu_click(e)
         elif e.control.selected_index == 2:
             on_place_click(e)
         elif e.control.selected_index == 3:
@@ -440,7 +508,6 @@ async def main(page: ft.Page):
                 ft.NavigationBarDestination(icon=ft.Icons.TABLE_BAR, label="Reservation"),
                 ft.NavigationBarDestination(icon=ft.Icons.NAVIGATION, label="Find Us")],
                 on_change=on_nav_change
-                    
                 ),
         content=ft.Container(),
         height=120,
@@ -451,4 +518,4 @@ async def main(page: ft.Page):
         pagelet,
     )
 
-ft.app(main)
+ft.run(main, assets_dir="src/assets")
