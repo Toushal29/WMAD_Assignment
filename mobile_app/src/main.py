@@ -129,6 +129,8 @@ async def main(page: ft.Page):
         error_text = ft.Text("", color=ft.Colors.RED, text_align=ft.TextAlign.CENTER)
         loading = ft.ProgressRing(visible=False)
 
+
+
         def submit_register(e):
             nonlocal auth_token
             username = (username_field.value or "").strip()
@@ -196,6 +198,8 @@ async def main(page: ft.Page):
                 spacing=10,
             )
         )
+
+
 
     def on_logout_click(e):
         nonlocal auth_token
@@ -286,7 +290,7 @@ async def main(page: ft.Page):
         page.update()
 
 
-## USER PROFILE line 58-174 {no changes}
+## USER PROFILE line 289-416 {no changes}
     def on_profile_click(e):
         reset_view()
         container = ft.Column(spacing=10)
@@ -639,7 +643,6 @@ async def main(page: ft.Page):
         main_content.content = map_view
         page.update()
 
-
     ## Cart Handler
     def on_place_click(e):
         reset_view()
@@ -660,6 +663,7 @@ async def main(page: ft.Page):
         page.update()
         page.run_task(get_place_api, page, cart_container, auth_token, host)
 
+    # AppBar with user profile and logout
     def build_app_bar():
         return ft.AppBar(
             leading=ft.Icon(ft.Icons.RESTAURANT),
@@ -680,6 +684,7 @@ async def main(page: ft.Page):
                 ),
             ],
         )
+
 
     # navigations bar control
     def on_nav_change(e):

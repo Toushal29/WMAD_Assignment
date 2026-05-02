@@ -2,14 +2,8 @@
 
 # this file defines the URL patterns for the web application, mapping URLs to their corresponding view functions
 
-# C:\Users\...\WMAD_Assignment\WMAD_project\web_app\urls.py
-
-# this file defines the URL patterns for the web application, mapping URLs to their corresponding view functions
-
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from . import views
-from rest_framework.authtoken.views import obtain_auth_token
 from . import views
 from rest_framework.authtoken.views import obtain_auth_token
 
@@ -17,7 +11,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 urlpatterns = [
     # API ENDPOINTS
 
-    # This provides the login endpoint automatically
+    # This endpoint uses Django REST Framework’s built-in token authentication. When the user logs in with username and password, the system returns a unique token
     path('api/auth/login/', obtain_auth_token, name='api_token_auth'),
     path('api/auth/logout/', views.api_logout, name='api_logout'),
     path('api/auth/register/', views.api_register, name='api_register'),
@@ -25,10 +19,6 @@ urlpatterns = [
     path('api/my-profile/', views.api_get_current_user_profile, name='api_my_profile'),
     path('api/upd_profile/', views.api_upd_profile, name='api_upd_profile'),
     path('api/profile/delete/', views.api_delete_profile, name='api_delete_profile'),
-
-    # path('api/profile/<int:pk>/', views.api_profile, name='api_profile'),
-    # path('api/upd_profile/<int:pk>/', views.api_upd_profile, name='api_upd_profile'),
-    # path('api/profile/<int:pk>/delete/', views.api_delete_profile, name='api_delete_profile'),
 
     path('api/menus/', views.api_menus, name='api_menus'),
     path('api/menu/<int:pk>/', views.api_menu_detail, name='api_menu_detail'),
@@ -47,14 +37,12 @@ urlpatterns = [
     path('api/orders/place/', views.api_place_order, name='api_place_order'),
     path('api/orders/<int:order_id>/cancel/', views.api_cancel_order, name='api_cancel_order'),
     path('api/orders/preview/', views.api_checkout_preview, name='api_checkout_preview'),
-    #cartorder api
+
+    #cart_order api
     path('api/cart/add/', views.api_add_to_cart, name='api_add_to_cart'),# this is for cartitem
     path('api/cart/get/', views.api_get_cart, name='api_get_cart'),
     path('api/cart/delete/<int:pk>/', views.delete_specific_cart_item, name='delete-cart-item'),
     path('api/cart/clear/', views.delete_all_cart_items, name='clear-cart'),
-
-    # to only be not use -- TESTING
-    path('api/customers/', views.api_customers, name='api_customers'),
 
 
 
@@ -104,8 +92,6 @@ urlpatterns = [
     path('profile/my_reviews/', views.account_reviews, name='account_reviews'),
 
     # PASSWORD RESET
-
-   
     path(
         'account/reset-password/',
         auth_views.PasswordResetView.as_view(

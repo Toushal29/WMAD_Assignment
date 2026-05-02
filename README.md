@@ -8,31 +8,8 @@
 | Methilesh Ramsahye | 2413415 |
 | Isha Narain        | 2413288 |
 
-# Contribution
+### `To be marked individually`
 
-## To be marked individually
-
-|               |                                  |                                        |                                     |                                                         |
-| ------------- | -------------------------------- | -------------------------------------- | ----------------------------------- | ------------------------------------------------------- |
-|               | **Frontend (user view)**         | **Frontend (customer view - web app)** | **Backend (main page - web app)**   | **Backend (customer profile - web app)**                |
-| **Toushal**   | Base template                    | Base template + navigation             |                                     | Get + display all details associated to that login user |
-|               | Navbar + Footer Component        | User personal details                  |                                     | Update + save details associated to that login user     |
-|               | About-Contact Us Page            | User reservation details               |                                     | Delete associated login user                            |
-|               | Privacy Policy Page              | User Reviews                           |                                     | Change password associated to that login user           |
-|               | Review Page                      | User order details                     |                                     |                                                         |
-|               | Login + Signup Page              | User Settings                          |                                     |                                                         |
-|               | Reset password                   |                                        |                                     |                                                         |
-|               | User profile Management Page     |                                        |                                     |                                                         |
-| **Isha**      | Home Page                        |                                        | Signup                              |                                                         |
-|               | Menu Page                        |                                        | Login                               |                                                         |
-| **Methilesh** | Order Page                       |                                        | Add/remove menu to cart + checkout  |                                                         |
-| **Nilesh**    | Reservation - login v/s no login |                                        | Reservation - save data to database |                                                         |
-| **Hayilsing** |                                  |                                        | Database                            |                                                         |
-|               |                                  |                                        | reset user password                 |                                                         |
-|               |                                  |                                        | Signup                              |                                                         |
-|               |                                  |                                        | Login                               |                                                         |
-
----
 
 ## Development Setup - MOBILE
 
@@ -48,22 +25,17 @@ python -m venv .venv-mobile
 2. **Install Dependencies**:
 
 ```bash
-pip install flet
+pip install -r requirements2.txt
 ```
 
-3. **Create Project + Run**:
+3. **Run + Run android version**:
 
 ```bash
-flet create mobile_app
-```
-
-```bash
-cd mobile_app
-pip install flet-geolocator flet-permission-handler httpx
+flet run main.py
 ```
 
 ```bash
-flet run
+flet run --android         #android version
 ```
 
 ---

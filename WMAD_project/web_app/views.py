@@ -23,18 +23,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.views import ObtainAuthToken
 
 
 # API Views
-# Delete the user's token to log them out
+
+# get the current user's profile based on the token authentication, returns 404 if no profile found for the user
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def api_get_current_user_profile(request):
-    """
-    Returns the profile information of the user associated with the Token.
-    No ID is needed in the URL.
-    """
     try:
         # 'request.user' is identified via the 'Authorization: Token <key>' header
         customer = request.user.customer_profile
@@ -46,6 +42,8 @@ def api_get_current_user_profile(request):
             status=status.HTTP_404_NOT_FOUND
         )
 
+
+# logout by deleting the token associated with the user, effectively invalidating any existing authentication tokens for that user
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def api_logout(request):
@@ -55,30 +53,26 @@ def api_logout(request):
     except Exception:
         return Response({"error": "No active token found."}, status=400)
 
-# register and auto-login
+
+# register a new user and customer profile, returns the created customer data along with the authentication token for immediate login after registration
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def api_register(request):
     serializer = serializers.CustomerRegisterSerializer(data=request.data)
     if serializer.is_valid():
-        customer = serializer.save()        # This returns the Customer instance
+        customer = serializer.save()        # The 'create' method in the serializer handles creating both the User and Customer objects
+
+        # After registration, a token is generated and sent back to the client. This allows the user to stay authenticated without logging in again right after registration.
         token, _ = Token.objects.get_or_create(user=customer.user)
 
-        # Combine the data
         response_data = serializer.data
         response_data['token'] = token.key
 
         return Response(response_data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET'])
-@permission_classes([AllowAny]) # This allows guests to access this specific view
-def api_menus(request):
-    menus = Menu.objects.all()
-    serializer = serializers.MenuSerializer(menus, many=True)
-    return Response(serializer.data)
 
-# update profile
+# API view to update the current user's profile
 @api_view(['PUT', 'PATCH'])
 @permission_classes([IsAuthenticated])
 def api_upd_profile(request):
@@ -90,7 +84,8 @@ def api_upd_profile(request):
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# delete profile
+
+# API view to delete the current user's profile
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def api_delete_profile(request):
@@ -98,6 +93,16 @@ def api_delete_profile(request):
     user = request.user
     user.delete() 
     return Response({"message": "Your account and profile have been deleted."}, status=status.HTTP_204_NO_CONTENT)
+
+
+# API view to return a list of all available menu items, accessible to anyone (no authentication required), uses the MenuSerializer to serialize the data and returns it in the response
+@api_view(['GET'])
+@permission_classes([AllowAny]) # This allows guests to access this specific view
+def api_menus(request):
+    menus = Menu.objects.all()
+    serializer = serializers.MenuSerializer(menus, many=True)
+    return Response(serializer.data)
+
 
 # return a list of all menus
 @api_view(['GET'])
@@ -107,11 +112,11 @@ def api_menu_detail(request,pk):
     serializer = serializers.MenuSerializer(menu)
     return Response(serializer.data)
 
-# Reviews
+
+# Reviews API views for creating, updating, deleting reviews, and listing the current user's reviews, all require authentication and ensure that users can only modify their own reviews
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def api_my_reviews(request):
-    # Use the related_name "reviews" from your User model
     reviews = request.user.reviews.all()
     serializer = serializers.ReviewSerializer(reviews, many=True)
     return Response(serializer.data)
@@ -121,7 +126,6 @@ def api_my_reviews(request):
 def api_create_review(request):
     serializer = serializers.ReviewSerializer(data=request.data)
     if serializer.is_valid():
-        # The user is identified via the Token
         serializer.save(user=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -147,7 +151,8 @@ def api_delete_reviews(request,review_id):
     review.delete()
     return Response({"message": "Review deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
-# Orders
+
+# API view to list the current user's orders, retrieves all orders associated with the authenticated user, uses the OrderSerializer to serialize the data, and returns it in the response
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def api_order_list(request):
@@ -155,6 +160,7 @@ def api_order_list(request):
     serializer = serializers.OrderSerializer(orders, many=True)
     return Response(serializer.data)
 
+# get order items for a specific order, ensuring that the order belongs to the authenticated user, and returns the serialized order items in the response
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def api_order_items(request, order_id):
@@ -165,6 +171,7 @@ def api_order_items(request, order_id):
     serializer = serializers.OrderItemSerializer(items, many=True)
     return Response(serializer.data)
 
+# API view to cancel an order, checks if the order belongs to the authenticated user and if it is still pending before allowing cancellation, then updates the order status to 'cancelled' and saves it
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def api_cancel_order(request, order_id):
@@ -173,11 +180,10 @@ def api_cancel_order(request, order_id):
         return Response({"detail": f"Order cannot be cancelled because it is currently {order.status}."},status=status.HTTP_400_BAD_REQUEST)
     order.status = 'cancelled' # Or Order.STATUS_CANCELLED if you defined that constant
     order.save()
-
     return Response({"message": f"Order #{order_id} has been successfully cancelled."},status=status.HTTP_200_OK)
 
 
-# reservations
+# API view to list the current user's reservations, uses select_related to optimize database queries by joining the related customer and user tables, and returns the serialized reservation data in the response
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def api_reservation_list(request):
@@ -187,18 +193,8 @@ def api_reservation_list(request):
     serializer = serializers.ReservationSerializer(reservations, many=True)
     return Response(serializer.data)
 
-@api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
-def api_del_reservation(request, resev_id):
-    reservation = get_object_or_404(Reservation, id=resev_id)
-    if reservation.customer.user != request.user:
-        return Response({"detail": "You cannot cancel someone else's reservation."}, status=status.HTTP_403_FORBIDDEN)
-    if reservation.status != Reservation.STATUS_PENDING:
-        return Response({"detail": f"Reservation cannot be cancelled because it is already {reservation.status}."}, status=status.HTTP_400_BAD_REQUEST)
-    reservation.status = Reservation.STATUS_CANCELLED
-    reservation.save()
-    return Response({"message": "Reservation cancelled successfully."}, status=status.HTTP_200_OK)
 
+# API view to create a new reservation, checks if the authenticated user has a customer profile before allowing reservation creation, then uses the ReservationCreateSerializer to validate and save the new reservation with the associated customer
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def api_create_reservation(request):
@@ -214,14 +210,24 @@ def api_create_reservation(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Ordering
+# API view to cancel a reservation, checks if the reservation belongs to the authenticated user and if it is still pending before allowing cancellation, then updates the reservation status to 'cancelled' and saves it
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def api_del_reservation(request, resev_id):
+    reservation = get_object_or_404(Reservation, id=resev_id)
+    if reservation.customer.user != request.user:
+        return Response({"detail": "You cannot cancel someone else's reservation."}, status=status.HTTP_403_FORBIDDEN)
+    if reservation.status != Reservation.STATUS_PENDING:
+        return Response({"detail": f"Reservation cannot be cancelled because it is already {reservation.status}."}, status=status.HTTP_400_BAD_REQUEST)
+    reservation.status = Reservation.STATUS_CANCELLED
+    reservation.save()
+    return Response({"message": "Reservation cancelled successfully."}, status=status.HTTP_200_OK)
+
+
+# API view to preview the checkout summary, validates the incoming data for the cart items, checks if the menu items are available, calculates the subtotal, delivery fee, and grand total, and returns a summary of the order along with any validation errors if items are not found or unavailable
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def api_checkout_preview(request):
-    """
-    Step 1: The 'Get Quote' step. 
-    Mobile app sends the local list, server returns the official total.
-    """
     serializer = serializers.CheckoutSessionSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -247,7 +253,6 @@ def api_checkout_preview(request):
         })
     if validation_errors:
         return Response({"errors": validation_errors}, status=status.HTTP_400_BAD_REQUEST)
-    # Business Logic: Add delivery fee or tax
     delivery_fee = 5.00
     grand_total = float(subtotal) + delivery_fee
     return Response({
@@ -260,7 +265,7 @@ def api_checkout_preview(request):
         "can_proceed": True
     })
 
-# Ordering
+# API view to place an order, validates the incoming data for the order items and payment method, creates a new Order object with the associated OrderItems, calculates the total price including a delivery fee, and returns the order details in the response
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def api_place_order(request):
@@ -294,7 +299,6 @@ def api_place_order(request):
             delivery_fee = Decimal('5.00')
             order.total_price = final_total + delivery_fee
             order.save()
-            # Re-serialize the order to return the new fields
             return Response({
                 "message": "Order placed successfully!",
                 "order_details": serializers.OrderSerializer(order).data
@@ -304,81 +308,60 @@ def api_place_order(request):
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# to only not be use -- TESTING
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def api_customers(request):
-    # select_related('user') joins the tables at the DB level
-    customers = Customer.objects.select_related('user').all()
-    serializer = serializers.CustomerSerializer(customers, many=True)
-    return Response(serializer.data)
-
-
-##===========================================================##
-###adding cart api
-
+# API view to add a menu item to the cart, checks if the item already exists in the user's cart and updates the quantity if it does, otherwise creates a new cart item, and returns the cart item data in the response
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def api_add_to_cart(request):
     menu_id = request.data.get('menu')
     quantity = int(request.data.get('quantity', 1))
-
-    # Check if the menu item already exists in this user's cart
     cart_item = Cart.objects.filter(user=request.user, menu_id=menu_id).first()
 
     if cart_item:
-        # If it exists, simply increase the quantity
         cart_item.quantity += quantity
         cart_item.save()
         serializer = serializers.addCartSerializer(cart_item)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    # If it doesn't exist, create a new cart entry
     serializer = serializers.addCartSerializer(data=request.data)
     if serializer.is_valid():
-        # Identify the user via the Token, similar to review creation
         serializer.save(user=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-from .serializers import CartSerializer
-#cartitemgetview
+
+
+# API view to get the current user's cart items, retrieves all cart items for the authenticated user, uses select_related to optimize database queries by joining the related menu table, and returns the serialized cart item data in the response
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def api_get_cart(request):
-    """
-    Returns all items currently in the authenticated user's cart.
-    """
     # Filter cart items by the current user [1]
     cart_items = Cart.objects.filter(user=request.user).select_related('menu')
-    serializer = CartSerializer(cart_items, many=True)
+    serializer = serializers.CartSerializer(cart_items, many=True)
     return Response(serializer.data)
-###
+
+
+# API view to delete a specific cart item, checks if the cart item belongs to the authenticated user before allowing deletion, and returns a success message in the response
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_specific_cart_item(request, pk):
-    
-   
     cart_item = get_object_or_404(Cart, pk=pk)
-    
-    
     cart_item.delete()
-    
     return Response(
         {"message": f"Item with ID {pk} has been removed from your cart."}, 
         status=status.HTTP_204_NO_CONTENT
     )
 
+
+# API view to clear all items from the cart for the logged-in user, deletes all cart items associated with the authenticated user and returns a success message in the response
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_all_cart_items(request):
-    
     Cart.objects.all().delete() 
-    
     return Response(
         {"message": "All items have been cleared from the cart."}, 
         status=status.HTTP_204_NO_CONTENT
     )
+
 
 
 
